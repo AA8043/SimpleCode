@@ -1,0 +1,23 @@
+plugins {
+    java
+    application
+    id("io.franzbecker.gradle-lombok") version "3.0.0"
+}
+
+group = "org.a8043.simpleCode"
+version = "1.0"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("cn.hutool:hutool-all:5.8.38")
+    compileOnly("org.projectlombok:lombok:1.18.30")
+    annotationProcessor("org.projectlombok:lombok:1.18.30")
+    testImplementation("junit:junit:4.13.1")
+}
+
+application {
+    mainClass.set("org.a8043.simpleCode.cli.Main")
+}

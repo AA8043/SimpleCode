@@ -1,0 +1,11 @@
+/.idea/modules.xml
+/.idea/jarRepositories.xml
+/.idea/compiler.xml
+/.idea/remote-targets.xml
+/.gradle/
+
+/build/
+/core/build/
+/cli/build/
+
+/test/
