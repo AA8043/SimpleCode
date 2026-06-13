@@ -19,6 +19,7 @@ public class ToolContent extends Content {
         this.content = content;
     }
 
+    @Override
     public String getText() {
         return "[" + (status.isSuccess() ? "Success" : "Failed: " + status.getFailedReason()) + "]\n" + content;
     }

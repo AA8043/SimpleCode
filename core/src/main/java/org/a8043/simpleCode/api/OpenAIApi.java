@@ -10,7 +10,6 @@ import org.a8043.simpleCode.model.Model;
 import org.a8043.simpleCode.session.content.AssistantContent;
 import org.a8043.simpleCode.session.content.Content;
 import org.a8043.simpleCode.session.content.ToolContent;
-import org.a8043.simpleCode.session.content.UserContent;
 import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.session.tool.ToolParameter;
 
@@ -29,7 +28,6 @@ public class OpenAIApi implements Api {
             JSONObject message = new JSONObject(JSONConfig.create().setIgnoreNullValue(false));
             message.set("role", content.getRole().name().toLowerCase());
             switch (content) {
-                case UserContent uc -> message.set("content", uc.getText());
                 case AssistantContent ac -> {
                     message.set("content", ac.getText());
                     message.set("tool_calls", ac.getToolCallList().stream().map(toolCall -> {
@@ -45,7 +43,7 @@ public class OpenAIApi implements Api {
                     message.set("tool_call_id", tc.getToolCallId());
                     message.set("content", tc.getText());
                 }
-                default -> throw new RuntimeException();
+                default -> message.set("content", content.getText());
             }
             requestBody.append("messages", message);
         });
@@ -62,6 +60,7 @@ public class OpenAIApi implements Api {
                 JSONObject paramJson = new JSONObject();
                 paramJson.set("description", param.getDescription());
                 paramJson.set("type", param.getType().name().toLowerCase());
+                paramJson.set("enum", param.getEnumList());
                 propertiesJson.set(param.getName(), paramJson);
             });
             argsJson.set("properties", propertiesJson);

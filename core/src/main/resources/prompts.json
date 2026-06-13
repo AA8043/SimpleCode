@@ -1,1 +1,22 @@
-{}
+{
+    "tool": {
+        "read_file": {
+            "description": "Read the content of a file.",
+            "file": "File path to read",
+            "range": "Line range to read, e.g., '1-10' to read lines 1 to 10, if not specified, read the entire file. If a single number is given (e.g., '5'), it means from that line to the end of the file."
+        },
+        "write_file": {
+            "description": "Write content to a file.",
+            "file": "File path to write",
+            "type": "Write type",
+            "content": "Content to write",
+            "target": "Target content for replacement, only used when type is 'replace'"
+        },
+        "ask_user": {
+            "description": "Ask the user a question and get the input.",
+            "question": "The question to ask the user",
+            "options": "Optional list of options for the user to choose from",
+            "hasCustomization": "Indicates whether the user can provide a custom answer"
+        }
+    }
+}

@@ -3,7 +3,8 @@ package org.a8043.simpleCode;
 import org.a8043.simpleCode.api.Api;
 import org.a8043.simpleCode.api.OpenAIApi;
 import org.a8043.simpleCode.session.tool.Tool;
-import org.a8043.simpleCode.session.tool.ToolParameter;
+import org.a8043.simpleCode.tools.AskUserTool;
+import org.a8043.simpleCode.tools.ReadFileTool;
 import org.a8043.simpleCode.tools.WriteFileTool;
 
 import java.util.ArrayList;
@@ -17,10 +18,9 @@ public class Registry {
 
     static {
         registerApi("OpenAI", new OpenAIApi());
-        registerTool(new Tool("write_file", new WriteFileTool(), List.of(
-            new ToolParameter("file", ToolParameter.Type.STRING, true),
-            new ToolParameter("content", ToolParameter.Type.STRING, true)
-        )));
+        registerTool(WriteFileTool.TOOL);
+        registerTool(ReadFileTool.TOOL);
+        registerTool(AskUserTool.TOOL);
     }
 
     public static void registerApi(String name, Api api) {

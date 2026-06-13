@@ -11,5 +11,7 @@ public abstract class Content {
         this.time = time;
     }
 
+    public abstract String getText();
+
     public abstract Role getRole();
 }
