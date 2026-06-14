@@ -1,7 +1,7 @@
 package org.a8043.simpleCode.session;
 
 import org.a8043.simpleCode.ListenerRegistry;
-import org.a8043.simpleCode.Settings;
+import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.session.content.AssistantContent;
 import org.a8043.simpleCode.session.content.Content;
 import org.a8043.simpleCode.session.content.ToolContent;
@@ -11,8 +11,12 @@ import org.junit.Test;
 public class SessionTest {
     @Test
     public void testAsk() {
-        Settings.read();
+        SimpleCode.init();
         Session session = Session.create();
+        ask(session, "在这个目录创建一个名为\"hello.txt\"的文件");
+    }
+
+    public static void ask(Session session, String question) {
         ListenerRegistry.register(session, new ListenerRegistry.Listener() {
             @Override
             public void onComplete(Content content) {
@@ -43,6 +47,6 @@ public class SessionTest {
                 System.out.println("=====");
             }
         });
-        session.ask("在这个目录创建一个名为\"hello.txt\"的文件");
+        session.ask(question);
     }
 }

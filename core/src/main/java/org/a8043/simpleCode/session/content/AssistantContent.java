@@ -1,5 +1,6 @@
 package org.a8043.simpleCode.session.content;
 
+import cn.hutool.json.JSONObject;
 import lombok.Getter;
 import lombok.ToString;
 import org.a8043.simpleCode.session.Role;
@@ -22,5 +23,11 @@ public class AssistantContent extends Content {
     @Override
     public Role getRole() {
         return Role.ASSISTANT;
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        return new JSONObject().set("type", "assistant").set("time", getTime())
+            .set("text", text).set("toolCalls", toolCallList);
     }
 }

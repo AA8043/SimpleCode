@@ -1,5 +1,6 @@
 package org.a8043.simpleCode.session.content;
 
+import cn.hutool.json.JSONObject;
 import lombok.Getter;
 import lombok.ToString;
 import org.a8043.simpleCode.session.Role;
@@ -17,5 +18,10 @@ public class UserContent extends Content {
     @Override
     public Role getRole() {
         return Role.USER;
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        return new JSONObject().set("type", "user").set("time", getTime()).set("text", text);
     }
 }

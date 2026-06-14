@@ -1,6 +1,7 @@
 package org.a8043.simpleCode.session.content;
 
 import cn.hutool.core.io.resource.ResourceUtil;
+import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.session.Role;
 
 public class SystemContent extends Content {
@@ -19,5 +20,10 @@ public class SystemContent extends Content {
     @Override
     public Role getRole() {
         return Role.SYSTEM;
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        return new JSONObject().set("type", "system");
     }
 }

@@ -1,5 +1,7 @@
 package org.a8043.simpleCode.session;
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONSupport;
 import lombok.Getter;
 import lombok.Setter;
 import org.a8043.simpleCode.ListenerRegistry;
@@ -15,15 +17,22 @@ import org.a8043.simpleCode.session.tool.ToolCallReturn;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
-public class Session {
+public class Session extends JSONSupport {
+    @Getter
+    private final String id;
     @Setter
     private String name;
     private final List<Content> contentList = new ArrayList<>();
 
+    public Session(String id) {
+        this.id = id;
+    }
+
     public static Session create() {
-        Session session = new Session();
+        Session session = new Session(UUID.randomUUID().toString());
         session.getContentList().add(new SystemContent(0));
         return session;
     }
@@ -58,5 +67,10 @@ public class Session {
             }
         }
         listener.onFinish();
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        return new JSONObject().set("id", id).set("name", name).set("contentList", contentList);
     }
 }
