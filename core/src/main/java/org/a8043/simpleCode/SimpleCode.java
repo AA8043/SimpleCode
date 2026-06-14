@@ -9,7 +9,11 @@ import org.a8043.simpleCode.session.Status;
 import org.a8043.simpleCode.session.content.*;
 import org.a8043.simpleCode.session.tool.ToolCall;
 
+import java.io.File;
+
 public class SimpleCode {
+    public static final File SETTINGS_DIR = new File(System.getProperty("user.home") + "/.simpleCode");
+
     public static void init() {
         Settings.read();
         registerConverters();

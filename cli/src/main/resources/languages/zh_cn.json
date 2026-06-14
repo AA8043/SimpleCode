@@ -1,0 +1,13 @@
+{
+    "welcome": "欢迎使用 Simple Code!",
+    "language": "语言",
+    "next": "下一个",
+    "ok": "确定",
+    "add": "添加",
+    "provider.set": "设置供应商",
+    "provider.add": "添加供应商",
+    "provider.name": "供应商名称",
+    "provider.base_url": "供应商基础 URL",
+    "provider.key": "供应商 API Key",
+    "provider.api": "供应商 API 格式"
+}

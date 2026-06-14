@@ -15,7 +15,6 @@ import java.util.List;
 public class Settings {
     public static final Settings INSTANCE = new Settings();
     public static final JSONObject PROMPT_JSON = new JSONObject(ResourceUtil.readUtf8Str("prompts.json"));
-    public static final File DIR = new File(System.getProperty("user.home") + "/.simpleCode");
     private final List<Provider> providerList = new ArrayList<>();
     private final List<Model> modelList = new ArrayList<>();
     private Model currentModel;
@@ -30,10 +29,10 @@ public class Settings {
     }
 
     public static boolean read() {
-        if (!DIR.exists()) {
+        if (!SimpleCode.SETTINGS_DIR.exists()) {
             return false;
         }
-        File file = new File(DIR, "settings.json");
+        File file = new File(SimpleCode.SETTINGS_DIR, "settings.json");
         if (!file.exists()) {
             return false;
         }
