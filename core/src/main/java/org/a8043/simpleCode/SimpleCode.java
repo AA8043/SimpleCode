@@ -4,6 +4,7 @@ import cn.hutool.core.convert.AbstractConverter;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.convert.ConverterRegistry;
 import cn.hutool.json.JSONObject;
+import org.a8043.simpleCode.model.Model;
 import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.Status;
 import org.a8043.simpleCode.session.content.*;
@@ -14,12 +15,12 @@ import java.io.File;
 public class SimpleCode {
     public static final File SETTINGS_DIR = new File(System.getProperty("user.home") + "/.simpleCode");
 
-    public static void init() {
-        Settings.read();
+    public static boolean init() {
         registerConverters();
+        return Settings.read();
     }
 
-    public static void registerConverters() {
+    private static void registerConverters() {
         ConverterRegistry registry = ConverterRegistry.getInstance();
 
         registry.putCustom(Status.class, new AbstractConverter<Status>() {
@@ -27,6 +28,15 @@ public class SimpleCode {
             protected Status convertInternal(Object value) {
                 JSONObject json = (JSONObject) value;
                 return new Status(json.getBool("isSuccess"), json.getStr("failedReason"));
+            }
+        });
+
+        registry.putCustom(Model.class, new AbstractConverter<Model>() {
+            @Override
+            protected Model convertInternal(Object value) {
+                JSONObject json = (JSONObject) value;
+                return new Model(Settings.INSTANCE.getProvider(json.getStr("provider")),
+                    json.getStr("name"), json.getInt("level"));
             }
         });
 

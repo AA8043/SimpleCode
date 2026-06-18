@@ -15,11 +15,7 @@ public class I18n {
     }
 
     public static String get(String key, String... args) {
-        String text = map.get(key);
-        if (text == null) {
-            return key;
-        }
-
+        String text = map.getOrDefault(key, key);
         for (int i = 0; i < args.length; i++) {
             text = text.replace("{" + i + "}", args[i]);
         }

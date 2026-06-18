@@ -4,7 +4,7 @@ import dev.tamboui.css.engine.StyleEngine;
 import dev.tamboui.toolkit.app.ToolkitApp;
 import dev.tamboui.toolkit.element.Element;
 import lombok.SneakyThrows;
-import org.a8043.simpleCode.Settings;
+import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.cli.views.WelcomeView;
 
 public class Main extends ToolkitApp {
@@ -20,11 +20,11 @@ public class Main extends ToolkitApp {
     @Override
     protected void onStart() {
         StyleEngine styleEngine = StyleEngine.create();
-        styleEngine.loadStylesheet("main", "/styles/main.css");
+        styleEngine.loadStylesheet("main", "/styles/main.tcss");
         styleEngine.setActiveStylesheet("main");
         runner().styleEngine(styleEngine);
 
-        boolean isNotFirst = Settings.read() & CliSettings.load();
+        boolean isNotFirst = SimpleCode.init() & CliSettings.load();
         I18n.load();
         if (isNotFirst) {
             // TODO: 主界面

@@ -7,6 +7,8 @@ import cn.hutool.json.JSONConfig;
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.Registry;
 import org.a8043.simpleCode.model.Model;
+import org.a8043.simpleCode.model.Provider;
+import org.a8043.simpleCode.model.RemoteModel;
 import org.a8043.simpleCode.session.content.AssistantContent;
 import org.a8043.simpleCode.session.content.Content;
 import org.a8043.simpleCode.session.content.ToolContent;
@@ -102,5 +104,20 @@ public class OpenAIApi implements Api {
             }
         });
         return new CompleteResult(isEnd.get(), contentList);
+    }
+
+    @Override
+    public List<RemoteModel> getModels(Provider provider) {
+        HttpRequest get = HttpUtil.createGet(provider.getBaseUrl() + "/v1/models");
+        get.addHeaders(Map.of("Authorization", "Bearer " + provider.getKey()));
+        String response = get.execute().body();
+
+        JSONObject responseBody = new JSONObject(response);
+        List<RemoteModel> modelList = new ArrayList<>();
+        responseBody.getJSONArray("data").forEach(o -> {
+            JSONObject json = (JSONObject) o;
+            modelList.add(new RemoteModel(provider, json.getStr("id")));
+        });
+        return modelList;
     }
 }

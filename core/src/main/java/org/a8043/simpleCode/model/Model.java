@@ -6,4 +6,5 @@ import lombok.Value;
 public class Model {
     Provider provider;
     String name;
+    int level;
 }

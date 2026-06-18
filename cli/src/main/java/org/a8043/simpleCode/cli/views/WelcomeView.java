@@ -1,19 +1,28 @@
 package org.a8043.simpleCode.cli.views;
 
 import dev.tamboui.toolkit.element.Element;
+import dev.tamboui.toolkit.elements.DialogElement;
+import dev.tamboui.toolkit.elements.ListElement;
+import dev.tamboui.toolkit.elements.TextElement;
 import dev.tamboui.tui.bindings.ActionHandler;
 import dev.tamboui.tui.bindings.Actions;
 import dev.tamboui.tui.bindings.BindingSets;
+import dev.tamboui.tui.bindings.KeyTrigger;
 import dev.tamboui.widgets.input.TextInputState;
+import lombok.extern.slf4j.Slf4j;
 import org.a8043.simpleCode.Registry;
 import org.a8043.simpleCode.Settings;
 import org.a8043.simpleCode.cli.CliSettings;
 import org.a8043.simpleCode.cli.I18n;
 import org.a8043.simpleCode.cli.Main;
 import org.a8043.simpleCode.model.Provider;
+import org.a8043.simpleCode.model.RemoteModel;
+
+import java.util.List;
 
 import static dev.tamboui.toolkit.Toolkit.*;
 
+@Slf4j
 public class WelcomeView implements Main.View {
     private final TextInputState languageInputState = new TextInputState(CliSettings.INSTANCE.getLanguage());
     private Step current = Step.WELCOME;
@@ -23,9 +32,22 @@ public class WelcomeView implements Main.View {
 
     }
 
+    private List<RemoteModel> modelList;
+    private boolean isGettingModels = false;
+
+    public List<RemoteModel> getModelList() {
+        if (modelList == null && !isGettingModels) {
+            isGettingModels = true;
+            new Thread(() -> modelList = Settings.INSTANCE.getProviderList().stream()
+                .flatMap(p -> p.requestModels().stream())
+                .toList()).start();
+        }
+        return modelList;
+    }
+
     @Override
-    public Element render() {
-        return switch (current) {
+    public DialogElement render() {
+        DialogElement element = switch (current) {
             case WELCOME -> dialog("",
                 text(I18n.get("welcome")).centered(),
                 textInput(languageInputState).title(I18n.get("language")).onSubmit(() -> {
@@ -35,7 +57,7 @@ public class WelcomeView implements Main.View {
                 text(I18n.get("next")).centered().focusable().id("nextButton")
                     .onAction(new ActionHandler(BindingSets.standard())
                         .on(Actions.SELECT, event -> current = Step.SET_PROVIDERS))
-            ).rounded();
+            );
             case SET_PROVIDERS -> dialog("",
                 text(I18n.get("provider.set")).centered(),
                 text(I18n.get("add")).centered().focusable().id("addButton")
@@ -45,9 +67,38 @@ public class WelcomeView implements Main.View {
                 text(I18n.get("next")).centered().focusable().id("nextButton")
                     .onAction(new ActionHandler(BindingSets.standard())
                         .on(Actions.SELECT, event -> current = Step.SET_MODELS))
-            ).rounded();
-            case SET_MODELS -> null;// TODO: 设置模型
+            );
+            case SET_MODELS -> dialog("",
+                text(I18n.get("model.set")).centered(),
+                getModelList() != null ? getModelListElement() : text(I18n.get("loading")).centered(),
+                text(I18n.get("model.added")),
+                list(Settings.INSTANCE.getModelList().stream()
+                    .map(m -> I18n.get("model.addedListTip",
+                        m.getProvider().getName(), m.getName(), String.valueOf(m.getLevel()))).toList())
+                    .id("addedList"),
+                text(I18n.get("ok")).centered().focusable().id("okButton")
+                    .onAction(new ActionHandler(BindingSets.standard())
+                        .on(Actions.SELECT, event -> {
+                        }))
+            );
         };
+        return element.rounded().minWidth(80);
+    }
+
+    private ListElement<RemoteModel> modelListElement;
+
+    private ListElement<RemoteModel> getModelListElement() {
+        if (modelListElement != null) {
+            return modelListElement;
+        }
+        ListElement<RemoteModel> list = new ListElement<>();
+        list.data(modelList, m -> new TextElement("[%s] %s".formatted(m.getProvider().getName(), m.getName())));
+        for (char c = '0'; c <= '9'; c++) {
+            int finalC = Character.getNumericValue(c);
+            list.on(KeyTrigger.ch(c), e -> Settings.INSTANCE.getModelList()
+                .add(modelList.get(list.selected()).toModel(finalC)));
+        }
+        return modelListElement = list;
     }
 
     private enum Step {

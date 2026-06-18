@@ -47,8 +47,7 @@ public class Settings {
         });
         json.getJSONArray("models").forEach(o -> {
             JSONObject json1 = (JSONObject) o;
-            INSTANCE.modelList.add(new Model(INSTANCE.getProvider(json1.getStr("provider")),
-                json1.getStr("name")));
+            INSTANCE.modelList.add(json1.toBean(Model.class));
         });
         JSONObject currentModelJson = json.getJSONObject("currentModel");
         INSTANCE.currentModel = INSTANCE.getModel(INSTANCE.getProvider(currentModelJson.getStr("provider")),
