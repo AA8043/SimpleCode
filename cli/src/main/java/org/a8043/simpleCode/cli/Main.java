@@ -60,6 +60,11 @@ public class Main extends ToolkitApp {
         this.view = view;
     }
 
+    public void exit() {
+        folder.saveSessions();
+        quit();
+    }
+
     public abstract static class View {
         private boolean isInited;
 

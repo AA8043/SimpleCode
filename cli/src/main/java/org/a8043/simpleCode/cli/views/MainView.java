@@ -33,6 +33,8 @@ public class MainView extends Main.View {
                 .addClass("main-view-title"),
             textInput(searchInputState).id("searchInput").title("⌕").rounded(),
             sessionList
-        ).borderless();
+        ).on(KeyTrigger.ctrl('k'), e -> Main.INSTANCE.getFolder().createSession())
+            .on(KeyTrigger.key(KeyCode.ESCAPE), e -> Main.INSTANCE.exit())
+            .borderless();
     }
 }
