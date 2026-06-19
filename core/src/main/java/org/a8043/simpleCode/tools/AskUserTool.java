@@ -14,7 +14,7 @@ import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 import java.util.List;
 
 public class AskUserTool implements CallableTool {
-    public static final Tool TOOL = new Tool("ask_user", new ReadFileTool(), List.of(
+    public static final Tool TOOL = new Tool("ask_user", new AskUserTool(), List.of(
         new StringParameter("ask_user", "question", true),
         new ArrayParameter("ask_user", "options", true, new StringParameter()),
         new BooleanParameter("ask_user", "hasCustomization", true)
