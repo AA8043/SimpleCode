@@ -32,7 +32,7 @@ public class ToolContent extends Content {
 
     @Override
     public JSONObject toJSON() {
-        return new JSONObject().set("type", "tool").set("toolCallId", toolCallId)
-            .set("status", status).set("content", content);
+        return new JSONObject().set("type", "tool").set("time", getTime())
+            .set("toolCallId", toolCallId).set("status", status).set("content", content);
     }
 }
