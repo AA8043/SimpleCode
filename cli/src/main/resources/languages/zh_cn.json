@@ -18,6 +18,7 @@
     "session.inputTip": "输入要问的问题",
     "session.working": "Working",
     "session.toolCallRequest": "请求调用工具",
-    "tools.read": "读取",
-    "tools.write": "写入"
+    "tools.read_file": "读取",
+    "tools.write_file": "写入",
+    "tools.list_files": "列出文件"
 }

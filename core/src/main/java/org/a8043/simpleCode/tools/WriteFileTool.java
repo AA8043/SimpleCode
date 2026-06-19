@@ -22,8 +22,6 @@ public class WriteFileTool implements CallableTool {
 
     @Override
     public String call(JSONObject args, RunningTool runningTool) throws ToolException {
-        runningTool.setDoing("write");
-        runningTool.setContent(args.getStr("file"));
         File file = new File(args.getStr("file"));
         String oldContent = "";
         if (file.exists()) {

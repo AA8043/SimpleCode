@@ -4,6 +4,7 @@ import org.a8043.simpleCode.api.Api;
 import org.a8043.simpleCode.api.OpenAIApi;
 import org.a8043.simpleCode.session.tool.Tool;
 import org.a8043.simpleCode.tools.AskUserTool;
+import org.a8043.simpleCode.tools.ListFilesTool;
 import org.a8043.simpleCode.tools.ReadFileTool;
 import org.a8043.simpleCode.tools.WriteFileTool;
 
@@ -21,6 +22,7 @@ public class Registry {
         registerTool(WriteFileTool.TOOL);
         registerTool(ReadFileTool.TOOL);
         registerTool(AskUserTool.TOOL);
+        registerTool(ListFilesTool.TOOL);
     }
 
     public static void registerApi(String name, Api api) {

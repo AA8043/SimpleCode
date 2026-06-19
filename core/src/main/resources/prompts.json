@@ -17,6 +17,12 @@
             "question": "The question to ask the user",
             "options": "Optional list of options for the user to choose from",
             "hasCustomization": "Indicates whether the user can provide a custom answer"
+        },
+        "list_files": {
+            "description": "List files in a directory.",
+            "dir": "Directory path to list files from",
+            "type": "Type of listing",
+            "recursive": "Whether subdirectories should be included in the listing"
         }
     }
 }

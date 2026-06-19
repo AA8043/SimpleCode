@@ -21,19 +21,11 @@ public class Util {
     }
 
     public static Row getToolDescriptionElement(ToolCall toolCall) {
-        String type;
-        String info;
-        switch (toolCall.getTool().getCallableTool()) {
-            case ReadFileTool ignored -> {
-                type = "read";
-                info = new File(toolCall.getArgs().getStr("file")).getAbsolutePath();
-            }
-            case WriteFileTool ignored -> {
-                type = "write";
-                info = new File(toolCall.getArgs().getStr("file")).getAbsolutePath();
-            }
-            default -> throw new RuntimeException();
-        }
-        return row(text(I18n.get("tools." + type) + "(" + info + ")"));
+        String info = switch (toolCall.getTool().getCallableTool()) {
+            case ReadFileTool ignored -> new File(toolCall.getArgs().getStr("file")).getAbsolutePath();
+            case WriteFileTool ignored -> new File(toolCall.getArgs().getStr("file")).getAbsolutePath();
+            default -> "";
+        };
+        return row(text(I18n.get("tools." + toolCall.getTool().getName()) + "(" + info + ")"));
     }
 }
