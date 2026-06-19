@@ -15,8 +15,8 @@ dependencies {
     implementation(project(":core"))
 
     implementation("org.slf4j:slf4j-api:2.0.18")
-    implementation("org.apache.logging.log4j:log4j-core:2.20.0")
-    implementation("org.slf4j:slf4j-log4j12:2.0.18")
+    implementation("org.apache.logging.log4j:log4j-core:2.26.0")
+    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:2.26.0")
 
     implementation("dev.tamboui:tamboui-core:0.3.0")
     implementation("dev.tamboui:tamboui-tui:0.3.0")

@@ -1,0 +1,135 @@
+package org.a8043.simpleCode.cli.views;
+
+import dev.tamboui.toolkit.element.Element;
+import dev.tamboui.toolkit.elements.Column;
+import dev.tamboui.toolkit.elements.ListElement;
+import dev.tamboui.toolkit.elements.Panel;
+import dev.tamboui.toolkit.elements.TextElement;
+import dev.tamboui.tui.bindings.KeyTrigger;
+import dev.tamboui.tui.event.KeyCode;
+import dev.tamboui.widgets.input.TextInputState;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.a8043.simpleCode.ListenerRegistry;
+import org.a8043.simpleCode.cli.I18n;
+import org.a8043.simpleCode.cli.Main;
+import org.a8043.simpleCode.cli.Util;
+import org.a8043.simpleCode.session.Session;
+import org.a8043.simpleCode.session.UserChoice;
+import org.a8043.simpleCode.session.content.*;
+import org.a8043.simpleCode.session.tool.RunningTool;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static dev.tamboui.toolkit.Toolkit.*;
+
+@Slf4j
+public class SessionView extends Main.View {
+    private static final List<SessionView> openedList = new ArrayList<>();
+    private Panel unhandledUserChoice;
+    private final Object userChoiceLock = new Object();
+
+    public static SessionView open(Session session) {
+        return openedList.stream().filter(v -> v.session == session).findFirst().orElseGet(() -> {
+            SessionView view = new SessionView(session);
+            openedList.add(view);
+            return view;
+        });
+    }
+
+    private final Session session;
+    private final ListElement<Content> contentListElement = new ListElement<Content>()
+        .id("contentList").displayOnly().rounded().fill();
+
+    private SessionView(Session session) {
+        this.session = session;
+    }
+
+    @Override
+    public void init() {
+        ListenerRegistry.register(session, new ListenerRegistry.Listener() {
+            @Override
+            public void onComplete(Content content) {
+            }
+
+            @Override
+            public void onFinish() {
+            }
+
+            @SneakyThrows
+            @Override
+            public void onUserChoice(UserChoice<?> userChoice) {
+                ListElement<?> listElement = list().id("optionList");
+                unhandledUserChoice = panel(
+                    switch (userChoice.getContent()) {
+                        case RunningTool rt -> row(text(I18n.get("session.toolCallRequest") + ": "),
+                            Util.getToolDescriptionElement(rt.getToolCall()));
+                        default -> throw new RuntimeException();
+                    },
+                    listElement.data(userChoice.getOptionList(), o -> text(o.toString()))
+                        .on(KeyTrigger.key(KeyCode.ENTER), e -> {
+                            userChoice.setChoice(userChoice.getOptionList().get(listElement.selected()));
+                            unhandledUserChoice = null;
+                            synchronized (userChoiceLock) {
+                                userChoiceLock.notifyAll();
+                            }
+                        })
+                ).rounded();
+                synchronized (userChoiceLock) {
+                    userChoiceLock.wait();
+                }
+            }
+
+            @Override
+            public void onToolCall(RunningTool runningTool) {
+            }
+        });
+
+        contentListElement.data(session.getContentList(), content -> column(switch (content) {
+            case SystemContent ignored -> text();
+            case UserContent uc -> text("> " + uc.getText()).addClass("user-content");
+            case AssistantContent ac -> text("● " + ac.getText()).addClass("assistant-content");
+            case ToolContent tc -> {
+                TextElement symbol = text("■ ");
+                if (tc.getStatus().isSuccess()) {
+                    symbol.green();
+                } else {
+                    symbol.red();
+                }
+
+                Column column = column(row(symbol, Util.getToolDescriptionElement(tc.getToolCall())));
+                if (!tc.getStatus().isSuccess()) {
+                    column.add(text("⎿ " + tc.getStatus().getFailedReason()).red());
+                }
+                yield column;
+            }
+            default -> throw new RuntimeException();
+        }, text()));
+    }
+
+    private final TextInputState questionInputState = new TextInputState();
+
+    @Override
+    public Element render() {
+        return column(
+            Util.getSessionDisplayElement(session),
+            row(
+                contentListElement,
+                column(
+                    panel().fill(20).rounded(),
+                    panel().fill(20).rounded()
+                )
+            ).fill(),
+            unhandledUserChoice == null ? textInput().state(questionInputState).id("questionInput")
+                .placeholder(I18n.get("session.inputTip"))
+                .on(KeyTrigger.key(KeyCode.ENTER), e -> {
+                    if (!questionInputState.text().isBlank()) {
+                        String question = questionInputState.text();
+                        questionInputState.clear();
+                        new Thread(() -> session.ask(question)).start();
+                    }
+                }).rounded() : unhandledUserChoice
+        ).on(KeyTrigger.key(KeyCode.ESCAPE), e -> Main.INSTANCE.setView(MainView.INSTANCE));
+    }
+}

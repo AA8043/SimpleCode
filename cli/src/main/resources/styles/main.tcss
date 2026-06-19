@@ -2,3 +2,11 @@ Text:focus {
     background: white;
     color: black;
 }
+
+.main-view-title {
+    color: grey;
+}
+
+TextInput:focus {
+    border-color: rgb(177, 185, 249);
+}

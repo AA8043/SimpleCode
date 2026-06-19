@@ -5,17 +5,18 @@ import lombok.Getter;
 import lombok.ToString;
 import org.a8043.simpleCode.session.Role;
 import org.a8043.simpleCode.session.Status;
+import org.a8043.simpleCode.session.tool.ToolCall;
 
 @Getter
 @ToString
 public class ToolContent extends Content {
-    private final String toolCallId;
+    private final ToolCall toolCall;
     private final Status status;
     private final String content;
 
-    public ToolContent(long time, String toolCallId, Status status, String content) {
+    public ToolContent(long time, ToolCall toolCall, Status status, String content) {
         super(time);
-        this.toolCallId = toolCallId;
+        this.toolCall = toolCall;
         this.status = status;
         this.content = content;
     }
@@ -33,6 +34,6 @@ public class ToolContent extends Content {
     @Override
     public JSONObject toJSON() {
         return new JSONObject().set("type", "tool").set("time", getTime())
-            .set("toolCallId", toolCallId).set("status", status).set("content", content);
+            .set("toolCall", toolCall).set("status", status).set("content", content);
     }
 }

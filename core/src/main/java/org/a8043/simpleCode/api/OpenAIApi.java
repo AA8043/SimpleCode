@@ -42,7 +42,7 @@ public class OpenAIApi implements Api {
                     }).toList());
                 }
                 case ToolContent tc -> {
-                    message.set("tool_call_id", tc.getToolCallId());
+                    message.set("tool_call_id", tc.getToolCall().getId());
                     message.set("content", tc.getText());
                 }
                 default -> message.set("content", content.getText());

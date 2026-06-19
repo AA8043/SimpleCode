@@ -23,13 +23,12 @@ import java.util.List;
 import static dev.tamboui.toolkit.Toolkit.*;
 
 @Slf4j
-public class WelcomeView implements Main.View {
+public class WelcomeView extends Main.View {
     private final TextInputState languageInputState = new TextInputState(CliSettings.INSTANCE.getLanguage());
     private Step current = Step.WELCOME;
 
     @Override
     public void init() {
-
     }
 
     private List<RemoteModel> modelList;
@@ -78,8 +77,7 @@ public class WelcomeView implements Main.View {
                     .id("addedList"),
                 text(I18n.get("ok")).centered().focusable().id("okButton")
                     .onAction(new ActionHandler(BindingSets.standard())
-                        .on(Actions.SELECT, event -> {
-                        }))
+                        .on(Actions.SELECT, event -> Main.INSTANCE.showMain()))
             );
         };
         return element.rounded().minWidth(80);
@@ -105,7 +103,7 @@ public class WelcomeView implements Main.View {
         WELCOME, SET_PROVIDERS, SET_MODELS
     }
 
-    private class AddProviderView implements Main.View {
+    private class AddProviderView extends Main.View {
         private final TextInputState nameState = new TextInputState();
         private final TextInputState baseUrlState = new TextInputState();
         private final TextInputState keyState = new TextInputState();

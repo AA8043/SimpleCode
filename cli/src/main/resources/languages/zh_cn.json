@@ -13,5 +13,11 @@
     "provider.api": "供应商 API 格式",
     "model.set": "设置模型",
     "model.added": "已添加的模型",
-    "model.addedListTip": "[{0}] {1} (模型等级 {2})"
+    "model.addedListTip": "[{0}] {1} (模型等级 {2})",
+    "session.new": "新会话",
+    "session.inputTip": "输入要问的问题",
+    "session.working": "Working",
+    "session.toolCallRequest": "请求调用工具",
+    "tools.read": "读取",
+    "tools.write": "写入"
 }

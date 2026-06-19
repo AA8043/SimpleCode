@@ -77,7 +77,8 @@ public class SimpleCode {
             @Override
             protected ToolContent convertInternal(Object value) {
                 JSONObject json = (JSONObject) value;
-                return new ToolContent(json.getLong("time"), json.getStr("toolCallId"),
+                return new ToolContent(json.getLong("time"),
+                    registry.convert(ToolCall.class, json.getJSONObject("toolCall")),
                     json.getBean("status", Status.class), json.getStr("content"));
             }
         });

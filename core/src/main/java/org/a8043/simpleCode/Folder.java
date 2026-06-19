@@ -29,7 +29,6 @@ public class Folder {
             throw new RuntimeException();
         }
         for (File sessionFile : Objects.requireNonNull(sessionsDir.listFiles())) {
-            System.out.println(FileUtil.readUtf8String(sessionFile));
             sessionList.add(Convert.convert(Session.class, new JSONObject(FileUtil.readUtf8String(sessionFile))));
         }
     }

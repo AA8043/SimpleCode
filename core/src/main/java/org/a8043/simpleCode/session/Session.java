@@ -21,11 +21,11 @@ import java.util.UUID;
 
 @Getter
 public class Session extends JSONSupport {
-    @Getter
     private final String id;
     @Setter
     private String name;
     private final List<Content> contentList = new ArrayList<>();
+    private boolean isWorking;
 
     public Session(String id) {
         this.id = id;
@@ -38,6 +38,7 @@ public class Session extends JSONSupport {
     }
 
     public void ask(String text) {
+        isWorking = true;
         ListenerRegistry.Listener listener = ListenerRegistry.getListener(this);
         contentList.add(new UserContent(System.currentTimeMillis(), text));
         while (true) {
@@ -54,10 +55,10 @@ public class Session extends JSONSupport {
                 listener.onUserChoice(userChoice);
                 if (userChoice.getChoice()) {
                     ToolCallReturn callResult = toolCall.call(runningTool);
-                    contentList.add(new ToolContent(System.currentTimeMillis(), toolCall.getId(),
+                    contentList.add(new ToolContent(System.currentTimeMillis(), toolCall,
                         callResult.getStatus(), callResult.getContent()));
                 } else {
-                    contentList.add(new ToolContent(System.currentTimeMillis(), toolCall.getId(),
+                    contentList.add(new ToolContent(System.currentTimeMillis(), toolCall,
                         Status.fail("User rejected the tool call"), null));
                 }
             });
@@ -67,6 +68,7 @@ public class Session extends JSONSupport {
             }
         }
         listener.onFinish();
+        isWorking = false;
     }
 
     @Override
