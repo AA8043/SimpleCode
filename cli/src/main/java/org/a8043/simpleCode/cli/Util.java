@@ -14,7 +14,7 @@ import static dev.tamboui.toolkit.Toolkit.text;
 public class Util {
     public static Row getSessionDisplayElement(Session session) {
         Row row = row(text(session.getName() != null ? session.getName() : I18n.get("session.new")));
-        if (session.isWorking()) {
+        if (session.getAsking() != null) {
             row.add(text(" · "), text(I18n.get("session.working")));
         }
         return row;

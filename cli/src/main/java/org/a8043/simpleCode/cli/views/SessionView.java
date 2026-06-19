@@ -112,13 +112,19 @@ public class SessionView extends Main.View {
 
     @Override
     public Element render() {
+        Panel statisticPanel = panel().fill(20).rounded();
+        if (session.getAsking() != null) {
+            statisticPanel.add(text("↑ " + session.getAsking().getPromptTokens()),
+                text("●↑ " + session.getAsking().getCachedTokens()),
+                text("↓ " + session.getAsking().getCompletionTokens()));
+        }
         return column(
             Util.getSessionDisplayElement(session),
             row(
                 contentListElement,
                 column(
                     panel().fill(20).rounded(),
-                    panel().fill(20).rounded()
+                    statisticPanel
                 )
             ).fill(),
             unhandledUserChoice == null ? textInput().state(questionInputState).id("questionInput")

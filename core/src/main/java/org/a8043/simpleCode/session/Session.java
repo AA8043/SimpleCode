@@ -25,7 +25,7 @@ public class Session extends JSONSupport {
     @Setter
     private String name;
     private final List<Content> contentList = new ArrayList<>();
-    private boolean isWorking;
+    private Asking asking;
 
     public Session(String id) {
         this.id = id;
@@ -38,13 +38,16 @@ public class Session extends JSONSupport {
     }
 
     public void ask(String text) {
-        isWorking = true;
         ListenerRegistry.Listener listener = ListenerRegistry.getListener(this);
+        asking = new Asking();
         contentList.add(new UserContent(System.currentTimeMillis(), text));
         while (true) {
             CompleteResult result = Settings.INSTANCE.getCurrentModel().getProvider().getApi()
                 .complete(Settings.INSTANCE.getCurrentModel(), contentList);
             contentList.addAll(result.getContentList());
+            asking.addCompletionTokens(result.getCompletionTokens());
+            asking.addCachedTokens(result.getCachedTokens());
+            asking.addPromptTokens(result.getPromptTokens());
             result.getContentList().forEach(listener::onComplete);
 
             List<ToolCall> toolCallList = result.getToolCallList();
@@ -68,7 +71,7 @@ public class Session extends JSONSupport {
             }
         }
         listener.onFinish();
-        isWorking = false;
+        asking = null;
     }
 
     @Override

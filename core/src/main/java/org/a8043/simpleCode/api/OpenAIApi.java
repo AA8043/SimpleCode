@@ -25,6 +25,7 @@ public class OpenAIApi implements Api {
     public CompleteResult complete(Model model, List<Content> context) {
         JSONObject requestBody = new JSONObject();
         requestBody.set("model", model.getName());
+        requestBody.set("stream_options", new JSONObject().set("include_usage", true));
 
         context.forEach(content -> {
             JSONObject message = new JSONObject(JSONConfig.create().setIgnoreNullValue(false));
@@ -93,7 +94,12 @@ public class OpenAIApi implements Api {
                 throw new RuntimeException();
             }
         });
-        return new CompleteResult(isEnd.get(), contentList);
+        JSONObject usage = responseBody.getJSONObject("usage");
+        return new CompleteResult(isEnd.get(), contentList,
+            usage.getInt("prompt_tokens"),
+            usage.getJSONObject("prompt_tokens_details").getInt("cached_tokens"),
+            usage.getInt("completion_tokens") +
+            usage.getJSONObject("completion_tokens_details").getInt("reasoning_tokens"));
     }
 
     private void convertParameterToJson(ToolParameter parameter, JSONObject json) {

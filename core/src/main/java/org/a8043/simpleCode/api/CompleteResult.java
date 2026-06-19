@@ -10,6 +10,9 @@ import java.util.List;
 public class CompleteResult {
     boolean isEnd;
     List<AssistantContent> contentList;
+    int promptTokens;
+    int cachedTokens;
+    int completionTokens;
 
     public List<ToolCall> getToolCallList() {
         return contentList.stream().map(AssistantContent::getToolCallList).flatMap(List::stream).toList();
