@@ -13,7 +13,7 @@ import org.a8043.simpleCode.session.content.AssistantContent;
 import org.a8043.simpleCode.session.content.Content;
 import org.a8043.simpleCode.session.content.ToolContent;
 import org.a8043.simpleCode.session.tool.ToolCall;
-import org.a8043.simpleCode.session.tool.ToolParameter;
+import org.a8043.simpleCode.session.tool.parameter.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,18 +56,8 @@ public class OpenAIApi implements Api {
             toolJson.set("description", tool.getDescription());
 
             JSONObject argsJson = new JSONObject();
-            argsJson.set("type", "object");
-            JSONObject propertiesJson = new JSONObject();
-            tool.getParameterList().forEach(param -> {
-                JSONObject paramJson = new JSONObject();
-                paramJson.set("description", param.getDescription());
-                paramJson.set("type", param.getType().name().toLowerCase());
-                paramJson.set("enum", param.getEnumList());
-                propertiesJson.set(param.getName(), paramJson);
-            });
-            argsJson.set("properties", propertiesJson);
-            tool.getParameterList().stream().filter(ToolParameter::isRequired)
-                .forEach(param -> argsJson.append("required", param.getName()));
+            convertParameterToJson(new ObjectParameter(null, null,
+                true, tool.getParameterList()), argsJson);
             toolJson.set("parameters", argsJson);
 
             requestBody.append("tools", new JSONObject().set("type", "function").set("function", toolJson));
@@ -104,6 +94,59 @@ public class OpenAIApi implements Api {
             }
         });
         return new CompleteResult(isEnd.get(), contentList);
+    }
+
+    private void convertParameterToJson(ToolParameter parameter, JSONObject json) {
+        json.set("description", parameter.getDescription());
+        json.set("type", switch (parameter) {
+            case StringParameter ignored -> "string";
+            case BooleanParameter ignored -> "boolean";
+            case NumberParameter ignored -> "number";
+            case ArrayParameter ignored -> "array";
+            case ObjectParameter ignored -> "object";
+            default -> throw new RuntimeException();
+        });
+        switch (parameter) {
+            case StringParameter sp -> {
+                if (sp.getEnumList() != null) {
+                    for (String value : sp.getEnumList()) {
+                        json.append("enum", value);
+                    }
+                }
+            }
+            case BooleanParameter ignored -> {
+            }
+            case NumberParameter np -> {
+                if (np.getMin() != null) {
+                    json.set("minimum", np.getMin());
+                }
+                if (np.getMax() != null) {
+                    json.set("maximum", np.getMax());
+                }
+            }
+            case ArrayParameter ap -> {
+                JSONObject items = new JSONObject();
+                convertParameterToJson(ap.getType(), items);
+                json.set("items", items);
+            }
+            case ObjectParameter op -> {
+                JSONObject properties = new JSONObject();
+                op.getContent().forEach(p -> {
+                    JSONObject json1 = new JSONObject();
+                    convertParameterToJson(p, json1);
+                    properties.set(p.getName(), json1);
+                });
+                json.set("properties", properties);
+
+                JSONArray requiredArray = new JSONArray();
+                op.getContent().stream().filter(ToolParameter::isRequired)
+                    .map(ToolParameter::getName).forEach(requiredArray::add);
+                if (!requiredArray.isEmpty()) {
+                    json.set("required", requiredArray);
+                }
+            }
+            default -> throw new RuntimeException();
+        }
     }
 
     @Override

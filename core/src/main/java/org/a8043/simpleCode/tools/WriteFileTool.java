@@ -2,18 +2,22 @@ package org.a8043.simpleCode.tools;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONObject;
-import org.a8043.simpleCode.session.tool.*;
+import org.a8043.simpleCode.session.tool.CallableTool;
+import org.a8043.simpleCode.session.tool.RunningTool;
+import org.a8043.simpleCode.session.tool.Tool;
+import org.a8043.simpleCode.session.tool.ToolException;
+import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 
 import java.io.File;
 import java.util.List;
 
 public class WriteFileTool implements CallableTool {
     public static final Tool TOOL = new Tool("write_file", new WriteFileTool(), List.of(
-        new ToolParameter("write_file", "file", ToolParameter.Type.STRING, true),
-        new ToolParameter("write_file", "type", ToolParameter.Type.STRING, true,
+        new StringParameter("write_file", "file", true),
+        new StringParameter("write_file", "type", true,
             List.of("overwrite", "replace", "append")),
-        new ToolParameter("write_file", "content", ToolParameter.Type.STRING, true),
-        new ToolParameter("write_file", "target", ToolParameter.Type.STRING, false)
+        new StringParameter("write_file", "content", true),
+        new StringParameter("write_file", "target", false)
     ));
 
     @Override

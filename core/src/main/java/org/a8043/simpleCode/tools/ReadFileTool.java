@@ -3,14 +3,18 @@ package org.a8043.simpleCode.tools;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.json.JSONObject;
-import org.a8043.simpleCode.session.tool.*;
+import org.a8043.simpleCode.session.tool.CallableTool;
+import org.a8043.simpleCode.session.tool.RunningTool;
+import org.a8043.simpleCode.session.tool.Tool;
+import org.a8043.simpleCode.session.tool.ToolException;
+import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 
 import java.util.List;
 
 public class ReadFileTool implements CallableTool {
     public static final Tool TOOL = new Tool("read_file", new ReadFileTool(), List.of(
-        new ToolParameter("read_file", "file", ToolParameter.Type.STRING, true),
-        new ToolParameter("read_file", "range", ToolParameter.Type.STRING, false)
+        new StringParameter("read_file", "file", true),
+        new StringParameter("read_file", "range", false)
     ));
 
     @Override

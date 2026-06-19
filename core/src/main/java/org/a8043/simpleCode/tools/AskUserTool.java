@@ -3,15 +3,21 @@ package org.a8043.simpleCode.tools;
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.ListenerRegistry;
 import org.a8043.simpleCode.session.UserChoice;
-import org.a8043.simpleCode.session.tool.*;
+import org.a8043.simpleCode.session.tool.CallableTool;
+import org.a8043.simpleCode.session.tool.RunningTool;
+import org.a8043.simpleCode.session.tool.Tool;
+import org.a8043.simpleCode.session.tool.ToolException;
+import org.a8043.simpleCode.session.tool.parameter.ArrayParameter;
+import org.a8043.simpleCode.session.tool.parameter.BooleanParameter;
+import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 
 import java.util.List;
 
 public class AskUserTool implements CallableTool {
     public static final Tool TOOL = new Tool("ask_user", new ReadFileTool(), List.of(
-        new ToolParameter("ask_user", "question", ToolParameter.Type.STRING, true),
-        new ToolParameter("ask_user", "options", ToolParameter.Type.ARRAY, true),
-        new ToolParameter("ask_user", "hasCustomization", ToolParameter.Type.BOOLEAN, true)
+        new StringParameter("ask_user", "question", true),
+        new ArrayParameter("ask_user", "options", true, new StringParameter()),
+        new BooleanParameter("ask_user", "hasCustomization", true)
     ));
 
     @Override
