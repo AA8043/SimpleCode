@@ -6,6 +6,7 @@ import cn.hutool.core.convert.ConverterRegistry;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.model.Model;
+import org.a8043.simpleCode.session.ReasoningEffort;
 import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.Status;
 import org.a8043.simpleCode.session.Todo;
@@ -119,6 +120,7 @@ public class SimpleCode {
                 session.setName(json.getStr("name"));
                 session.getContentList().addAll(json.getJSONArray("contentList").toList(Content.class));
                 session.getTodoList().addAll(json.getJSONArray("todoList").toList(Todo.class));
+                session.setReasoningEffort(json.getEnum(ReasoningEffort.class, "reasoningEffort"));
                 return session;
             }
         });

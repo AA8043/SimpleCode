@@ -13,8 +13,8 @@ public class StringParameter extends ToolParameter {
         this.enumList = enumList;
     }
 
-    public StringParameter(String toolName, String question, boolean isRequired) {
-        this(toolName, question, isRequired, null);
+    public StringParameter(String toolName, String name, boolean isRequired) {
+        this(toolName, name, isRequired, null);
     }
 
     public StringParameter() {

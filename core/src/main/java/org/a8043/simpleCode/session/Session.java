@@ -1,7 +1,6 @@
 package org.a8043.simpleCode.session;
 
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONSupport;
+import cn.hutool.core.annotation.PropIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.a8043.simpleCode.ListenerRegistry;
@@ -19,13 +18,16 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-public class Session extends JSONSupport {
+public class Session {
     private final String id;
     @Setter
     private String name;
     private final List<Content> contentList = new ArrayList<>();
+    @PropIgnore
     private Asking asking;
     private final List<Todo> todoList = new ArrayList<>();
+    @Setter
+    private ReasoningEffort reasoningEffort = ReasoningEffort.DEFAULT;
 
     public Session(String id) {
         this.id = id;
@@ -47,7 +49,7 @@ public class Session extends JSONSupport {
         contentList.add(new UserContent(System.currentTimeMillis(), text));
         boolean remindedTodo = false;
         while (true) {
-            CompleteResult result = model.getProvider().getApi().complete(model, contentList);
+            CompleteResult result = model.getProvider().getApi().complete(model, this);
             contentList.addAll(result.getContentList());
             asking.addCompletionTokens(result.getCompletionTokens());
             asking.addCachedTokens(result.getCachedTokens());
@@ -83,11 +85,5 @@ public class Session extends JSONSupport {
         }
         listener.onFinish();
         asking = null;
-    }
-
-    @Override
-    public JSONObject toJSON() {
-        return new JSONObject().set("id", id).set("name", name)
-            .set("contentList", contentList).set("todoList", todoList);
     }
 }

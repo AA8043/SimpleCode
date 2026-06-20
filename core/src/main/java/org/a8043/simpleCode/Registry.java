@@ -23,9 +23,11 @@ public class Registry {
 
         registerTool(WriteFileTool.TOOL);
         registerTool(ReadFileTool.TOOL);
-        registerTool(AskUserTool.TOOL);
         registerTool(ListFilesTool.TOOL);
+
+        registerTool(AskUserTool.TOOL);
         registerTool(SubAgentTool.TOOL);
+        registerTool(ReasoningEffortTool.TOOL);
 
         registerTool(ListTodoTool.TOOL);
         registerTool(AddTodoTool.TOOL);

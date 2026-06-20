@@ -10,8 +10,8 @@ import org.a8043.simpleCode.Registry;
 import org.a8043.simpleCode.model.Model;
 import org.a8043.simpleCode.model.Provider;
 import org.a8043.simpleCode.model.RemoteModel;
+import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.content.AssistantContent;
-import org.a8043.simpleCode.session.content.Content;
 import org.a8043.simpleCode.session.content.ToolContent;
 import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.session.tool.parameter.*;
@@ -24,12 +24,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class OpenAIApi implements Api {
     @Override
-    public CompleteResult complete(Model model, List<Content> context) {
+    public CompleteResult complete(Model model, Session session) {
         JSONObject requestBody = new JSONObject();
         requestBody.set("model", model.getName());
         requestBody.set("stream_options", new JSONObject().set("include_usage", true));
 
-        context.forEach(content -> {
+        requestBody.set("reasoning_effort", switch (session.getReasoningEffort()) {
+            case LOW -> "low";
+            case DEFAULT -> "medium";
+            case HIGH -> "high";
+            case MAX -> "xhigh";
+        });
+
+        session.getContentList().forEach(content -> {
             JSONObject message = new JSONObject(JSONConfig.create().setIgnoreNullValue(false));
             message.set("role", content.getRole().name().toLowerCase());
             switch (content) {
@@ -90,8 +97,9 @@ public class OpenAIApi implements Api {
                             new JSONObject(json1.getByPath("function.arguments", String.class))));
                     });
                 }
+                String content = message.getStr("content");
                 contentList.add(new AssistantContent(System.currentTimeMillis(),
-                    message.getStr("content"), toolCallList));
+                    content != null ? content : "", toolCallList));
             } else {
                 throw new RuntimeException();
             }

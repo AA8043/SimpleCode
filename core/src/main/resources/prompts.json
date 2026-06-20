@@ -40,6 +40,10 @@
             "description": "Update the status of a TODO.",
             "id": "The ID of TODO",
             "newStatus": "New status"
+        },
+        "reasoning_effort": {
+            "description": "Change the reasoning effort of this session",
+            "new": "New reasoning effort"
         }
     },
     "hasTodoReminder": "[System warning] You have unfinished TODOs, you can use the `list_todo` tool to view them"

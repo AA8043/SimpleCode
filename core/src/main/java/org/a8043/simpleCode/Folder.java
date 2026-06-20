@@ -42,7 +42,7 @@ public class Folder {
     public void saveSessions() {
         sessionList.forEach(session -> {
             File sessionFile = new File(sessionsDir, session.getId() + ".json");
-            FileUtil.writeUtf8String(session.toJSONString(), sessionFile);
+            FileUtil.writeUtf8String(new JSONObject(session).toString(), sessionFile);
         });
     }
 

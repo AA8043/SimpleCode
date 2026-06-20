@@ -18,6 +18,7 @@
     "session.inputTip": "输入要问的问题",
     "session.working": "Working",
     "session.toolCallRequest": "请求调用工具",
+    "session.reasoningEffort": "思考强度 {0}",
     "tools.read_file": "读取",
     "tools.write_file": "写入",
     "tools.list_files": "列出文件",
@@ -25,5 +26,6 @@
     "tools.sub_agent": "下发任务",
     "tools.list_todo": "列出 TODO",
     "tools.add_todo": "添加 TODO",
-    "tools.update_todo": "更新 TODO 状态"
+    "tools.update_todo": "更新 TODO 状态",
+    "tools.reasoning_effort": "切换思考强度"
 }
