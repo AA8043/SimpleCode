@@ -1,12 +1,19 @@
-Text:focus {
-    background: white;
-    color: black;
+TextElement:focus {
+    color: rgb(177, 185, 249);
 }
 
 .main-view-title {
     color: grey;
 }
 
-TextInput:focus {
+TextInputElement:focus {
     border-color: rgb(177, 185, 249);
+}
+
+ListElement-item:selected {
+    color: rgb(177, 185, 249);
+}
+
+Panel, ListElement {
+    border-color: rgb(136, 136, 136)
 }

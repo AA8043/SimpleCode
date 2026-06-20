@@ -1,5 +1,6 @@
 package org.a8043.simpleCode.cli;
 
+import dev.tamboui.style.Overflow;
 import dev.tamboui.toolkit.elements.Row;
 import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.tool.ToolCall;
@@ -20,7 +21,7 @@ public class Util {
         Row row = row(text(I18n.get("tools." + toolCall.getTool().getName())));
         String simpleInfo = toolCall.getTool().getCallableTool().getSimpleInfo(toolCall.getArgs());
         if (!simpleInfo.isEmpty()) {
-            row.add(text("(" + simpleInfo + ")"));
+            row.add(text("(" + simpleInfo + ")").overflow(Overflow.WRAP_WORD));
         }
         return row;
     }

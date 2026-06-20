@@ -1,5 +1,6 @@
 package org.a8043.simpleCode.cli.views;
 
+import dev.tamboui.style.Overflow;
 import dev.tamboui.toolkit.element.Element;
 import dev.tamboui.toolkit.elements.Column;
 import dev.tamboui.toolkit.elements.ListElement;
@@ -40,7 +41,7 @@ public class SessionView extends Main.View {
 
     private final Session session;
     private final ListElement<Content> contentListElement = new ListElement<Content>()
-        .id("contentList").displayOnly().rounded().fill();
+        .id("contentList").displayOnly().stickyScroll().rounded().fill();
 
     private SessionView(Session session) {
         this.session = session;
@@ -90,8 +91,9 @@ public class SessionView extends Main.View {
             content -> column(switch (content) {
                 case SystemContent ignored -> text();
                 case RemindContent ignored -> text();
-                case UserContent uc -> text("> " + uc.getText()).addClass("user-content");
-                case AssistantContent ac -> text("● " + ac.getText()).addClass("assistant-content");
+                case UserContent uc -> text("> " + uc.getText()).overflow(Overflow.WRAP_WORD);
+                case AssistantContent ac -> text("● " + ac.getText()
+                    .replace("\n", "    ")).overflow(Overflow.WRAP_WORD);
                 case ToolContent tc -> {
                     TextElement symbol = text("■ ");
                     if (tc.getStatus().isSuccess()) {
@@ -102,7 +104,8 @@ public class SessionView extends Main.View {
 
                     Column column = column(row(symbol, Util.getToolDescriptionElement(tc.getToolCall())));
                     if (!tc.getStatus().isSuccess()) {
-                        column.add(text("⎿ " + tc.getStatus().getFailedReason()).red());
+                        column.add(text("⎿ " + tc.getStatus().getFailedReason())
+                            .red().overflow(Overflow.WRAP_WORD));
                     }
                     yield column;
                 }

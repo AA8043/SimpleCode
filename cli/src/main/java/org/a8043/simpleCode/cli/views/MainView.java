@@ -16,7 +16,7 @@ import static dev.tamboui.toolkit.Toolkit.*;
 public class MainView extends Main.View {
     public static final MainView INSTANCE = new MainView();
     private final TextInputState searchInputState = new TextInputState();
-    private final ListElement<Session> sessionList = new ListElement<Session>().id("sessionList");
+    private final ListElement<Session> sessionList = new ListElement<Session>().id("sessionList").autoScroll();
 
     @Override
     public void init() {
