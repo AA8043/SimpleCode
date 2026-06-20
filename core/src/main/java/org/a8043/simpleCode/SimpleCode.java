@@ -17,7 +17,9 @@ public class SimpleCode {
 
     public static boolean init() {
         registerConverters();
-        return Settings.read();
+        boolean isNotFirst = Settings.read();
+        Registry.AFTER_INIT_LIST.forEach(Runnable::run);
+        return isNotFirst;
     }
 
     private static void registerConverters() {

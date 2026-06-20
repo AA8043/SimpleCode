@@ -3,10 +3,7 @@ package org.a8043.simpleCode;
 import org.a8043.simpleCode.api.Api;
 import org.a8043.simpleCode.api.OpenAIApi;
 import org.a8043.simpleCode.session.tool.Tool;
-import org.a8043.simpleCode.tools.AskUserTool;
-import org.a8043.simpleCode.tools.ListFilesTool;
-import org.a8043.simpleCode.tools.ReadFileTool;
-import org.a8043.simpleCode.tools.WriteFileTool;
+import org.a8043.simpleCode.tools.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +13,7 @@ import java.util.Map;
 public class Registry {
     public static final Map<String, Api> API_MAP = new HashMap<>();
     public static final List<Tool> TOOL_LIST = new ArrayList<>();
+    public static final List<Runnable> AFTER_INIT_LIST = new ArrayList<>();
 
     static {
         registerApi("OpenAI", new OpenAIApi());
@@ -23,6 +21,7 @@ public class Registry {
         registerTool(ReadFileTool.TOOL);
         registerTool(AskUserTool.TOOL);
         registerTool(ListFilesTool.TOOL);
+        registerTool(SubAgentTool.TOOL);
     }
 
     public static void registerApi(String name, Api api) {
@@ -31,6 +30,11 @@ public class Registry {
 
     public static void registerTool(Tool tool) {
         TOOL_LIST.add(tool);
+    }
+
+    public static void registerAfterInit(Runnable afterInit) {
+        AFTER_INIT_LIST.add(afterInit);
+
     }
 
     public static Tool getTool(String name) {

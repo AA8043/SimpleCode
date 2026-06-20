@@ -47,6 +47,11 @@ public class ListFilesTool implements CallableTool {
         return String.join("\n", results);
     }
 
+    @Override
+    public String getSimpleInfo(JSONObject args) {
+        return new File(args.getStr("dir")).getAbsolutePath();
+    }
+
     private void listFiles(File dir, boolean recursive, List<String> results) {
         File[] files = dir.listFiles();
         if (files == null) return;

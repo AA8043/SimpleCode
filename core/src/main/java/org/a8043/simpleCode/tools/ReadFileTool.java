@@ -9,6 +9,7 @@ import org.a8043.simpleCode.session.tool.Tool;
 import org.a8043.simpleCode.session.tool.ToolException;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 
+import java.io.File;
 import java.util.List;
 
 public class ReadFileTool implements CallableTool {
@@ -40,5 +41,10 @@ public class ReadFileTool implements CallableTool {
         } else {
             return content;
         }
+    }
+
+    @Override
+    public String getSimpleInfo(JSONObject args) {
+        return new File(args.getStr("file")).getAbsolutePath();
     }
 }

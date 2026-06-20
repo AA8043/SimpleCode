@@ -33,4 +33,9 @@ public class AskUserTool implements CallableTool {
         }
         return choice;
     }
+
+    @Override
+    public String getSimpleInfo(JSONObject args) {
+        return "";
+    }
 }

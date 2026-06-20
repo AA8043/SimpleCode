@@ -22,6 +22,10 @@ public class Tool {
         this.parameterList = parameterList;
     }
 
+    public ToolParameter getParameter(String name) {
+        return parameterList.stream().filter(p -> p.getName().equals(name)).findFirst().orElse(null);
+    }
+
     public ToolCallReturn call(JSONObject args, RunningTool runningTool) {
         try {
             return new ToolCallReturn(Status.success(), callableTool.call(args, runningTool));

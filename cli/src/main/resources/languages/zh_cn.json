@@ -20,5 +20,7 @@
     "session.toolCallRequest": "请求调用工具",
     "tools.read_file": "读取",
     "tools.write_file": "写入",
-    "tools.list_files": "列出文件"
+    "tools.list_files": "列出文件",
+    "tools.ask_user": "询问用户",
+    "tools.sub_agent": "下发任务"
 }

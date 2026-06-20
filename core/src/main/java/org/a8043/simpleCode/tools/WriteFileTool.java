@@ -38,4 +38,9 @@ public class WriteFileTool implements CallableTool {
         FileUtil.writeUtf8String(newContent, file);
         return "";
     }
+
+    @Override
+    public String getSimpleInfo(JSONObject args) {
+        return new File(args.getStr("file")).getAbsolutePath();
+    }
 }
