@@ -92,7 +92,7 @@ public class SimpleCode {
                 JSONObject json = (JSONObject) value;
                 return new ToolContent(json.getLong("time"),
                     registry.convert(ToolCall.class, json.getJSONObject("toolCall")),
-                    json.getBean("status", Status.class), json.getStr("content"));
+                    registry.convert(Status.class, json.getJSONObject("status")), json.getStr("content"));
             }
         });
 
