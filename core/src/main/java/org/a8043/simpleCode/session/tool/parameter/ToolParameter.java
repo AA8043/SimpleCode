@@ -1,7 +1,7 @@
 package org.a8043.simpleCode.session.tool.parameter;
 
 import lombok.Getter;
-import org.a8043.simpleCode.Settings;
+import org.a8043.simpleCode.SimpleCode;
 
 @Getter
 public abstract class ToolParameter {
@@ -11,7 +11,7 @@ public abstract class ToolParameter {
 
     protected ToolParameter(String toolName, String name, boolean isRequired) {
         this.name = name;
-        description = Settings.PROMPT_JSON.getByPath("tool." + toolName + "." + name, String.class);
+        description = SimpleCode.PROMPT_JSON.getByPath("tool." + toolName + "." + name, String.class);
         this.isRequired = isRequired;
     }
 }

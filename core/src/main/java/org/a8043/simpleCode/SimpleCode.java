@@ -3,10 +3,12 @@ package org.a8043.simpleCode;
 import cn.hutool.core.convert.AbstractConverter;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.convert.ConverterRegistry;
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.model.Model;
 import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.Status;
+import org.a8043.simpleCode.session.Todo;
 import org.a8043.simpleCode.session.content.*;
 import org.a8043.simpleCode.session.tool.ToolCall;
 
@@ -14,6 +16,7 @@ import java.io.File;
 
 public class SimpleCode {
     public static final File SETTINGS_DIR = new File(System.getProperty("user.home") + "/.simpleCode");
+    public static final JSONObject PROMPT_JSON = new JSONObject(ResourceUtil.readUtf8Str("prompts.json"));
 
     public static boolean init() {
         registerConverters();
@@ -75,6 +78,14 @@ public class SimpleCode {
             }
         });
 
+        registry.putCustom(RemindContent.class, new AbstractConverter<RemindContent>() {
+            @Override
+            protected RemindContent convertInternal(Object value) {
+                JSONObject json = (JSONObject) value;
+                return new RemindContent(json.getLong("time"), json.getStr("text"));
+            }
+        });
+
         registry.putCustom(ToolContent.class, new AbstractConverter<ToolContent>() {
             @Override
             protected ToolContent convertInternal(Object value) {
@@ -93,6 +104,7 @@ public class SimpleCode {
                     case "user" -> Convert.convert(UserContent.class, value);
                     case "assistant" -> Convert.convert(AssistantContent.class, value);
                     case "system" -> Convert.convert(SystemContent.class, value);
+                    case "remind" -> Convert.convert(RemindContent.class, value);
                     case "tool" -> Convert.convert(ToolContent.class, value);
                     default -> throw new RuntimeException();
                 };
@@ -106,7 +118,18 @@ public class SimpleCode {
                 Session session = new Session(json.getStr("id"));
                 session.setName(json.getStr("name"));
                 session.getContentList().addAll(json.getJSONArray("contentList").toList(Content.class));
+                session.getTodoList().addAll(json.getJSONArray("todoList").toList(Todo.class));
                 return session;
+            }
+        });
+
+        registry.putCustom(Todo.class, new AbstractConverter<Todo>() {
+            @Override
+            protected Todo convertInternal(Object value) {
+                JSONObject json = (JSONObject) value;
+                Todo todo = new Todo(json.getStr("task"), json.getStr("id"));
+                todo.setStatus(json.getEnum(Todo.Status.class, "status"));
+                return todo;
             }
         });
     }

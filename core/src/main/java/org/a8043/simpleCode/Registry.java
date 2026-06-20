@@ -4,6 +4,9 @@ import org.a8043.simpleCode.api.Api;
 import org.a8043.simpleCode.api.OpenAIApi;
 import org.a8043.simpleCode.session.tool.Tool;
 import org.a8043.simpleCode.tools.*;
+import org.a8043.simpleCode.tools.todo.AddTodoTool;
+import org.a8043.simpleCode.tools.todo.ListTodoTool;
+import org.a8043.simpleCode.tools.todo.UpdateTodoTool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,11 +20,16 @@ public class Registry {
 
     static {
         registerApi("OpenAI", new OpenAIApi());
+
         registerTool(WriteFileTool.TOOL);
         registerTool(ReadFileTool.TOOL);
         registerTool(AskUserTool.TOOL);
         registerTool(ListFilesTool.TOOL);
         registerTool(SubAgentTool.TOOL);
+
+        registerTool(ListTodoTool.TOOL);
+        registerTool(AddTodoTool.TOOL);
+        registerTool(UpdateTodoTool.TOOL);
     }
 
     public static void registerApi(String name, Api api) {

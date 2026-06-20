@@ -49,3 +49,13 @@ lines changed, no need for full diffs).
 - Simple tasks, such as file format conversion and code formatting
 - Simple document summary
 - Tasks do not require contextual understanding and rely solely on explicit instructions
+
+## How to use the TODO tool
+
+You should create a TODO in the following situations:
+
+1. User require
+2. There are too many or complex tasks
+
+At the end of the answer, if there are unfinished TODOs, the system will notify you; if intentional, you don't need to
+pay attention

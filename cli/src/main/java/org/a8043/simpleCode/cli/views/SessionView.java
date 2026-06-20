@@ -65,7 +65,7 @@ public class SessionView extends Main.View {
                     switch (userChoice.getContent()) {
                         case RunningTool rt -> row(text(I18n.get("session.toolCallRequest") + ": "),
                             Util.getToolDescriptionElement(rt.getToolCall()));
-                        default -> throw new RuntimeException();
+                        default -> text(userChoice.getContent());
                     },
                     listElement.data(userChoice.getOptionList(), o -> text(o.toString()))
                         .on(KeyTrigger.key(KeyCode.ENTER), e -> {
@@ -86,46 +86,55 @@ public class SessionView extends Main.View {
             }
         });
 
-        contentListElement.data(session.getContentList(), content -> column(switch (content) {
-            case SystemContent ignored -> text();
-            case UserContent uc -> text("> " + uc.getText()).addClass("user-content");
-            case AssistantContent ac -> text("● " + ac.getText()).addClass("assistant-content");
-            case ToolContent tc -> {
-                TextElement symbol = text("■ ");
-                if (tc.getStatus().isSuccess()) {
-                    symbol.green();
-                } else {
-                    symbol.red();
-                }
+        contentListElement.data(session.getContentList(),
+            content -> column(switch (content) {
+                case SystemContent ignored -> text();
+                case RemindContent ignored -> text();
+                case UserContent uc -> text("> " + uc.getText()).addClass("user-content");
+                case AssistantContent ac -> text("● " + ac.getText()).addClass("assistant-content");
+                case ToolContent tc -> {
+                    TextElement symbol = text("■ ");
+                    if (tc.getStatus().isSuccess()) {
+                        symbol.green();
+                    } else {
+                        symbol.red();
+                    }
 
-                Column column = column(row(symbol, Util.getToolDescriptionElement(tc.getToolCall())));
-                if (!tc.getStatus().isSuccess()) {
-                    column.add(text("⎿ " + tc.getStatus().getFailedReason()).red());
+                    Column column = column(row(symbol, Util.getToolDescriptionElement(tc.getToolCall())));
+                    if (!tc.getStatus().isSuccess()) {
+                        column.add(text("⎿ " + tc.getStatus().getFailedReason()).red());
+                    }
+                    yield column;
                 }
-                yield column;
-            }
-            default -> throw new RuntimeException();
-        }, text()));
+                default -> throw new RuntimeException();
+            }, text()));
     }
 
     private final TextInputState questionInputState = new TextInputState();
 
     @Override
     public Element render() {
+        Panel todoPanel = panel().fill(20).rounded();
+        session.getTodoList().forEach(todo -> todoPanel.add(row(switch (todo.getStatus()) {
+            case WAITING -> text("● ").blue();
+            case DOING -> text("● ").green();
+            case FINISHED -> text("● ").gray();
+        }, text(todo.getTask()))));
+
         Panel statisticPanel = panel().fill(20).rounded();
         if (session.getAsking() != null) {
-            statisticPanel.add(text("↑ " + session.getAsking().getPromptTokens()),
+            statisticPanel.add(
+                text("↑ " + session.getAsking().getPromptTokens()),
                 text("●↑ " + session.getAsking().getCachedTokens()),
-                text("↓ " + session.getAsking().getCompletionTokens()));
+                text("↓ " + session.getAsking().getCompletionTokens())
+            );
         }
+
         return column(
             Util.getSessionDisplayElement(session),
             row(
                 contentListElement,
-                column(
-                    panel().fill(20).rounded(),
-                    statisticPanel
-                )
+                column(todoPanel, statisticPanel)
             ).fill(),
             unhandledUserChoice == null ? textInput().state(questionInputState).id("questionInput")
                 .placeholder(I18n.get("session.inputTip"))

@@ -5,6 +5,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONConfig;
 import cn.hutool.json.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.a8043.simpleCode.Registry;
 import org.a8043.simpleCode.model.Model;
 import org.a8043.simpleCode.model.Provider;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Slf4j
 public class OpenAIApi implements Api {
     @Override
     public CompleteResult complete(Model model, List<Content> context) {

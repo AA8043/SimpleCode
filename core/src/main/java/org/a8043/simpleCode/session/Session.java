@@ -6,12 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.a8043.simpleCode.ListenerRegistry;
 import org.a8043.simpleCode.Settings;
+import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.api.CompleteResult;
 import org.a8043.simpleCode.model.Model;
-import org.a8043.simpleCode.session.content.Content;
-import org.a8043.simpleCode.session.content.SystemContent;
-import org.a8043.simpleCode.session.content.ToolContent;
-import org.a8043.simpleCode.session.content.UserContent;
+import org.a8043.simpleCode.session.content.*;
 import org.a8043.simpleCode.session.tool.RunningTool;
 import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.session.tool.ToolCallReturn;
@@ -27,6 +25,7 @@ public class Session extends JSONSupport {
     private String name;
     private final List<Content> contentList = new ArrayList<>();
     private Asking asking;
+    private final List<Todo> todoList = new ArrayList<>();
 
     public Session(String id) {
         this.id = id;
@@ -46,6 +45,7 @@ public class Session extends JSONSupport {
         ListenerRegistry.Listener listener = ListenerRegistry.getListener(this);
         asking = new Asking();
         contentList.add(new UserContent(System.currentTimeMillis(), text));
+        boolean remindedTodo = false;
         while (true) {
             CompleteResult result = model.getProvider().getApi().complete(model, contentList);
             contentList.addAll(result.getContentList());
@@ -71,7 +71,14 @@ public class Session extends JSONSupport {
             });
 
             if (result.isEnd()) {
-                break;
+                long todoCount = todoList.stream().filter(t -> t.getStatus() != Todo.Status.FINISHED).count();
+                if (todoCount == 0 || remindedTodo) {
+                    break;
+                } else {
+                    contentList.add(new RemindContent(System.currentTimeMillis(),
+                        SimpleCode.PROMPT_JSON.getStr("hasTodoReminder")));
+                    remindedTodo = true;
+                }
             }
         }
         listener.onFinish();
@@ -80,6 +87,7 @@ public class Session extends JSONSupport {
 
     @Override
     public JSONObject toJSON() {
-        return new JSONObject().set("id", id).set("name", name).set("contentList", contentList);
+        return new JSONObject().set("id", id).set("name", name)
+            .set("contentList", contentList).set("todoList", todoList);
     }
 }

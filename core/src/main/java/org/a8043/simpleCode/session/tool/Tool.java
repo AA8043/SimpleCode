@@ -2,7 +2,7 @@ package org.a8043.simpleCode.session.tool;
 
 import cn.hutool.json.JSONObject;
 import lombok.Getter;
-import org.a8043.simpleCode.Settings;
+import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.session.Status;
 import org.a8043.simpleCode.session.tool.parameter.ToolParameter;
 
@@ -17,7 +17,7 @@ public class Tool {
 
     public Tool(String name, CallableTool callableTool, List<ToolParameter> parameterList) {
         this.name = name;
-        description = Settings.PROMPT_JSON.getByPath("tool." + name + ".description", String.class);
+        description = SimpleCode.PROMPT_JSON.getByPath("tool." + name + ".description", String.class);
         this.callableTool = callableTool;
         this.parameterList = parameterList;
     }

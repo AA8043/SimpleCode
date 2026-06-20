@@ -28,6 +28,19 @@
             "description": "Delegate tasks to other models.",
             "task": "Describe this task with natural language",
             "level": "Model level. The lower the level, the more complex the tasks handled"
+        },
+        "list_todo": {
+            "description": "List TODOs."
+        },
+        "add_todo": {
+            "description": "Add a TODO. The return value is the TODO ID.",
+            "task": "Describe this task with natural language"
+        },
+        "update_todo": {
+            "description": "Update the status of a TODO.",
+            "id": "The ID of TODO",
+            "newStatus": "New status"
         }
-    }
+    },
+    "hasTodoReminder": "[System warning] You have unfinished TODOs, you can use the `list_todo` tool to view them"
 }

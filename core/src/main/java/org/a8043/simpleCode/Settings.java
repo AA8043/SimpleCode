@@ -1,7 +1,6 @@
 package org.a8043.simpleCode;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.json.JSONObject;
 import lombok.Data;
 import org.a8043.simpleCode.model.Model;
@@ -14,7 +13,6 @@ import java.util.List;
 @Data
 public class Settings {
     public static final Settings INSTANCE = new Settings();
-    public static final JSONObject PROMPT_JSON = new JSONObject(ResourceUtil.readUtf8Str("prompts.json"));
     private final List<Provider> providerList = new ArrayList<>();
     private final List<Model> modelList = new ArrayList<>();
     private Model currentModel;
