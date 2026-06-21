@@ -21,7 +21,6 @@
         "list_files": {
             "description": "List files in a directory.",
             "dir": "Directory path to list files from",
-            "type": "Type of listing",
             "recursive": "Whether subdirectories should be included in the listing"
         },
         "sub_agent": {
@@ -48,6 +47,13 @@
         "run_command": {
             "description": "Execute a shell command.",
             "command": "The shell command to execute"
+        },
+        "search_file": {
+            "description": "Search for files",
+            "type": "Type to search",
+            "keyword": "Keyword, supports regular expressions",
+            "dirNotExist": "Directory does not exist",
+            "notFound": "No files found."
         }
     },
     "hasTodoReminder": "[System warning] You have unfinished TODOs, you can use the `list_todo` tool to view them",
