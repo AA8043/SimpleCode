@@ -62,21 +62,38 @@ public class SessionView extends Main.View {
             @Override
             public void onUserChoice(UserChoice<?> userChoice) {
                 ListElement<?> listElement = list().focusable().id("optionList");
+                List<?> optionList = userChoice.getOptionList();
+                List<Object> objectList = new ArrayList<>(optionList);
+                if (userChoice.isHasCustomization()) {
+                    objectList.add(new TextInputState());
+                }
+
                 unhandledUserChoice = panel(
                     switch (userChoice.getContent()) {
                         case RunningTool rt -> row(text(I18n.get("session.toolCallRequest") + ": "),
                             Util.getToolDescriptionElement(rt.getToolCall()));
                         default -> text(userChoice.getContent());
                     },
-                    listElement.data(userChoice.getOptionList(), o -> text(o.toString()))
-                        .on(KeyTrigger.key(KeyCode.ENTER), e -> {
-                            userChoice.setChoice(userChoice.getOptionList().get(listElement.selected()));
-                            unhandledUserChoice = null;
-                            synchronized (userChoiceLock) {
-                                userChoiceLock.notifyAll();
-                            }
-                        })
+                    listElement.data(objectList, o -> {
+                        if (o instanceof TextInputState tis) {
+                            return textInput(tis).placeholder(I18n.get("input"))
+                                .id("customizationInput").focusable();
+                        } else {
+                            return text(o);
+                        }
+                    }).on(KeyTrigger.key(KeyCode.ENTER), e -> {
+                        Object o = objectList.get(listElement.selected());
+                        if (o instanceof TextInputState tis) {
+                            o = tis.text();
+                        }
+                        userChoice.setChoice(o);
+                        unhandledUserChoice = null;
+                        synchronized (userChoiceLock) {
+                            userChoiceLock.notifyAll();
+                        }
+                    })
                 ).addClass("ask-user-panel").rounded();
+
                 synchronized (userChoiceLock) {
                     userChoiceLock.wait();
                 }
