@@ -44,6 +44,10 @@
         "reasoning_effort": {
             "description": "Change the reasoning effort of this session",
             "new": "New reasoning effort"
+        },
+        "run_command": {
+            "description": "Execute a shell command.",
+            "command": "The shell command to execute"
         }
     },
     "hasTodoReminder": "[System warning] You have unfinished TODOs, you can use the `list_todo` tool to view them",

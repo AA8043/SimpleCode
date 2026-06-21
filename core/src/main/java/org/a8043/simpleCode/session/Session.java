@@ -3,6 +3,7 @@ package org.a8043.simpleCode.session;
 import cn.hutool.core.annotation.PropIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.a8043.simpleCode.ListenerRegistry;
 import org.a8043.simpleCode.Settings;
 import org.a8043.simpleCode.api.CompleteResult;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Getter
 public class Session {
     private final String id;
@@ -49,7 +51,14 @@ public class Session {
         contentList.add(new UserContent(System.currentTimeMillis(), text));
         boolean remindedTodo = false;
         while (true) {
-            CompleteResult result = model.getProvider().getApi().complete(model, this);
+            CompleteResult result;
+            try {
+                result = model.getProvider().getApi().complete(model, this);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                break;
+            }
+
             contentList.addAll(result.getContentList());
             asking.addCompletionTokens(result.getCompletionTokens());
             asking.addCachedTokens(result.getCachedTokens());

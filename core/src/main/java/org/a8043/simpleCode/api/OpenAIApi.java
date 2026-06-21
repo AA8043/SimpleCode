@@ -104,12 +104,15 @@ public class OpenAIApi implements Api {
                 throw new RuntimeException();
             }
         });
+
         JSONObject usage = responseBody.getJSONObject("usage");
+        JSONObject promptTokensDetails = usage.getJSONObject("prompt_tokens_details");
+        JSONObject completionTokensDetails = usage.getJSONObject("completion_tokens_details");
         return new CompleteResult(isEnd.get(), contentList,
             usage.getInt("prompt_tokens"),
-            usage.getJSONObject("prompt_tokens_details").getInt("cached_tokens"),
+            promptTokensDetails != null ? promptTokensDetails.getInt("cached_tokens") : 0,
             usage.getInt("completion_tokens") +
-            usage.getJSONObject("completion_tokens_details").getInt("reasoning_tokens"));
+            (completionTokensDetails != null ? completionTokensDetails.getInt("reasoning_tokens") : 0));
     }
 
     private void convertParameterToJson(ToolParameter parameter, JSONObject json) {
