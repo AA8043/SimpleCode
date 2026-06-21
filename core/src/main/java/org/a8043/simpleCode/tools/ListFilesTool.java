@@ -19,7 +19,7 @@ public class ListFilesTool implements CallableTool {
     ));
 
     @Override
-    public String call(JSONObject args, RunningTool runningTool) throws ToolException {
+    public String call(JSONObject args, RunningTool runningTool) throws Exception {
         String dir = args.getStr("dir");
         boolean recursive = args.getBool("recursive");
 

@@ -29,7 +29,7 @@ public class SearchFileTool implements CallableTool {
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     @Override
-    public String call(JSONObject args, RunningTool runningTool) throws ToolException {
+    public String call(JSONObject args, RunningTool runningTool) throws Exception {
         Pattern pattern = Pattern.compile(args.getStr("keyword"));
         File file = new File(args.getStr("dir"));
         if (!file.exists()) {

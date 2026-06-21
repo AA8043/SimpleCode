@@ -22,7 +22,7 @@ public class AskUserTool implements CallableTool {
     ));
 
     @Override
-    public String call(JSONObject args, RunningTool runningTool) throws ToolException {
+    public String call(JSONObject args, RunningTool runningTool) throws Exception {
         if (runningTool.getSession().isAutoMode()) {
             throw new ToolException(SimpleCode.PROMPT_JSON.getStr("autoModeOn"));
         }

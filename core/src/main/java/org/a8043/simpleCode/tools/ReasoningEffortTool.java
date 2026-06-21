@@ -5,7 +5,6 @@ import org.a8043.simpleCode.session.ReasoningEffort;
 import org.a8043.simpleCode.session.tool.CallableTool;
 import org.a8043.simpleCode.session.tool.RunningTool;
 import org.a8043.simpleCode.session.tool.Tool;
-import org.a8043.simpleCode.session.tool.ToolException;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 
 import java.util.Arrays;
@@ -18,7 +17,7 @@ public class ReasoningEffortTool implements CallableTool {
     ));
 
     @Override
-    public String call(JSONObject args, RunningTool runningTool) throws ToolException {
+    public String call(JSONObject args, RunningTool runningTool) throws Exception {
         runningTool.getSession().setReasoningEffort(args.getEnum(ReasoningEffort.class, "new"));
         return "";
     }

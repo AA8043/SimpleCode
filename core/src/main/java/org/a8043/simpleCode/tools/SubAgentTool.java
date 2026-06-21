@@ -31,7 +31,7 @@ public class SubAgentTool implements CallableTool {
     }
 
     @Override
-    public String call(JSONObject args, RunningTool runningTool) throws ToolException {
+    public String call(JSONObject args, RunningTool runningTool) throws Exception {
         int level = Integer.parseInt(args.getStr("level"));
         Model model = Settings.INSTANCE.getModelList().stream()
             .filter(m -> m.getLevel() == level)

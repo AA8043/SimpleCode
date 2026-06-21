@@ -19,7 +19,7 @@ public class ReadFileTool implements CallableTool {
     ));
 
     @Override
-    public String call(JSONObject args, RunningTool runningTool) throws ToolException {
+    public String call(JSONObject args, RunningTool runningTool) throws Exception {
         String content;
         try {
             content = FileUtil.readUtf8String(args.getStr("file"));

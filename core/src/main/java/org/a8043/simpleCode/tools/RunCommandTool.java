@@ -19,7 +19,7 @@ public class RunCommandTool implements CallableTool {
         )));
 
     @Override
-    public String call(JSONObject args, RunningTool runningTool) throws ToolException {
+    public String call(JSONObject args, RunningTool runningTool) throws Exception {
         List<String> argList = new ArrayList<>();
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             argList.addAll(List.of("cmd.exe", "/c"));

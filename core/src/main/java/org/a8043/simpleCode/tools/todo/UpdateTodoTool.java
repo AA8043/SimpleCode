@@ -19,7 +19,7 @@ public class UpdateTodoTool implements CallableTool {
     ));
 
     @Override
-    public String call(JSONObject args, RunningTool runningTool) throws ToolException {
+    public String call(JSONObject args, RunningTool runningTool) throws Exception {
         Todo todo = runningTool.getSession().getTodoList().stream()
             .filter(t -> t.getId().equals(args.getStr("id")))
             .findFirst().orElseThrow(() -> new ToolException("Nonexistent todo: " + args.getStr("id")));

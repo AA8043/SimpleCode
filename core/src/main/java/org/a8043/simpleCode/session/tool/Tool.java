@@ -29,7 +29,7 @@ public class Tool {
     public ToolCallReturn call(JSONObject args, RunningTool runningTool) {
         try {
             return new ToolCallReturn(Status.success(), callableTool.call(args, runningTool));
-        } catch (ToolException e) {
+        } catch (Exception e) {
             return new ToolCallReturn(Status.fail(e.getMessage()), "");
         }
     }
