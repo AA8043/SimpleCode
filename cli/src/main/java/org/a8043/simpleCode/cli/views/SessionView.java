@@ -61,7 +61,7 @@ public class SessionView extends Main.View {
             @SneakyThrows
             @Override
             public void onUserChoice(UserChoice<?> userChoice) {
-                ListElement<?> listElement = list().id("optionList");
+                ListElement<?> listElement = list().focusable().id("optionList");
                 unhandledUserChoice = panel(
                     switch (userChoice.getContent()) {
                         case RunningTool rt -> row(text(I18n.get("session.toolCallRequest") + ": "),
@@ -76,7 +76,7 @@ public class SessionView extends Main.View {
                                 userChoiceLock.notifyAll();
                             }
                         })
-                ).rounded();
+                ).addClass("ask-user-panel").rounded();
                 synchronized (userChoiceLock) {
                     userChoiceLock.wait();
                 }

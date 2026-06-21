@@ -8,6 +8,7 @@ import org.a8043.simpleCode.model.Provider;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Data
@@ -24,6 +25,10 @@ public class Settings {
     public Model getModel(Provider provider, String name) {
         return modelList.stream().filter(m -> m.getProvider().equals(provider) &&
                                               m.getName().equals(name)).findFirst().orElse(null);
+    }
+
+    public Model getLowestLevelModel() {
+        return modelList.stream().max(Comparator.comparingInt(Model::getLevel)).orElse(null);
     }
 
     public static boolean read() {

@@ -6,7 +6,7 @@ TextElement:focus {
     color: grey;
 }
 
-TextInputElement:focus {
+TextInputElement:focus, .ask-user-panel {
     border-color: rgb(177, 185, 249);
 }
 
@@ -15,5 +15,5 @@ ListElement-item:selected {
 }
 
 Panel, ListElement {
-    border-color: rgb(136, 136, 136)
+    border-color: rgb(136, 136, 136);
 }
