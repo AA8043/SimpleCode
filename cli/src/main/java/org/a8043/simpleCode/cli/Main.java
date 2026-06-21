@@ -61,7 +61,7 @@ public class Main extends ToolkitApp {
     }
 
     public void exit() {
-        folder.saveSessions();
+        folder.close();
         quit();
     }
 

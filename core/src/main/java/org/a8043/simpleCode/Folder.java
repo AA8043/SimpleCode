@@ -2,8 +2,10 @@ package org.a8043.simpleCode;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.json.JSONObject;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.a8043.simpleCode.session.Session;
 
 import java.io.File;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Getter
 public class Folder {
     private static final List<Folder> openedFolderList = new ArrayList<>();
@@ -18,6 +21,7 @@ public class Folder {
     private final File dataDir;
     private final File sessionsDir;
     private final List<Session> sessionList = new ArrayList<>();
+    private final Thread autoSaveThread;
 
     public Folder(File dir) {
         openedFolderList.add(this);
@@ -31,6 +35,13 @@ public class Folder {
         for (File sessionFile : Objects.requireNonNull(sessionsDir.listFiles())) {
             sessionList.add(Convert.convert(Session.class, new JSONObject(FileUtil.readUtf8String(sessionFile))));
         }
+
+        autoSaveThread = new Thread(() -> {
+            while (ThreadUtil.sleep(3000)) {
+                saveSessions();
+            }
+        });
+        autoSaveThread.start();
     }
 
     public Session createSession() {
@@ -44,6 +55,11 @@ public class Folder {
             File sessionFile = new File(sessionsDir, session.getId() + ".json");
             FileUtil.writeUtf8String(new JSONObject(session).toString(), sessionFile);
         });
+    }
+
+    public void close() {
+        autoSaveThread.interrupt();
+        saveSessions();
     }
 
     public static Folder where(Session session) {
