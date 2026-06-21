@@ -18,7 +18,23 @@ public class ListenerRegistry {
 
     public static Listener getListener(Session session) {
         return LIST.stream().filter(info -> info.session == session)
-            .findFirst().map(info -> info.listener).orElse(null);
+            .findFirst().map(info -> info.listener).orElse(new Listener() {
+                @Override
+                public void onComplete(Content content) {
+                }
+
+                @Override
+                public void onFinish() {
+                }
+
+                @Override
+                public void onUserChoice(UserChoice<?> userChoice) {
+                }
+
+                @Override
+                public void onToolCall(RunningTool runningTool) {
+                }
+            });
     }
 
     @Value

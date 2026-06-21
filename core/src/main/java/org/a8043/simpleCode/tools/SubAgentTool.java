@@ -1,10 +1,13 @@
 package org.a8043.simpleCode.tools;
 
 import cn.hutool.json.JSONObject;
+import org.a8043.simpleCode.ListenerRegistry;
 import org.a8043.simpleCode.Registry;
 import org.a8043.simpleCode.Settings;
 import org.a8043.simpleCode.model.Model;
 import org.a8043.simpleCode.session.Session;
+import org.a8043.simpleCode.session.UserChoice;
+import org.a8043.simpleCode.session.content.Content;
 import org.a8043.simpleCode.session.tool.CallableTool;
 import org.a8043.simpleCode.session.tool.RunningTool;
 import org.a8043.simpleCode.session.tool.Tool;
@@ -41,6 +44,24 @@ public class SubAgentTool implements CallableTool {
         }
 
         Session tempSession = new Session(UUID.randomUUID().toString());
+        ListenerRegistry.register(tempSession, new ListenerRegistry.Listener() {
+            @Override
+            public void onComplete(Content content) {
+            }
+
+            @Override
+            public void onFinish() {
+            }
+
+            @Override
+            public void onUserChoice(UserChoice<?> userChoice) {
+                ListenerRegistry.getListener(runningTool.getSession()).onUserChoice(userChoice);
+            }
+
+            @Override
+            public void onToolCall(RunningTool runningTool) {
+            }
+        });
         tempSession.ask(args.getStr("task"), model);
         return tempSession.getContentList().getLast().getText();
     }

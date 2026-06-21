@@ -47,6 +47,7 @@ public class Session {
 
     public void ask(String text, Model model) {
         ListenerRegistry.Listener listener = ListenerRegistry.getListener(this);
+
         asking = new Asking();
         contentList.add(new UserContent(System.currentTimeMillis(), text));
         boolean remindedTodo = false;
