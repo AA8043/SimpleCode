@@ -46,5 +46,7 @@
             "new": "New reasoning effort"
         }
     },
-    "hasTodoReminder": "[System warning] You have unfinished TODOs, you can use the `list_todo` tool to view them"
+    "hasTodoReminder": "[System warning] You have unfinished TODOs, you can use the `list_todo` tool to view them",
+    "autoModeOn": "This session has now switched to automatic mode, so you shouldn't ask the user questions",
+    "autoModeOff": "This session has now switched off automatic mode, allowing you to ask users questions whenever needed"
 }

@@ -19,6 +19,7 @@
     "session.working": "Working",
     "session.toolCallRequest": "请求调用工具",
     "session.reasoningEffort": "思考强度 {0}",
+    "session.autoMode": "自动模式",
     "tools.read_file": "读取",
     "tools.write_file": "写入",
     "tools.list_files": "列出文件",

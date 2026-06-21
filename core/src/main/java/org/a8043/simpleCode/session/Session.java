@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.a8043.simpleCode.ListenerRegistry;
 import org.a8043.simpleCode.Settings;
-import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.api.CompleteResult;
 import org.a8043.simpleCode.model.Model;
 import org.a8043.simpleCode.session.content.*;
@@ -28,6 +27,7 @@ public class Session {
     private final List<Todo> todoList = new ArrayList<>();
     @Setter
     private ReasoningEffort reasoningEffort = ReasoningEffort.DEFAULT;
+    private boolean isAutoMode;
 
     public Session(String id) {
         this.id = id;
@@ -60,15 +60,23 @@ public class Session {
             toolCallList.forEach(toolCall -> {
                 RunningTool runningTool = new RunningTool(toolCall, this);
                 listener.onToolCall(runningTool);
-                UserChoice<Boolean> userChoice = new UserChoice<>(runningTool, List.of(true, false));
-                listener.onUserChoice(userChoice);
-                if (userChoice.getChoice()) {
+
+                boolean isAllow;
+                if (!isAutoMode) {
+                    UserChoice<Boolean> userChoice = new UserChoice<>(runningTool, List.of(true, false));
+                    listener.onUserChoice(userChoice);
+                    isAllow = userChoice.getChoice();
+                } else {
+                    isAllow = true;
+                }
+
+                if (isAllow) {
                     ToolCallReturn callResult = toolCall.call(runningTool);
                     contentList.add(new ToolContent(System.currentTimeMillis(), toolCall,
                         callResult.getStatus(), callResult.getContent()));
                 } else {
                     contentList.add(new ToolContent(System.currentTimeMillis(), toolCall,
-                        Status.fail("User rejected the tool call"), null));
+                        Status.fail("User rejected the tool call"), ""));
                 }
             });
 
@@ -77,13 +85,24 @@ public class Session {
                 if (todoCount == 0 || remindedTodo) {
                     break;
                 } else {
-                    contentList.add(new RemindContent(System.currentTimeMillis(),
-                        SimpleCode.PROMPT_JSON.getStr("hasTodoReminder")));
+                    contentList.add(new RemindContent(System.currentTimeMillis(), "hasTodoReminder"));
                     remindedTodo = true;
                 }
             }
         }
         listener.onFinish();
         asking = null;
+    }
+
+    public void setAutoMode(boolean autoMode) {
+        if (isAutoMode = autoMode) {
+            contentList.add(new RemindContent(System.currentTimeMillis(), "autoModeOn"));
+        } else {
+            contentList.add(new RemindContent(System.currentTimeMillis(), "autoModeOff"));
+        }
+    }
+
+    public void setAutoModeDirectly(boolean autoMode) {
+        isAutoMode = autoMode;
     }
 }

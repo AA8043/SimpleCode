@@ -19,6 +19,9 @@ public class Util {
             row.add(text(" · "), text(I18n.get("session.reasoningEffort",
                 session.getReasoningEffort().name())));
         }
+        if (session.isAutoMode()) {
+            row.add(text(" · "), text(I18n.get("session.autoMode")));
+        }
         return row;
     }
 

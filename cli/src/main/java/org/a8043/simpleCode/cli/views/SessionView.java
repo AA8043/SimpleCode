@@ -148,6 +148,7 @@ public class SessionView extends Main.View {
                         new Thread(() -> session.ask(question)).start();
                     }
                 }).rounded() : unhandledUserChoice
-        ).on(KeyTrigger.key(KeyCode.ESCAPE), e -> Main.INSTANCE.setView(MainView.INSTANCE));
+        ).on(KeyTrigger.key(KeyCode.ESCAPE), e -> Main.INSTANCE.setView(MainView.INSTANCE))
+            .on(KeyTrigger.ctrl('a'), e -> session.setAutoMode(!session.isAutoMode()));
     }
 }

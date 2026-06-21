@@ -121,6 +121,7 @@ public class SimpleCode {
                 session.getContentList().addAll(json.getJSONArray("contentList").toList(Content.class));
                 session.getTodoList().addAll(json.getJSONArray("todoList").toList(Todo.class));
                 session.setReasoningEffort(json.getEnum(ReasoningEffort.class, "reasoningEffort"));
+                session.setAutoModeDirectly(json.getBool("isAutoMode"));
                 return session;
             }
         });

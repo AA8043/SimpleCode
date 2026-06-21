@@ -2,6 +2,7 @@ package org.a8043.simpleCode.tools;
 
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.ListenerRegistry;
+import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.session.UserChoice;
 import org.a8043.simpleCode.session.tool.CallableTool;
 import org.a8043.simpleCode.session.tool.RunningTool;
@@ -22,6 +23,10 @@ public class AskUserTool implements CallableTool {
 
     @Override
     public String call(JSONObject args, RunningTool runningTool) throws ToolException {
+        if (runningTool.getSession().isAutoMode()) {
+            throw new ToolException(SimpleCode.PROMPT_JSON.getStr("autoModeOn"));
+        }
+
         String question = args.getStr("question");
         List<String> options = args.getJSONArray("options").toList(String.class);
         boolean hasCustomization = args.getBool("hasCustomization");
