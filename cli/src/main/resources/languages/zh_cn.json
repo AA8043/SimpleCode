@@ -29,5 +29,6 @@
     "tools.add_todo": "添加 TODO",
     "tools.update_todo": "更新 TODO 状态",
     "tools.reasoning_effort": "切换思考强度",
-    "tools.run_command": "运行命令"
+    "tools.run_command": "运行命令",
+    "tools.search_file": "搜索文件"
 }

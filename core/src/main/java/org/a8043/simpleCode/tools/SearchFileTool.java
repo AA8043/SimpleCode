@@ -33,7 +33,7 @@ public class SearchFileTool implements CallableTool {
         Pattern pattern = Pattern.compile(args.getStr("keyword"));
         File file = new File(args.getStr("dir"));
         if (!file.exists()) {
-            throw new ToolException(SimpleCode.PROMPT_JSON.getJSONObject("tools")
+            throw new ToolException(SimpleCode.PROMPT_JSON.getJSONObject("tool")
                 .getJSONObject("search_file").getStr("dirNotExist"));
         }
 
@@ -45,7 +45,7 @@ public class SearchFileTool implements CallableTool {
         if (!results.isEmpty()) {
             return StrUtil.join("\n", results);
         } else {
-            return SimpleCode.PROMPT_JSON.getJSONObject("tools")
+            return SimpleCode.PROMPT_JSON.getJSONObject("tool")
                 .getJSONObject("search_file").getStr("notFound");
         }
     }
