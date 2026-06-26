@@ -16,7 +16,8 @@ import org.a8043.simpleCode.session.tool.ToolCall;
 import java.io.File;
 
 public class SimpleCode {
-    public static final File SETTINGS_DIR = new File(System.getProperty("user.home") + "/.simpleCode");
+    public static final File DATA_DIR = new File(System.getProperty("user.home") + "/.simpleCode");
+    public static final File SESSIONS_DIR = new File(DATA_DIR, "sessions");
     public static final JSONObject PROMPT_JSON = new JSONObject(ResourceUtil.readUtf8Str("prompts.json"));
 
     public static boolean init() {

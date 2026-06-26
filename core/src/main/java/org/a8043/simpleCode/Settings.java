@@ -32,10 +32,10 @@ public class Settings {
     }
 
     public static boolean read() {
-        if (!SimpleCode.SETTINGS_DIR.exists()) {
+        if (!SimpleCode.DATA_DIR.exists()) {
             return false;
         }
-        File file = new File(SimpleCode.SETTINGS_DIR, "settings.json");
+        File file = new File(SimpleCode.DATA_DIR, "settings.json");
         if (!file.exists()) {
             return false;
         }

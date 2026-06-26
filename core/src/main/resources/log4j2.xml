@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Appenders>
-        <File name="logs" fileName="./logs/${date:yyyy-MM-dd}.log">
+        <File name="logs" fileName="${sys:user.home}/.simpleCode/logs/${date:yyyy-MM-dd}.log">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %l %t %level: %msg%n"/>
         </File>
     </Appenders>

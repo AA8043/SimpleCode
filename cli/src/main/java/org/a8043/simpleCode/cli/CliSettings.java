@@ -14,7 +14,7 @@ public class CliSettings {
     private String language = "zh_cn";
 
     public static boolean load() {
-        File file = new File(SimpleCode.SETTINGS_DIR, "cli.json");
+        File file = new File(SimpleCode.DATA_DIR, "cli.json");
         if (!file.exists()) {
             return false;
         }

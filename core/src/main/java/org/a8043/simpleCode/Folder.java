@@ -18,7 +18,6 @@ import java.util.Objects;
 public class Folder {
     private static final List<Folder> openedFolderList = new ArrayList<>();
     private final File dir;
-    private final File dataDir;
     private final File sessionsDir;
     private final List<Session> sessionList = new ArrayList<>();
     private final Thread autoSaveThread;
@@ -26,9 +25,8 @@ public class Folder {
     public Folder(File dir) {
         openedFolderList.add(this);
         this.dir = dir;
-        this.dataDir = new File(dir, ".simpleCode");
-        this.sessionsDir = new File(dataDir, "sessions");
 
+        sessionsDir = new File(SimpleCode.SESSIONS_DIR, dir.getAbsolutePath().replace(":", ""));
         if (!sessionsDir.exists() && !sessionsDir.mkdirs()) {
             throw new RuntimeException();
         }
