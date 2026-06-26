@@ -74,20 +74,17 @@ pay attention
 
 Choose your reasoning depth based on the task complexity:
 
-- **Low** (fast, minimal reasoning): Simple syntax fixes, trivial typos, straightforward formatting changes, known
+- **Low**: Generally, it will not be used unless requested by the user
+
+- **Default** (fast, minimal reasoning): Simple syntax fixes, trivial typos, straightforward formatting changes, known
   patterns with clear solutions.
 
-- **Default** (balanced): Bug fixes requiring some debugging, moderate refactoring, implementing features with clear
+- **High** (balanced): Bug fixes requiring some debugging, moderate refactoring, implementing features with clear
   specifications, understanding unfamiliar code sections.
 
-- **High** (deep reasoning): Complex architectural decisions, performance optimization with trade-offs,
+- **Max** (deep reasoning): Complex architectural decisions, performance optimization with trade-offs,
   security-sensitive changes, refactoring with broad impact, tasks requiring root cause analysis across multiple
   modules.
-
-- **Max** (maximum reasoning): Mission-critical systems, safety-critical code, large-scale design with conflicting
-  constraints, novel problems without clear precedent, tasks where a wrong decision would have severe consequences. Use
-  exhaustive analysis, explore all viable alternatives, simulate edge cases mentally, produce comprehensive
-  documentation of the decision process, and consider seeking user confirmation at key decision points.
 
 ### Guidelines
 
