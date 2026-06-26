@@ -46,15 +46,21 @@ tasks.register<Exec>("run") {
     dependsOn(tasks.named("shadowJar"))
     workingDir = project.rootProject.file("test")
 
-    var prefix = listOf("")
+    var prefix = listOf<String>()
     if (System.getProperty("os.name").lowercase().contains("win")) {
         prefix = listOf("cmd", "/c", "start", "cmd", "/c")
     } else {
         prefix = listOf("sh", "-c")
     }
 
+    var jvmArgs = listOf<String>()
+    var isDebug = findProperty("cli.debug")?.toString().toBoolean()
+    if (isDebug) {
+        jvmArgs = listOf("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005")
+    }
+
     commandLine(
-        *prefix.toTypedArray(), System.getProperty("java.home") + "/bin/java", "-jar",
-        "${buildDir}/libs/${project.name}-${project.version}-all.jar"
+        *prefix.toTypedArray(), System.getProperty("java.home") + "/bin/java", *jvmArgs.toTypedArray(),
+        "-jar", "${buildDir}/libs/${project.name}-${project.version}-all.jar"
     )
 }
