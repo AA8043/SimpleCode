@@ -72,7 +72,7 @@ public class SessionView extends Main.View {
                     switch (userChoice.getContent()) {
                         case RunningTool rt -> row(text(I18n.get("session.toolCallRequest") + ": "),
                             Util.getToolDescriptionElement(rt.getToolCall()));
-                        default -> text(userChoice.getContent());
+                        default -> text(userChoice.getContent()).overflow(Overflow.WRAP_WORD);
                     },
                     listElement.data(objectList, o -> {
                         if (o instanceof TextInputState tis) {
@@ -119,7 +119,7 @@ public class SessionView extends Main.View {
                         symbol.red();
                     }
 
-                    Column column = column(row(symbol, Util.getToolDescriptionElement(tc.getToolCall())));
+                    Column column = column(row(symbol, Util.getToolDescriptionElement(tc.getToolCall(session))));
                     if (!tc.getStatus().isSuccess()) {
                         column.add(text("⎿ " + tc.getStatus().getFailedReason())
                             .red().overflow(Overflow.WRAP_WORD));
@@ -134,14 +134,14 @@ public class SessionView extends Main.View {
 
     @Override
     public Element render() {
-        Panel todoPanel = panel().fill(20).rounded();
+        Panel todoPanel = panel().max(20).fill(20).rounded();
         session.getTodoList().forEach(todo -> todoPanel.add(row(switch (todo.getStatus()) {
-            case WAITING -> text("● ").blue();
-            case DOING -> text("● ").green();
-            case FINISHED -> text("● ").gray();
+            case WAITING -> text("● ").blue().overflow(Overflow.WRAP_WORD);
+            case DOING -> text("● ").green().overflow(Overflow.WRAP_WORD);
+            case FINISHED -> text("● ").gray().overflow(Overflow.WRAP_WORD);
         }, text(todo.getTask()))));
 
-        Panel statisticPanel = panel().fill(20).rounded();
+        Panel statisticPanel = panel().max(20).fill(20).rounded();
         if (session.getAsking() != null) {
             statisticPanel.add(
                 text("↑ " + session.getAsking().getPromptTokens()),

@@ -42,9 +42,10 @@ public class OpenAIApi implements Api {
             switch (content) {
                 case AssistantContent ac -> {
                     message.set("content", ac.getText());
-                    message.set("tool_calls", ac.getToolCallList().stream().map(toolCall -> {
+                    message.set("tool_calls", ac.getToolCallIdList().stream().map(callId -> {
                         JSONObject toolCallJson = new JSONObject();
-                        toolCallJson.set("id", toolCall.getId());
+                        ToolCall toolCall = session.getToolCall(callId);
+                        toolCallJson.set("id", callId);
                         toolCallJson.set("type", "function");
                         toolCallJson.set("function", new JSONObject().set("name", toolCall.getTool().getName())
                             .set("arguments", toolCall.getArgs().toString()));
@@ -52,7 +53,7 @@ public class OpenAIApi implements Api {
                     }).toList());
                 }
                 case ToolContent tc -> {
-                    message.set("tool_call_id", tc.getToolCall().getId());
+                    message.set("tool_call_id", tc.getToolCallId());
                     message.set("content", tc.getText());
                 }
                 default -> message.set("content", content.getText());
@@ -80,26 +81,28 @@ public class OpenAIApi implements Api {
 
         JSONObject responseBody = new JSONObject(response);
         List<AssistantContent> contentList = new ArrayList<>();
+        List<ToolCall> toolCallList = new ArrayList<>();
         AtomicBoolean isEnd = new AtomicBoolean();
         responseBody.getJSONArray("choices").forEach(o -> {
             JSONObject json = (JSONObject) o;
             JSONObject message = json.getJSONObject("message");
             isEnd.set(json.getStr("finish_reason").equals("stop"));
             if (message.getStr("role").equals("assistant")) {
-                List<ToolCall> toolCallList = new ArrayList<>();
+                List<ToolCall> toolCallList1 = new ArrayList<>();
                 JSONArray toolCallsJson = message.getJSONArray("tool_calls");
                 if (toolCallsJson != null) {
                     toolCallsJson.forEach(o1 -> {
                         JSONObject json1 = (JSONObject) o1;
-                        toolCallList.add(new ToolCall(
+                        toolCallList1.add(new ToolCall(
                             Registry.getTool(json1.getByPath("function.name", String.class)),
                             json1.getStr("id"),
                             new JSONObject(json1.getByPath("function.arguments", String.class))));
                     });
                 }
                 String content = message.getStr("content");
+                toolCallList.addAll(toolCallList1);
                 contentList.add(new AssistantContent(System.currentTimeMillis(),
-                    content != null ? content : "", toolCallList));
+                    content != null ? content : "", toolCallList1.stream().map(ToolCall::getId).toList()));
             } else {
                 throw new RuntimeException();
             }
@@ -108,7 +111,7 @@ public class OpenAIApi implements Api {
         JSONObject usage = responseBody.getJSONObject("usage");
         JSONObject promptTokensDetails = usage.getJSONObject("prompt_tokens_details");
         JSONObject completionTokensDetails = usage.getJSONObject("completion_tokens_details");
-        return new CompleteResult(isEnd.get(), contentList,
+        return new CompleteResult(isEnd.get(), contentList, toolCallList,
             usage.getInt("prompt_tokens"),
             promptTokensDetails != null ? promptTokensDetails.getInt("cached_tokens") : 0,
             usage.getInt("completion_tokens") +

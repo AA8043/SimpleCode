@@ -68,7 +68,7 @@ public class SimpleCode {
             protected AssistantContent convertInternal(Object value) {
                 JSONObject json = (JSONObject) value;
                 return new AssistantContent(json.getLong("time"), json.getStr("text"),
-                    json.getJSONArray("toolCalls").toList(ToolCall.class));
+                    json.getJSONArray("toolCalls").toList(String.class));
             }
         });
 
@@ -91,8 +91,7 @@ public class SimpleCode {
             @Override
             protected ToolContent convertInternal(Object value) {
                 JSONObject json = (JSONObject) value;
-                return new ToolContent(json.getLong("time"),
-                    registry.convert(ToolCall.class, json.getJSONObject("toolCall")),
+                return new ToolContent(json.getLong("time"), json.getStr("toolCall"),
                     registry.convert(Status.class, json.getJSONObject("status")), json.getStr("content"));
             }
         });
@@ -119,6 +118,7 @@ public class SimpleCode {
                 Session session = new Session(json.getStr("id"));
                 session.setName(json.getStr("name"));
                 session.getContentList().addAll(json.getJSONArray("contentList").toList(Content.class));
+                session.getToolCallList().addAll(json.getJSONArray("toolCallList").toList(ToolCall.class));
                 session.getTodoList().addAll(json.getJSONArray("todoList").toList(Todo.class));
                 session.setReasoningEffort(json.getEnum(ReasoningEffort.class, "reasoningEffort"));
                 session.setAutoModeDirectly(json.getBool("isAutoMode"));

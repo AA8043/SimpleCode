@@ -4,7 +4,6 @@ import cn.hutool.json.JSONObject;
 import lombok.Getter;
 import lombok.ToString;
 import org.a8043.simpleCode.session.Role;
-import org.a8043.simpleCode.session.tool.ToolCall;
 
 import java.util.List;
 
@@ -12,12 +11,12 @@ import java.util.List;
 @ToString
 public class AssistantContent extends Content {
     private final String text;
-    private final List<ToolCall> toolCallList;
+    private final List<String> toolCallIdList;
 
-    public AssistantContent(long time, String text, List<ToolCall> toolCallList) {
+    public AssistantContent(long time, String text, List<String> toolCallIdList) {
         super(time);
         this.text = text;
-        this.toolCallList = toolCallList;
+        this.toolCallIdList = toolCallIdList;
     }
 
     @Override
@@ -28,6 +27,6 @@ public class AssistantContent extends Content {
     @Override
     public JSONObject toJSON() {
         return new JSONObject().set("type", "assistant").set("time", getTime())
-            .set("text", text).set("toolCalls", toolCallList);
+            .set("text", text).set("toolCalls", toolCallIdList);
     }
 }

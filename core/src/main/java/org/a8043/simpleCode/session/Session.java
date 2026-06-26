@@ -1,6 +1,5 @@
 package org.a8043.simpleCode.session;
 
-import cn.hutool.core.annotation.PropIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +23,7 @@ public class Session {
     @Setter
     private String name;
     private final List<Content> contentList = new ArrayList<>();
-    @PropIgnore
+    private final List<ToolCall> toolCallList = new ArrayList<>();
     private Asking asking;
     private final List<Todo> todoList = new ArrayList<>();
     @Setter
@@ -67,6 +66,7 @@ public class Session {
             result.getContentList().forEach(listener::onComplete);
 
             List<ToolCall> toolCallList = result.getToolCallList();
+            this.toolCallList.addAll(toolCallList);
             toolCallList.forEach(toolCall -> {
                 RunningTool runningTool = new RunningTool(toolCall, this);
                 listener.onToolCall(runningTool);
@@ -114,5 +114,9 @@ public class Session {
 
     public void setAutoModeDirectly(boolean autoMode) {
         isAutoMode = autoMode;
+    }
+
+    public ToolCall getToolCall(String id) {
+        return toolCallList.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
     }
 }
