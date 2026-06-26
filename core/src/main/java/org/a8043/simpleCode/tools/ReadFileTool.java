@@ -1,12 +1,10 @@
 package org.a8043.simpleCode.tools;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.json.JSONObject;
+import org.a8043.simpleCode.Util;
 import org.a8043.simpleCode.session.tool.CallableTool;
 import org.a8043.simpleCode.session.tool.RunningTool;
 import org.a8043.simpleCode.session.tool.Tool;
-import org.a8043.simpleCode.session.tool.ToolException;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 
 import java.io.File;
@@ -20,13 +18,7 @@ public class ReadFileTool implements CallableTool {
 
     @Override
     public String call(JSONObject args, RunningTool runningTool) throws Exception {
-        String content;
-        try {
-            content = FileUtil.readUtf8String(args.getStr("file"));
-        } catch (IORuntimeException e) {
-            throw new ToolException(e.getMessage());
-        }
-
+        String content = Util.readFile(new File(args.getStr("file")));
         if (args.containsKey("range")) {
             String range = args.getStr("range");
             String[] parts = range.split("-");

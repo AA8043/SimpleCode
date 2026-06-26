@@ -2,6 +2,7 @@ package org.a8043.simpleCode.tools;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONObject;
+import org.a8043.simpleCode.Util;
 import org.a8043.simpleCode.session.tool.CallableTool;
 import org.a8043.simpleCode.session.tool.RunningTool;
 import org.a8043.simpleCode.session.tool.Tool;
@@ -35,7 +36,7 @@ public class WriteFileTool implements CallableTool {
             default -> throw new ToolException("Invalid write type: " + args.getStr("type"));
         };
 
-        FileUtil.writeUtf8String(newContent, file);
+        Util.writeFile(newContent, file);
         return "";
     }
 
