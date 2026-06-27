@@ -157,12 +157,16 @@ public class SessionView extends Main.View {
                 column(todoPanel, statisticPanel)
             ).fill(),
             unhandledUserChoice == null ? textInput().state(questionInputState).id("questionInput")
-                .placeholder(I18n.get("session.inputTip"))
+                .placeholder(I18n.get(session.getAsking() != null ? "session.insertUserMessagesTip" : "session.inputTip"))
                 .on(KeyTrigger.key(KeyCode.ENTER), e -> {
                     if (!questionInputState.text().isBlank()) {
                         String question = questionInputState.text();
                         questionInputState.clear();
-                        new Thread(() -> session.ask(question)).start();
+                        if (session.getAsking() == null) {
+                            new Thread(() -> session.ask(question)).start();
+                        } else {
+                            session.getContentList().add(new UserContent(System.currentTimeMillis(), question));
+                        }
                     }
                 }).rounded() : unhandledUserChoice
         ).on(KeyTrigger.key(KeyCode.ESCAPE), e -> Main.INSTANCE.setView(MainView.INSTANCE))

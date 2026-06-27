@@ -16,6 +16,7 @@
     "model.addedListTip": "[{0}] {1} (模型等级 {2})",
     "session.new": "新会话",
     "session.inputTip": "输入要问的问题",
+    "session.insertUserMessagesTip": "插入用户消息",
     "session.working": "Working",
     "session.toolCallRequest": "请求调用工具",
     "session.reasoningEffort": "思考强度 {0}",

@@ -15,6 +15,7 @@ import org.a8043.simpleCode.session.tool.ToolCallReturn;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
 @Getter
@@ -22,7 +23,7 @@ public class Session {
     private final String id;
     @Setter
     private String name;
-    private final List<Content> contentList = new ArrayList<>();
+    private final List<Content> contentList = new CopyOnWriteArrayList<>();
     private final List<ToolCall> toolCallList = new ArrayList<>();
     private Asking asking;
     private final List<Todo> todoList = new ArrayList<>();
