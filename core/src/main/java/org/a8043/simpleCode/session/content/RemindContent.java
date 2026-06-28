@@ -1,5 +1,6 @@
 package org.a8043.simpleCode.session.content;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import lombok.Getter;
 import org.a8043.simpleCode.SimpleCode;
@@ -9,9 +10,13 @@ public class RemindContent extends Content {
     @Getter
     private final String text;
 
-    public RemindContent(long time, String key) {
+    public RemindContent(long time, String key, String... args) {
+        this(time, StrUtil.format(SimpleCode.PROMPT_JSON.getStr(key), (Object[]) args));
+    }
+
+    public RemindContent(long time, String text) {
         super(time);
-        text = SimpleCode.PROMPT_JSON.getStr(key);
+        this.text = text;
     }
 
     @Override

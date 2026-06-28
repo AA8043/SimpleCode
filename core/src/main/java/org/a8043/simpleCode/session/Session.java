@@ -1,8 +1,10 @@
 package org.a8043.simpleCode.session;
 
+import cn.hutool.core.annotation.PropIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.a8043.simpleCode.Folder;
 import org.a8043.simpleCode.ListenerRegistry;
 import org.a8043.simpleCode.Settings;
 import org.a8043.simpleCode.api.CompleteResult;
@@ -20,6 +22,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 @Getter
 public class Session {
+    @PropIgnore
+    private final Folder folder;
+    private final Type type;
     private final String id;
     @Setter
     private String name;
@@ -30,15 +35,35 @@ public class Session {
     @Setter
     private ReasoningEffort reasoningEffort = ReasoningEffort.DEFAULT;
     private boolean isAutoMode;
+    private final List<Session> subList = new ArrayList<>();
+    @PropIgnore
+    private final Session parent;
 
-    public Session(String id) {
+    public Session(Folder folder, Type type, String id, Session parent) {
+        this.folder = folder;
+        this.type = type;
         this.id = id;
+        this.parent = parent;
     }
 
-    public static Session create() {
-        Session session = new Session(UUID.randomUUID().toString());
+    public static Session create(Type type, Folder folder, Session parent) {
+        String uuid = UUID.randomUUID().toString();
+        Session session = new Session(folder, type,
+            type == Type.NORMAL ? uuid : "sub-" + uuid.split("-")[0], parent);
         session.getContentList().add(new SystemContent(0));
         return session;
+    }
+
+    public Session createSub() {
+        Session session = create(Type.SUB, folder, this);
+        session.setName("Sub-" + session.getId());
+        session.setAutoMode(true);
+        subList.add(session);
+        return session;
+    }
+
+    public Session getSub(String id) {
+        return subList.stream().filter(s -> s.getId().equals(id)).findFirst().orElse(null);
     }
 
     public void ask(String text) {
@@ -64,6 +89,10 @@ public class Session {
             asking.addCompletionTokens(result.getCompletionTokens());
             asking.addCachedTokens(result.getCachedTokens());
             asking.addPromptTokens(result.getPromptTokens());
+            if (parent != null) {
+                result.getContentList().forEach(c -> parent.contentList.add(
+                    new RemindContent(c.getTime(), "subAgentMessage", id, c.getText())));
+            }
             result.getContentList().forEach(listener::onComplete);
 
             List<ToolCall> toolCallList = result.getToolCallList();
@@ -119,5 +148,9 @@ public class Session {
 
     public ToolCall getToolCall(String id) {
         return toolCallList.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    public enum Type {
+        NORMAL, SUB
     }
 }

@@ -4,6 +4,10 @@ import org.a8043.simpleCode.api.Api;
 import org.a8043.simpleCode.api.OpenAIApi;
 import org.a8043.simpleCode.session.tool.Tool;
 import org.a8043.simpleCode.tools.*;
+import org.a8043.simpleCode.tools.subAgent.CreateSubAgentTool;
+import org.a8043.simpleCode.tools.subAgent.ListSubAgentsTool;
+import org.a8043.simpleCode.tools.subAgent.SubAgentTool;
+import org.a8043.simpleCode.tools.subAgent.WaitSubAgentTool;
 import org.a8043.simpleCode.tools.todo.AddTodoTool;
 import org.a8043.simpleCode.tools.todo.ListTodoTool;
 import org.a8043.simpleCode.tools.todo.UpdateTodoTool;
@@ -21,19 +25,23 @@ public class Registry {
     static {
         registerApi("OpenAI", new OpenAIApi());
 
+        registerTool(AskUserTool.TOOL);
+        registerTool(ReasoningEffortTool.TOOL);
+        registerTool(RunCommandTool.TOOL);
+
         registerTool(WriteFileTool.TOOL);
         registerTool(ReadFileTool.TOOL);
         registerTool(ListFilesTool.TOOL);
         registerTool(SearchFileTool.TOOL);
 
-        registerTool(AskUserTool.TOOL);
-        registerTool(SubAgentTool.TOOL);
-        registerTool(ReasoningEffortTool.TOOL);
-        registerTool(RunCommandTool.TOOL);
-
         registerTool(ListTodoTool.TOOL);
         registerTool(AddTodoTool.TOOL);
         registerTool(UpdateTodoTool.TOOL);
+
+        registerTool(CreateSubAgentTool.TOOL);
+        registerTool(SubAgentTool.TOOL);
+        registerTool(ListSubAgentsTool.TOOL);
+        registerTool(WaitSubAgentTool.TOOL);
     }
 
     public static void registerApi(String name, Api api) {

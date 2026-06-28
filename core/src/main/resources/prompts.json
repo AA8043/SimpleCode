@@ -23,10 +23,21 @@
             "dir": "Directory path to list files from",
             "recursive": "Whether subdirectories should be included in the listing"
         },
+        "create_sub_agent": {
+            "description": "Create a new sub agent. The return value is the sub agent ID"
+        },
         "sub_agent": {
-            "description": "Delegate tasks to other models.",
+            "description": "Delegate tasks to other models. Note: This is asynchronous and does not wait for the task to complete",
+            "id": "The sub agent ID",
             "task": "Describe this task with natural language",
             "level": "Model level. The lower the level, the more complex the tasks handled"
+        },
+        "list_sub_agents": {
+            "description": "List all sub agents."
+        },
+        "wait_sub_agent": {
+            "description": "Wait for the sub agent to complete the current task.",
+            "id": "The sub agent ID"
         },
         "list_todo": {
             "description": "List TODOs."
@@ -58,5 +69,6 @@
     },
     "hasTodoReminder": "[System warning] You have unfinished TODOs, you can use the `list_todo` tool to view them",
     "autoModeOn": "This session has now switched to automatic mode, so you shouldn't ask the user questions",
-    "autoModeOff": "This session has now switched off automatic mode, allowing you to ask users questions whenever needed"
+    "autoModeOff": "This session has now switched off automatic mode, allowing you to ask users questions whenever needed",
+    "subAgentMessage": "[Sub agent {} message]\n{}"
 }

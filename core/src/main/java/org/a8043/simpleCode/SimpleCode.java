@@ -6,8 +6,6 @@ import cn.hutool.core.convert.ConverterRegistry;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.model.Model;
-import org.a8043.simpleCode.session.ReasoningEffort;
-import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.Status;
 import org.a8043.simpleCode.session.Todo;
 import org.a8043.simpleCode.session.content.*;
@@ -25,6 +23,9 @@ public class SimpleCode {
         boolean isNotFirst = Settings.read();
         Registry.AFTER_INIT_LIST.forEach(Runnable::run);
         return isNotFirst;
+    }
+
+    public static void save() {
     }
 
     private static void registerConverters() {
@@ -109,21 +110,6 @@ public class SimpleCode {
                     case "tool" -> Convert.convert(ToolContent.class, value);
                     default -> throw new RuntimeException();
                 };
-            }
-        });
-
-        registry.putCustom(Session.class, new AbstractConverter<Session>() {
-            @Override
-            protected Session convertInternal(Object value) {
-                JSONObject json = (JSONObject) value;
-                Session session = new Session(json.getStr("id"));
-                session.setName(json.getStr("name"));
-                session.getContentList().addAll(json.getJSONArray("contentList").toList(Content.class));
-                session.getToolCallList().addAll(json.getJSONArray("toolCallList").toList(ToolCall.class));
-                session.getTodoList().addAll(json.getJSONArray("todoList").toList(Todo.class));
-                session.setReasoningEffort(json.getEnum(ReasoningEffort.class, "reasoningEffort"));
-                session.setAutoModeDirectly(json.getBool("isAutoMode"));
-                return session;
             }
         });
 
