@@ -63,7 +63,7 @@ public class Settings {
     public static void save() {
         JSONObject json = new JSONObject();
         INSTANCE.getProviderList().forEach(p -> json.append("providers", new JSONObject()
-            .set("name", p.getName()).set("baseUrl", p.getBaseUrl()).set("api",
+            .set("name", p.getName()).set("baseUrl", p.getBaseUrl()).set("key", p.getKey()).set("api",
                 Registry.API_MAP.entrySet().stream()
                     .filter(a -> a.getValue() == p.getApi())
                     .map(Map.Entry::getKey)
