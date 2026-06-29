@@ -22,9 +22,9 @@ import java.util.stream.Stream;
 
 public class SearchFileTool implements CallableTool {
     public static final Tool TOOL = new Tool("search_file", new SearchFileTool(), List.of(
-        new StringParameter("search_file", "dir", true),
-        new StringParameter("search_file", "type", true, List.of("name", "content")),
-        new BooleanParameter("search_file", "keyword", true)
+        new StringParameter("dir", true),
+        new StringParameter("type", true, List.of("name", "content")),
+        new BooleanParameter("keyword", true)
     ));
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 

@@ -11,15 +11,21 @@ import java.util.List;
 @Getter
 public class Tool {
     private final String name;
+    private final JSONObject promptJson;
     private final String description;
     private final CallableTool callableTool;
     private final List<ToolParameter> parameterList;
 
     public Tool(String name, CallableTool callableTool, List<ToolParameter> parameterList) {
         this.name = name;
-        description = SimpleCode.PROMPT_JSON.getByPath("tool." + name + ".description", String.class);
+        promptJson = SimpleCode.PROMPT_JSON.getJSONObject("tool." + name);
+        description = promptJson.getStr("description");
         this.callableTool = callableTool;
         this.parameterList = parameterList;
+    }
+
+    public String getParameterDescription(ToolParameter parameter) {
+        return promptJson.getStr(parameter.getName());
     }
 
     public ToolParameter getParameter(String name) {

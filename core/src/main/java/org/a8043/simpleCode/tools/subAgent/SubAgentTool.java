@@ -17,9 +17,9 @@ import java.util.List;
 
 public class SubAgentTool implements CallableTool {
     public static final Tool TOOL = new Tool("sub_agent", new SubAgentTool(), List.of(
-        new StringParameter("sub_agent", "id", true),
-        new StringParameter("sub_agent", "task", true),
-        new StringParameter("sub_agent", "level", true, new ArrayList<>())
+        new StringParameter("id", true),
+        new StringParameter("task", true),
+        new StringParameter("level", true, new ArrayList<>())
     ));
 
     static {

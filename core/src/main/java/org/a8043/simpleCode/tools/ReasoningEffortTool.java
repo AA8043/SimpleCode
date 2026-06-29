@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ReasoningEffortTool implements CallableTool {
     public static final Tool TOOL = new Tool("reasoning_effort", new ReasoningEffortTool(), List.of(
-        new StringParameter("reasoning_effort", "new", true,
+        new StringParameter("new", true,
             Arrays.stream(ReasoningEffort.values()).map(Enum::name).toList())
     ));
 

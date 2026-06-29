@@ -14,11 +14,11 @@ import java.util.List;
 
 public class WriteFileTool implements CallableTool {
     public static final Tool TOOL = new Tool("write_file", new WriteFileTool(), List.of(
-        new StringParameter("write_file", "file", true),
-        new StringParameter("write_file", "type", true,
+        new StringParameter("file", true),
+        new StringParameter("type", true,
             List.of("overwrite", "replace", "append")),
-        new StringParameter("write_file", "content", true),
-        new StringParameter("write_file", "target", false)
+        new StringParameter("content", true),
+        new StringParameter("target", false)
     ));
 
     @Override

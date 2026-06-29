@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class AddTodoTool implements CallableTool {
     public static final Tool TOOL = new Tool("add_todo", new AddTodoTool(), List.of(
-        new StringParameter("add_todo", "task", true)
+        new StringParameter("task", true)
     ));
 
     @Override

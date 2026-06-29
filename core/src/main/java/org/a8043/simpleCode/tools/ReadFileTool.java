@@ -12,8 +12,8 @@ import java.util.List;
 
 public class ReadFileTool implements CallableTool {
     public static final Tool TOOL = new Tool("read_file", new ReadFileTool(), List.of(
-        new StringParameter("read_file", "file", true),
-        new StringParameter("read_file", "range", false)
+        new StringParameter("file", true),
+        new StringParameter("range", false)
     ));
 
     @Override

@@ -6,8 +6,8 @@ import lombok.Getter;
 public class ArrayParameter extends ToolParameter {
     private final ToolParameter type;
 
-    public ArrayParameter(String toolName, String name, boolean isRequired, ToolParameter type) {
-        super(toolName, name, isRequired);
+    public ArrayParameter(String name, boolean isRequired, ToolParameter type) {
+        super(name, isRequired);
         this.type = type;
     }
 }

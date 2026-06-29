@@ -13,6 +13,7 @@ import org.a8043.simpleCode.model.RemoteModel;
 import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.content.AssistantContent;
 import org.a8043.simpleCode.session.content.ToolContent;
+import org.a8043.simpleCode.session.tool.Tool;
 import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.session.tool.parameter.*;
 
@@ -67,7 +68,7 @@ public class OpenAIApi implements Api {
             toolJson.set("description", tool.getDescription());
 
             JSONObject argsJson = new JSONObject();
-            convertParameterToJson(new ObjectParameter(null, null,
+            convertParameterToJson(tool, new ObjectParameter(null,
                 true, tool.getParameterList()), argsJson);
             toolJson.set("parameters", argsJson);
 
@@ -118,8 +119,8 @@ public class OpenAIApi implements Api {
             (completionTokensDetails != null ? completionTokensDetails.getInt("reasoning_tokens") : 0));
     }
 
-    private void convertParameterToJson(ToolParameter parameter, JSONObject json) {
-        json.set("description", parameter.getDescription());
+    private void convertParameterToJson(Tool tool, ToolParameter parameter, JSONObject json) {
+        json.set("description", tool.getParameterDescription(parameter));
         json.set("type", switch (parameter) {
             case StringParameter ignored -> "string";
             case BooleanParameter ignored -> "boolean";
@@ -148,14 +149,14 @@ public class OpenAIApi implements Api {
             }
             case ArrayParameter ap -> {
                 JSONObject items = new JSONObject();
-                convertParameterToJson(ap.getType(), items);
+                convertParameterToJson(tool, ap.getType(), items);
                 json.set("items", items);
             }
             case ObjectParameter op -> {
                 JSONObject properties = new JSONObject();
                 op.getContent().forEach(p -> {
                     JSONObject json1 = new JSONObject();
-                    convertParameterToJson(p, json1);
+                    convertParameterToJson(tool, p, json1);
                     properties.set(p.getName(), json1);
                 });
                 json.set("properties", properties);

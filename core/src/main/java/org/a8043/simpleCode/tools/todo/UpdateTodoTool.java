@@ -13,8 +13,8 @@ import java.util.List;
 
 public class UpdateTodoTool implements CallableTool {
     public static final Tool TOOL = new Tool("update_todo", new UpdateTodoTool(), List.of(
-        new StringParameter("update_todo", "id", true),
-        new StringParameter("update_todo", "newStatus", true,
+        new StringParameter("id", true),
+        new StringParameter("newStatus", true,
             Arrays.stream(Todo.Status.values()).map(Enum::name).toList())
     ));
 

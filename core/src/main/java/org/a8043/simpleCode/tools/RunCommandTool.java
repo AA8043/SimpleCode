@@ -15,7 +15,7 @@ import java.util.List;
 
 public class RunCommandTool implements CallableTool {
     public static final Tool TOOL = new Tool("run_command", new RunCommandTool(), List.of(
-        new StringParameter("run_command", "command", true
+        new StringParameter("command", true
         )));
 
     @Override

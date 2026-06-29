@@ -12,7 +12,7 @@ import java.util.List;
 
 public class WaitSubAgentTool implements CallableTool {
     public static final Tool TOOL = new Tool("wait_sub_agent", new WaitSubAgentTool(), List.of(
-        new StringParameter("wait_sub_agent", "id", true)
+        new StringParameter("id", true)
     ));
 
     @Override

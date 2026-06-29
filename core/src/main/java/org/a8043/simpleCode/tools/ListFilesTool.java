@@ -14,8 +14,8 @@ import java.util.List;
 
 public class ListFilesTool implements CallableTool {
     public static final Tool TOOL = new Tool("list_files", new ListFilesTool(), List.of(
-        new StringParameter("list_files", "dir", true),
-        new BooleanParameter("list_files", "recursive", true)
+        new StringParameter("dir", true),
+        new BooleanParameter("recursive", true)
     ));
 
     @Override

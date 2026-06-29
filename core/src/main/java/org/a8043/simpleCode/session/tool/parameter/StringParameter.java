@@ -8,16 +8,16 @@ import java.util.List;
 public class StringParameter extends ToolParameter {
     private final List<String> enumList;
 
-    public StringParameter(String toolName, String name, boolean isRequired, List<String> enumList) {
-        super(toolName, name, isRequired);
+    public StringParameter(String name, boolean isRequired, List<String> enumList) {
+        super(name, isRequired);
         this.enumList = enumList;
     }
 
-    public StringParameter(String toolName, String name, boolean isRequired) {
-        this(toolName, name, isRequired, null);
+    public StringParameter(String name, boolean isRequired) {
+        this(name, isRequired, null);
     }
 
     public StringParameter() {
-        this(null, null, true);
+        this(null, true);
     }
 }
