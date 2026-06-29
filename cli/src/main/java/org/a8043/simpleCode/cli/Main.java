@@ -63,6 +63,7 @@ public class Main extends ToolkitApp {
     public void exit() {
         folder.close();
         SimpleCode.save();
+        CliSettings.save();
         quit();
     }
 

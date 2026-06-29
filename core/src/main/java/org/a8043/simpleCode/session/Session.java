@@ -67,7 +67,7 @@ public class Session {
     }
 
     public void ask(String text) {
-        ask(text, Settings.INSTANCE.getCurrentModel());
+        ask(text, Settings.INSTANCE.getMainModel());
     }
 
     public void ask(String text, Model model) {

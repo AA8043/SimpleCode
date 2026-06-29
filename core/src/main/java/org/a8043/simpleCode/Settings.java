@@ -10,13 +10,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class Settings {
     public static final Settings INSTANCE = new Settings();
     private final List<Provider> providerList = new ArrayList<>();
     private final List<Model> modelList = new ArrayList<>();
-    private Model currentModel;
 
     public Provider getProvider(String name) {
         return providerList.stream().filter(p -> p.getName().equals(name)).findFirst().orElse(null);
@@ -25,6 +25,10 @@ public class Settings {
     public Model getModel(Provider provider, String name) {
         return modelList.stream().filter(m -> m.getProvider().equals(provider) &&
                                               m.getName().equals(name)).findFirst().orElse(null);
+    }
+
+    public Model getMainModel() {
+        return modelList.stream().filter(m -> m.getLevel() == 0).findFirst().orElse(null);
     }
 
     public Model getLowestLevelModel() {
@@ -52,10 +56,21 @@ public class Settings {
             JSONObject json1 = (JSONObject) o;
             INSTANCE.modelList.add(json1.toBean(Model.class));
         });
-        JSONObject currentModelJson = json.getJSONObject("currentModel");
-        INSTANCE.currentModel = INSTANCE.getModel(INSTANCE.getProvider(currentModelJson.getStr("provider")),
-            currentModelJson.getStr("name"));
 
         return true;
+    }
+
+    public static void save() {
+        JSONObject json = new JSONObject();
+        INSTANCE.getProviderList().forEach(p -> json.append("providers", new JSONObject()
+            .set("name", p.getName()).set("baseUrl", p.getBaseUrl()).set("api",
+                Registry.API_MAP.entrySet().stream()
+                    .filter(a -> a.getValue() == p.getApi())
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse(null))));
+        INSTANCE.getModelList().forEach(m -> json.append("models", new JSONObject()
+            .set("provider", m.getProvider().getName()).set("name", m.getName()).set("level", m.getLevel())));
+        FileUtil.writeUtf8String(json.toString(), new File(SimpleCode.DATA_DIR, "settings.json"));
     }
 }

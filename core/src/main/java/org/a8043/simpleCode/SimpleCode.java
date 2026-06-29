@@ -26,6 +26,7 @@ public class SimpleCode {
     }
 
     public static void save() {
+        Settings.save();
     }
 
     private static void registerConverters() {

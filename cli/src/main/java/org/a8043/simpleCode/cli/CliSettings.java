@@ -21,4 +21,8 @@ public class CliSettings {
         BeanUtil.fillBeanWithMap(new JSONObject(FileUtil.readUtf8String(file)), INSTANCE, true);
         return true;
     }
+
+    public static void save() {
+        FileUtil.writeUtf8String(new JSONObject(INSTANCE).toString(), new File(SimpleCode.DATA_DIR, "cli.json"));
+    }
 }
