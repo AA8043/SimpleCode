@@ -19,7 +19,10 @@ import org.a8043.simpleCode.cli.Main;
 import org.a8043.simpleCode.cli.Util;
 import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.UserChoice;
-import org.a8043.simpleCode.session.content.*;
+import org.a8043.simpleCode.session.content.AssistantContent;
+import org.a8043.simpleCode.session.content.Content;
+import org.a8043.simpleCode.session.content.ToolContent;
+import org.a8043.simpleCode.session.content.UserContent;
 import org.a8043.simpleCode.session.tool.RunningTool;
 import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.tools.planMode.Plan;
@@ -111,8 +114,6 @@ public class SessionView extends Main.View {
 
         contentListElement.data(session.getAllContentList(),
             content -> column(switch (content) {
-                case SystemContent ignored -> text();
-                case RemindContent ignored -> text();
                 case UserContent uc -> text("> " + uc.getText()).overflow(Overflow.WRAP_WORD);
                 case AssistantContent ac -> text("● " + ac.getText()
                     .replace("\n", "    ")).overflow(Overflow.WRAP_WORD);
@@ -182,6 +183,7 @@ public class SessionView extends Main.View {
                     }
                 }).rounded() : unhandledUserChoice
         ).on(KeyTrigger.key(KeyCode.ESCAPE), e -> Main.INSTANCE.setView(MainView.INSTANCE))
-            .on(KeyTrigger.ctrl('a'), e -> session.setAutoMode(!session.isAutoMode()));
+            .on(KeyTrigger.ctrl('a'), e -> session.setAutoMode(!session.isAutoMode()))
+            .on(KeyTrigger.ctrl('w'), e -> session.setForeverMode(!session.isForeverMode()));
     }
 }

@@ -25,6 +25,9 @@ public class Util {
         if (session.isPlanMode()) {
             row.add(text(" · "), text(I18n.get("session.planMode")));
         }
+        if (session.isForeverMode()) {
+            row.add(text(" · "), text(I18n.get("session.foreverMode")));
+        }
         return row;
     }
 

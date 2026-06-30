@@ -82,5 +82,10 @@
     "hasTodoReminder": "<system-reminder>\nYou have unfinished TODOs, you can use the `list_todo` tool to view them\n</system-reminder>",
     "autoModeOn": "<system-reminder>\nThis session has now switched to automatic mode, so you shouldn't ask the user questions\n</system-reminder>",
     "autoModeOff": "<system-reminder>\nThis session has now switched off automatic mode, allowing you to ask users questions whenever needed\n</system-reminder>",
+    "planModeOn": "<system-reminder>\nThis session has now switched to plan mode\n</system-reminder>",
+    "planModeOff": "<system-reminder>\nThis session has now switched off plan mode\n</system-reminder>",
+    "foreverModeOn": "<system-reminder>\nThis session has now switched to forever mode, you can't stop working\n</system-reminder>",
+    "foreverModeOff": "<system-reminder>\nThis session has now switched off forever mode, you can stop working when you finish the task\n</system-reminder>",
+    "foreverModeReminder": "<system-reminder>\nContinue working. This session is in forever mode.\n</system-reminder>",
     "subAgentMessage": "<system-reminder>\n[Sub agent {} message]\n{}\n</system-reminder>"
 }

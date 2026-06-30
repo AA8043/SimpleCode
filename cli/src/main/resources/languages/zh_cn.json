@@ -22,6 +22,7 @@
     "session.reasoningEffort": "思考强度 {0}",
     "session.autoMode": "自动模式",
     "session.planMode": "计划模式",
+    "session.foreverMode": "永恒模式",
     "session.apiError": "API 错误({0}): {1}",
     "session.plan": "计划",
     "tools.read_file": "读取",

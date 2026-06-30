@@ -48,11 +48,12 @@ public class Session {
     };
     private final List<ToolCall> toolCallList = new ArrayList<>();
     private Asking asking;
-    private final List<Todo> todoList = new ArrayList<>();
+    private final List<Todo> todoList = new CopyOnWriteArrayList<>();
     @Setter
     private ReasoningEffort reasoningEffort = ReasoningEffort.DEFAULT;
     private boolean isAutoMode;
     private boolean isPlanMode;
+    private boolean isForeverMode;
     private final List<Session> subList = new ArrayList<>();
     @PropIgnore
     private final Session parent;
@@ -147,7 +148,11 @@ public class Session {
             if (result.isEnd()) {
                 long todoCount = todoList.stream().filter(t -> t.getStatus() != Todo.Status.FINISHED).count();
                 if (todoCount == 0 || remindedTodo) {
-                    break;
+                    if (!isForeverMode) {
+                        break;
+                    } else {
+                        contentList.add(new RemindContent(System.currentTimeMillis(), "foreverModeReminder"));
+                    }
                 } else {
                     contentList.add(new RemindContent(System.currentTimeMillis(), "hasTodoReminder"));
                     remindedTodo = true;
@@ -180,6 +185,18 @@ public class Session {
 
     public void setPlanModeDirectly(boolean planMode) {
         isPlanMode = planMode;
+    }
+
+    public void setForeverMode(boolean foreverMode) {
+        if (isForeverMode = foreverMode) {
+            contentList.add(new RemindContent(System.currentTimeMillis(), "foreverModeOn"));
+        } else {
+            contentList.add(new RemindContent(System.currentTimeMillis(), "foreverModeOff"));
+        }
+    }
+
+    public void setForeverModeDirectly(boolean foreverMode) {
+        isForeverMode = foreverMode;
     }
 
     public ToolCall getToolCall(String id) {
