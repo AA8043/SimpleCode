@@ -1,5 +1,6 @@
 package org.a8043.simpleCode.session;
 
+import org.a8043.simpleCode.Folder;
 import org.a8043.simpleCode.ListenerRegistry;
 import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.session.content.AssistantContent;
@@ -8,11 +9,13 @@ import org.a8043.simpleCode.session.content.ToolContent;
 import org.a8043.simpleCode.session.tool.RunningTool;
 import org.junit.Test;
 
+import java.io.File;
+
 public class SessionTest {
     @Test
     public void testAsk() {
         SimpleCode.init();
-        Session session = Session.create();
+        Session session = new Folder(new File(".")).createSession();
         ask(session, "在这个目录创建一个名为\"hello.txt\"的文件");
     }
 

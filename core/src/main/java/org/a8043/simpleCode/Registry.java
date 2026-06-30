@@ -1,5 +1,6 @@
 package org.a8043.simpleCode;
 
+import cn.hutool.core.io.resource.ResourceUtil;
 import org.a8043.simpleCode.api.Api;
 import org.a8043.simpleCode.api.OpenAIApi;
 import org.a8043.simpleCode.session.Session;
@@ -26,9 +27,18 @@ public class Registry {
     public static final Map<String, Api> API_MAP = new HashMap<>();
     public static final List<Tool> TOOL_LIST = new ArrayList<>();
     public static final List<Runnable> AFTER_INIT_LIST = new ArrayList<>();
+    public static final Map<String, String> SYSTEM_PROMPT_MAP = new HashMap<>();
+    public static final Map<String, String> SUB_AGENT_MAP = new HashMap<>();
 
     static {
         registerApi("OpenAI", new OpenAIApi());
+
+        registerSystemPrompt("normal", ResourceUtil.readUtf8Str("systemPrompts/normal.md"));
+        registerSystemPrompt("normal_sub", ResourceUtil.readUtf8Str("systemPrompts/normal-sub.md"));
+        registerSystemPrompt("explore_sub", ResourceUtil.readUtf8Str("systemPrompts/explore-sub.md"));
+
+        SUB_AGENT_MAP.put("normal", "normal_sub");
+        SUB_AGENT_MAP.put("explore", "explore_sub");
 
         registerTool(AskUserTool.TOOL);
         registerTool(ReasoningEffortTool.TOOL);
@@ -73,10 +83,13 @@ public class Registry {
 
     public static void registerAfterInit(Runnable afterInit) {
         AFTER_INIT_LIST.add(afterInit);
-
     }
 
     public static Tool getTool(String name) {
         return TOOL_LIST.stream().filter(t -> t.getName().equals(name)).findFirst().orElse(null);
+    }
+
+    public static void registerSystemPrompt(String key, String content) {
+        SYSTEM_PROMPT_MAP.put(key, content);
     }
 }

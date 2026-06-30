@@ -1,17 +1,20 @@
 package org.a8043.simpleCode.session.content;
 
-import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.json.JSONObject;
+import org.a8043.simpleCode.Registry;
 import org.a8043.simpleCode.session.Role;
 
 public class SystemContent extends Content {
-    public SystemContent(long time) {
+    private final String key;
+
+    public SystemContent(long time, String key) {
         super(time);
+        this.key = key;
     }
 
     @Override
     public String getText() {
-        return ResourceUtil.readUtf8Str("systemPrompt.md")
+        return Registry.SYSTEM_PROMPT_MAP.get(key)
             .replace("{system}", System.getProperty("os.name"))
             .replace("{user_name}", System.getProperty("user.name"))
             .replace("{dir}", System.getProperty("user.dir"));
@@ -24,6 +27,6 @@ public class SystemContent extends Content {
 
     @Override
     public JSONObject toJSON() {
-        return new JSONObject().set("type", "system");
+        return new JSONObject().set("type", "system").set("key", key);
     }
 }

@@ -78,7 +78,8 @@ public class SimpleCode {
         registry.putCustom(SystemContent.class, new AbstractConverter<SystemContent>() {
             @Override
             protected SystemContent convertInternal(Object value) {
-                return new SystemContent(0);
+                JSONObject json = (JSONObject) value;
+                return new SystemContent(0, json.getStr("key"));
             }
         });
 

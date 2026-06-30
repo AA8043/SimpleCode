@@ -48,7 +48,7 @@ effects. If the code is unclear to you, ask the user for clarification before pr
 After modifying the code, run the compilation. Add tests for new functionality when appropriate, and ensure all tests
 pass after modification.
 
-If the compilation fails but it's not your fault, don't keep trying—just tell the user directly.
+If the compilation fails, but it's not your fault, don't keep trying—just tell the user directly.
 
 ## 8. Keep existing code style
 

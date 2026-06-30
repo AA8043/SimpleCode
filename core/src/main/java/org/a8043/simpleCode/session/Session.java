@@ -34,13 +34,15 @@ public class Session {
     private final List<Content> contentList = new ArrayList<>() {
         @Override
         public boolean add(Content content) {
-            allContentList.add(content);
+            if (content.getRole() != Role.SYSTEM) {
+                allContentList.add(content);
+            }
             return super.add(content);
         }
 
         @Override
         public boolean addAll(Collection<? extends Content> c) {
-            allContentList.addAll(c);
+            allContentList.addAll(c.stream().filter(c1 -> c1.getRole() != Role.SYSTEM).toList());
             return super.addAll(c);
         }
     };
@@ -64,16 +66,16 @@ public class Session {
         this.parent = parent;
     }
 
-    public static Session create(Type type, Folder folder, Session parent) {
+    public static Session create(Type type, Folder folder, Session parent, String promptKey) {
         String uuid = UUID.randomUUID().toString();
         Session session = new Session(folder, type,
             type == Type.NORMAL ? uuid : "sub-" + uuid.split("-")[0], parent);
-        session.getContentList().add(new SystemContent(0));
+        session.getContentList().add(new SystemContent(0, promptKey));
         return session;
     }
 
-    public Session createSub() {
-        Session session = create(Type.SUB, folder, this);
+    public Session createSub(String promptKey) {
+        Session session = create(Type.SUB, folder, this, promptKey);
         session.setName("Sub-" + session.getId());
         session.setAutoMode(true);
         subList.add(session);

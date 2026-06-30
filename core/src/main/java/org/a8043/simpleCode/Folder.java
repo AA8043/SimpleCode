@@ -72,7 +72,7 @@ public class Folder {
     }
 
     public Session createSession() {
-        Session session = Session.create(Session.Type.NORMAL, this, null);
+        Session session = Session.create(Session.Type.NORMAL, this, null, "normal");
         sessionList.add(session);
         return session;
     }
