@@ -2,8 +2,13 @@ package org.a8043.simpleCode;
 
 import org.a8043.simpleCode.api.Api;
 import org.a8043.simpleCode.api.OpenAIApi;
+import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.tool.Tool;
+import org.a8043.simpleCode.session.tool.ToolVisibility;
 import org.a8043.simpleCode.tools.*;
+import org.a8043.simpleCode.tools.planMode.EnterPlanModeTool;
+import org.a8043.simpleCode.tools.planMode.ExitPlanModeTool;
+import org.a8043.simpleCode.tools.planMode.UpdatePlanTool;
 import org.a8043.simpleCode.tools.subAgent.CreateSubAgentTool;
 import org.a8043.simpleCode.tools.subAgent.ListSubAgentsTool;
 import org.a8043.simpleCode.tools.subAgent.SubAgentTool;
@@ -42,6 +47,20 @@ public class Registry {
         registerTool(SubAgentTool.TOOL);
         registerTool(ListSubAgentsTool.TOOL);
         registerTool(WaitSubAgentTool.TOOL);
+
+        registerTool(EnterPlanModeTool.TOOL);
+        registerTool(UpdatePlanTool.TOOL);
+        registerTool(ExitPlanModeTool.TOOL);
+    }
+
+    public static List<Tool> getToolList(Session session) {
+        List<Tool> list = new ArrayList<>(TOOL_LIST);
+        if (session.isPlanMode()) {
+            list.removeIf(t -> t.getVisibility() == ToolVisibility.NORMAL_MODE_ONLY);
+        } else {
+            list.removeIf(t -> t.getVisibility() == ToolVisibility.PLAN_MODE_ONLY);
+        }
+        return list;
     }
 
     public static void registerApi(String name, Api api) {

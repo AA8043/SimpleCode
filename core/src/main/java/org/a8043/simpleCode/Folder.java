@@ -22,6 +22,7 @@ import java.util.function.Function;
 public class Folder {
     private static final List<Folder> openedFolderList = new ArrayList<>();
     private final File dir;
+    private final File dataDir;
     private final File sessionsDir;
     private final List<Session> sessionList = new ArrayList<>();
     private final Thread autoSaveThread;
@@ -29,8 +30,9 @@ public class Folder {
     public Folder(File dir) {
         openedFolderList.add(this);
         this.dir = dir;
+        dataDir = new File(SimpleCode.FOLDERS_DATA_DIR, dir.getAbsolutePath().replace(":", ""));
 
-        sessionsDir = new File(SimpleCode.SESSIONS_DIR, dir.getAbsolutePath().replace(":", ""));
+        sessionsDir = new File(dataDir, "sessions");
         if (!sessionsDir.exists() && !sessionsDir.mkdirs()) {
             throw new RuntimeException();
         }
@@ -45,6 +47,7 @@ public class Folder {
                 session.getTodoList().addAll(json.getJSONArray("todoList").toList(Todo.class));
                 session.setReasoningEffort(json.getEnum(ReasoningEffort.class, "reasoningEffort"));
                 session.setAutoModeDirectly(json.getBool("isAutoMode"));
+                session.setPlanModeDirectly(json.getBool("isPlanMode"));
                 session.getSubList().addAll(json.getJSONArray("subList")
                     .stream().map(j -> convert((JSONObject) j, session)).toList());
                 return session;

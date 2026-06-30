@@ -21,6 +21,9 @@
     "session.toolCallRequest": "请求调用工具",
     "session.reasoningEffort": "思考强度 {0}",
     "session.autoMode": "自动模式",
+    "session.planMode": "计划模式",
+    "session.apiError": "API 错误({0}): {1}",
+    "session.plan": "计划",
     "tools.read_file": "读取",
     "tools.write_file": "写入",
     "tools.list_files": "列出文件",
@@ -34,5 +37,8 @@
     "tools.update_todo": "更新 TODO 状态",
     "tools.reasoning_effort": "切换思考强度",
     "tools.run_command": "运行命令",
-    "tools.search_file": "搜索文件"
+    "tools.search_file": "搜索文件",
+    "tools.enter_plan_mode": "进入计划模式",
+    "tools.update_plan": "更新计划",
+    "tools.exit_plan_mode": "退出计划模式"
 }

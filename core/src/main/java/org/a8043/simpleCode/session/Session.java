@@ -1,6 +1,7 @@
 package org.a8043.simpleCode.session;
 
 import cn.hutool.core.annotation.PropIgnore;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +16,14 @@ import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.session.tool.ToolCallReturn;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
 @Getter
+@EqualsAndHashCode
 public class Session {
     @PropIgnore
     private final Folder folder;
@@ -28,16 +31,31 @@ public class Session {
     private final String id;
     @Setter
     private String name;
-    private final List<Content> contentList = new CopyOnWriteArrayList<>();
+    private final List<Content> contentList = new ArrayList<>() {
+        @Override
+        public boolean add(Content content) {
+            allContentList.add(content);
+            return super.add(content);
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends Content> c) {
+            allContentList.addAll(c);
+            return super.addAll(c);
+        }
+    };
     private final List<ToolCall> toolCallList = new ArrayList<>();
     private Asking asking;
     private final List<Todo> todoList = new ArrayList<>();
     @Setter
     private ReasoningEffort reasoningEffort = ReasoningEffort.DEFAULT;
     private boolean isAutoMode;
+    private boolean isPlanMode;
     private final List<Session> subList = new ArrayList<>();
     @PropIgnore
     private final Session parent;
+    @PropIgnore
+    private final List<Object> allContentList = new CopyOnWriteArrayList<>();
 
     public Session(Folder folder, Type type, String id, Session parent) {
         this.folder = folder;
@@ -82,6 +100,7 @@ public class Session {
                 result = model.getProvider().getApi().complete(model, this);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
+                allContentList.add(e);
                 break;
             }
 
@@ -100,6 +119,8 @@ public class Session {
             toolCallList.forEach(toolCall -> {
                 RunningTool runningTool = new RunningTool(toolCall, this);
                 listener.onToolCall(runningTool);
+                allContentList.add(toolCall);
+                toolCall.getTool().getCallableTool().beforeRequest(toolCall.getArgs(), runningTool);
 
                 boolean isAllow;
                 if (!isAutoMode) {
@@ -118,6 +139,7 @@ public class Session {
                     contentList.add(new ToolContent(System.currentTimeMillis(), toolCall,
                         Status.fail("User rejected the tool call"), ""));
                 }
+                allContentList.remove(toolCall);
             });
 
             if (result.isEnd()) {
@@ -144,6 +166,18 @@ public class Session {
 
     public void setAutoModeDirectly(boolean autoMode) {
         isAutoMode = autoMode;
+    }
+
+    public void setPlanMode(boolean planMode) {
+        if (isPlanMode = planMode) {
+            contentList.add(new RemindContent(System.currentTimeMillis(), "planModeOn"));
+        } else {
+            contentList.add(new RemindContent(System.currentTimeMillis(), "planModeOff"));
+        }
+    }
+
+    public void setPlanModeDirectly(boolean planMode) {
+        isPlanMode = planMode;
     }
 
     public ToolCall getToolCall(String id) {

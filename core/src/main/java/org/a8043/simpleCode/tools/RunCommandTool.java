@@ -3,10 +3,7 @@ package org.a8043.simpleCode.tools;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.LineHandler;
 import cn.hutool.json.JSONObject;
-import org.a8043.simpleCode.session.tool.CallableTool;
-import org.a8043.simpleCode.session.tool.RunningTool;
-import org.a8043.simpleCode.session.tool.Tool;
-import org.a8043.simpleCode.session.tool.ToolException;
+import org.a8043.simpleCode.session.tool.*;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 
 import java.io.IOException;
@@ -14,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RunCommandTool implements CallableTool {
-    public static final Tool TOOL = new Tool("run_command", new RunCommandTool(), List.of(
+    public static final Tool TOOL = new Tool("run_command", ToolVisibility.NORMAL_MODE_ONLY,
+        new RunCommandTool(), List.of(
         new StringParameter("command", true
         )));
 

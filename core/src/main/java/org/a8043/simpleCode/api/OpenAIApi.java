@@ -1,6 +1,7 @@
 package org.a8043.simpleCode.api;
 
 import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONConfig;
@@ -25,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class OpenAIApi implements Api {
     @Override
-    public CompleteResult complete(Model model, Session session) {
+    public CompleteResult complete(Model model, Session session) throws ApiException {
         JSONObject requestBody = new JSONObject();
         requestBody.set("model", model.getName());
         requestBody.set("stream_options", new JSONObject().set("include_usage", true));
@@ -62,7 +63,7 @@ public class OpenAIApi implements Api {
             requestBody.append("messages", message);
         });
 
-        Registry.TOOL_LIST.forEach(tool -> {
+        Registry.getToolList(session).forEach(tool -> {
             JSONObject toolJson = new JSONObject();
             toolJson.set("name", tool.getName());
             toolJson.set("description", tool.getDescription());
@@ -78,13 +79,18 @@ public class OpenAIApi implements Api {
         HttpRequest post = HttpUtil.createPost(model.getProvider().getBaseUrl() + "/v1/chat/completions");
         post.addHeaders(Map.of("Authorization", "Bearer " + model.getProvider().getKey()));
         post.body(requestBody.toString());
-        String response = post.execute().body();
 
-        JSONObject responseBody = new JSONObject(response);
+        HttpResponse response = post.execute();
+        String responseBody = response.body();
+        if (!response.isOk()) {
+            throw new ApiException(response.getStatus(), responseBody);
+        }
+
+        JSONObject responseJson = new JSONObject(responseBody);
         List<AssistantContent> contentList = new ArrayList<>();
         List<ToolCall> toolCallList = new ArrayList<>();
         AtomicBoolean isEnd = new AtomicBoolean();
-        responseBody.getJSONArray("choices").forEach(o -> {
+        responseJson.getJSONArray("choices").forEach(o -> {
             JSONObject json = (JSONObject) o;
             JSONObject message = json.getJSONObject("message");
             isEnd.set(json.getStr("finish_reason").equals("stop"));
@@ -109,7 +115,7 @@ public class OpenAIApi implements Api {
             }
         });
 
-        JSONObject usage = responseBody.getJSONObject("usage");
+        JSONObject usage = responseJson.getJSONObject("usage");
         JSONObject promptTokensDetails = usage.getJSONObject("prompt_tokens_details");
         JSONObject completionTokensDetails = usage.getJSONObject("completion_tokens_details");
         return new CompleteResult(isEnd.get(), contentList, toolCallList,

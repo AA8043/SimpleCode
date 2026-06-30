@@ -65,6 +65,18 @@
             "keyword": "Keyword, supports regular expressions",
             "dirNotExist": "Directory does not exist",
             "notFound": "No files found."
+        },
+        "enter_plan_mode": {
+            "description": "Enter plan mode."
+        },
+        "update_plan": {
+            "description": "Update the plan",
+            "type": "Write type",
+            "content": "Content to write",
+            "target": "Target content for replacement, only used when type is 'replace'"
+        },
+        "exit_plan_mode": {
+            "description": "Exit plan mode."
         }
     },
     "hasTodoReminder": "[System warning] You have unfinished TODOs, you can use the `list_todo` tool to view them",

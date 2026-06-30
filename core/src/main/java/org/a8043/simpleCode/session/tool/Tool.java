@@ -13,12 +13,18 @@ public class Tool {
     private final String name;
     private final JSONObject promptJson;
     private final String description;
+    private final ToolVisibility visibility;
     private final CallableTool callableTool;
     private final List<ToolParameter> parameterList;
 
     public Tool(String name, CallableTool callableTool, List<ToolParameter> parameterList) {
+        this(name, ToolVisibility.ALL, callableTool, parameterList);
+    }
+
+    public Tool(String name, ToolVisibility visibility, CallableTool callableTool, List<ToolParameter> parameterList) {
         this.name = name;
-        promptJson = SimpleCode.PROMPT_JSON.getJSONObject("tool." + name);
+        promptJson = SimpleCode.PROMPT_JSON.getJSONObject("tool").getJSONObject(name);
+        this.visibility = visibility;
         description = promptJson.getStr("description");
         this.callableTool = callableTool;
         this.parameterList = parameterList;

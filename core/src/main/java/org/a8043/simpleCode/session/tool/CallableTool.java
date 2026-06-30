@@ -6,4 +6,7 @@ public interface CallableTool {
     String call(JSONObject args, RunningTool runningTool) throws Exception;
 
     String getSimpleInfo(JSONObject args);
+
+    default void beforeRequest(JSONObject args, RunningTool runningTool) {
+    }
 }

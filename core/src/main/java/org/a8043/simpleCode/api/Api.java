@@ -8,7 +8,7 @@ import org.a8043.simpleCode.session.Session;
 import java.util.List;
 
 public interface Api {
-    CompleteResult complete(Model model, Session session);
+    CompleteResult complete(Model model, Session session) throws ApiException;
 
-    List<RemoteModel> getModels(Provider provider);
+    List<RemoteModel> getModels(Provider provider) throws ApiException;
 }

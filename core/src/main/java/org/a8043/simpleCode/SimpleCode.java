@@ -15,8 +15,8 @@ import java.io.File;
 
 public class SimpleCode {
     public static final File DATA_DIR = new File(System.getProperty("user.home") + "/.simpleCode");
-    public static final File SESSIONS_DIR = new File(DATA_DIR, "sessions");
     public static final JSONObject PROMPT_JSON = new JSONObject(ResourceUtil.readUtf8Str("prompts.json"));
+    public static final File FOLDERS_DATA_DIR = new File(DATA_DIR, "folders");
 
     public static boolean init() {
         registerConverters();

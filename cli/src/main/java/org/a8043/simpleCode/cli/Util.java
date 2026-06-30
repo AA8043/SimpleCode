@@ -22,6 +22,9 @@ public class Util {
         if (session.isAutoMode()) {
             row.add(text(" · "), text(I18n.get("session.autoMode")));
         }
+        if (session.isPlanMode()) {
+            row.add(text(" · "), text(I18n.get("session.planMode")));
+        }
         return row;
     }
 

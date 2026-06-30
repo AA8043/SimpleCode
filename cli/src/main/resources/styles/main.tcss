@@ -1,9 +1,9 @@
-TextElement:focus {
-    color: rgb(177, 185, 249);
-}
-
 .main-view-title {
     color: grey;
+}
+
+TextElement:focus {
+    color: rgb(177, 185, 249);
 }
 
 TextInputElement:focus, .ask-user-panel {
