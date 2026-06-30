@@ -79,8 +79,8 @@
             "description": "Exit plan mode."
         }
     },
-    "hasTodoReminder": "[System warning] You have unfinished TODOs, you can use the `list_todo` tool to view them",
-    "autoModeOn": "This session has now switched to automatic mode, so you shouldn't ask the user questions",
-    "autoModeOff": "This session has now switched off automatic mode, allowing you to ask users questions whenever needed",
-    "subAgentMessage": "[Sub agent {} message]\n{}"
+    "hasTodoReminder": "<system-reminder>\nYou have unfinished TODOs, you can use the `list_todo` tool to view them\n</system-reminder>",
+    "autoModeOn": "<system-reminder>\nThis session has now switched to automatic mode, so you shouldn't ask the user questions\n</system-reminder>",
+    "autoModeOff": "<system-reminder>\nThis session has now switched off automatic mode, allowing you to ask users questions whenever needed\n</system-reminder>",
+    "subAgentMessage": "<system-reminder>\n[Sub agent {} message]\n{}\n</system-reminder>"
 }
