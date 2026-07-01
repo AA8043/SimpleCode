@@ -79,7 +79,7 @@ public class SimpleCode {
             @Override
             protected SystemContent convertInternal(Object value) {
                 JSONObject json = (JSONObject) value;
-                return new SystemContent(0, json.getStr("key"));
+                return new SystemContent(0, json.getStr("key"), json.getStr("workingDir"));
             }
         });
 

@@ -13,8 +13,9 @@ import java.util.List;
 public class RunCommandTool implements CallableTool {
     public static final Tool TOOL = new Tool("run_command", ToolVisibility.NORMAL_MODE_ONLY,
         new RunCommandTool(), List.of(
-        new StringParameter("command", true
-        )));
+        new StringParameter("command", true),
+        new StringParameter("reason", false)
+    ));
 
     @Override
     public String call(JSONObject args, RunningTool runningTool) throws Exception {

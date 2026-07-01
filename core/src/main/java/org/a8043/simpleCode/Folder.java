@@ -49,6 +49,7 @@ public class Folder {
                 session.setAutoModeDirectly(json.getBool("isAutoMode"));
                 session.setPlanModeDirectly(json.getBool("isPlanMode"));
                 session.setForeverModeDirectly(json.getBool("isForeverMode"));
+                session.setAllowTool(json.getBool("allowTool"));
                 session.getSubList().addAll(json.getJSONArray("subList")
                     .stream().map(j -> convert((JSONObject) j, session)).toList());
                 return session;

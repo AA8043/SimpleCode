@@ -1,5 +1,6 @@
 package org.a8043.simpleCode.tools;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.Util;
 import org.a8043.simpleCode.session.tool.*;
@@ -32,6 +33,9 @@ public class WriteFileTool implements CallableTool {
             default -> throw new ToolException("Invalid write type: " + args.getStr("type"));
         };
 
+        if (!FileUtil.isSub(runningTool.getSession().getFolder().getDir(), file)) {
+            throw new ToolException(TOOL.getPromptJson().getStr("notInWorkspace"));
+        }
         Util.writeFile(newContent, file);
         return "";
     }

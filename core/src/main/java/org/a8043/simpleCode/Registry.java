@@ -36,6 +36,8 @@ public class Registry {
         registerSystemPrompt("normal", ResourceUtil.readUtf8Str("systemPrompts/normal.md"));
         registerSystemPrompt("normal_sub", ResourceUtil.readUtf8Str("systemPrompts/normal-sub.md"));
         registerSystemPrompt("explore_sub", ResourceUtil.readUtf8Str("systemPrompts/explore-sub.md"));
+        registerSystemPrompt("shell-command-safety-assessment",
+            ResourceUtil.readUtf8Str("systemPrompts/shell-command-safety-assessment.md"));
 
         SUB_AGENT_MAP.put("normal", "normal_sub");
         SUB_AGENT_MAP.put("explore", "explore_sub");
@@ -64,6 +66,9 @@ public class Registry {
     }
 
     public static List<Tool> getToolList(Session session) {
+        if (!session.isAllowTool()) {
+            return List.of();
+        }
         List<Tool> list = new ArrayList<>(TOOL_LIST);
         if (session.isPlanMode()) {
             list.removeIf(t -> t.getVisibility() == ToolVisibility.NORMAL_MODE_ONLY);

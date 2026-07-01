@@ -10,7 +10,8 @@
             "file": "File path to write",
             "type": "Write type",
             "content": "Content to write",
-            "target": "Target content for replacement, only used when type is 'replace'"
+            "target": "Target content for replacement, only used when type is 'replace'",
+            "notInWorkspace": "The file are not in the workspace, so you cannot change it"
         },
         "ask_user": {
             "description": "Ask the user a question and get the input.",
@@ -57,7 +58,8 @@
         },
         "run_command": {
             "description": "Execute a shell command.",
-            "command": "The shell command to execute"
+            "command": "The shell command to execute",
+            "reason": "Reason for executing this command (optional). The reason are as detailed as possible. If the conversation is in auto mode, it is strongly recommended to enter this parameter, as it can improve the pass rate."
         },
         "search_file": {
             "description": "Search for files",
@@ -87,5 +89,7 @@
     "foreverModeOn": "<system-reminder>\nThis session has now switched to forever mode, you can't stop working\n</system-reminder>",
     "foreverModeOff": "<system-reminder>\nThis session has now switched off forever mode, you can stop working when you finish the task\n</system-reminder>",
     "foreverModeReminder": "<system-reminder>\nContinue working. This session is in forever mode.\n</system-reminder>",
-    "subAgentMessage": "<system-reminder>\n[Sub agent {} message]\n{}\n</system-reminder>"
+    "subAgentMessage": "<system-reminder>\n[Sub agent {} message]\n{}\n</system-reminder>",
+    "shellCommandSafetyEvaluatorNotAvailable": "The safety evaluator is temporarily unavailable",
+    "userRejectedToolCall": "User rejected the tool call"
 }

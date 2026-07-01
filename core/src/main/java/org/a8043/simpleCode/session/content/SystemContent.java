@@ -6,10 +6,12 @@ import org.a8043.simpleCode.session.Role;
 
 public class SystemContent extends Content {
     private final String key;
+    private final String workingDir;
 
-    public SystemContent(long time, String key) {
+    public SystemContent(long time, String key, String workingDir) {
         super(time);
         this.key = key;
+        this.workingDir = workingDir;
     }
 
     @Override
@@ -17,7 +19,7 @@ public class SystemContent extends Content {
         return Registry.SYSTEM_PROMPT_MAP.get(key)
             .replace("{system}", System.getProperty("os.name"))
             .replace("{user_name}", System.getProperty("user.name"))
-            .replace("{dir}", System.getProperty("user.dir"));
+            .replace("{dir}", workingDir);
     }
 
     @Override
@@ -27,6 +29,6 @@ public class SystemContent extends Content {
 
     @Override
     public JSONObject toJSON() {
-        return new JSONObject().set("type", "system").set("key", key);
+        return new JSONObject().set("type", "system").set("key", key).set("workingDir", workingDir);
     }
 }

@@ -8,12 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.a8043.simpleCode.Folder;
 import org.a8043.simpleCode.ListenerRegistry;
 import org.a8043.simpleCode.Settings;
+import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.api.CompleteResult;
 import org.a8043.simpleCode.model.Model;
 import org.a8043.simpleCode.session.content.*;
 import org.a8043.simpleCode.session.tool.RunningTool;
 import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.session.tool.ToolCallReturn;
+import org.a8043.simpleCode.tools.RunCommandTool;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +56,8 @@ public class Session {
     private boolean isAutoMode;
     private boolean isPlanMode;
     private boolean isForeverMode;
+    @Setter
+    private boolean allowTool = true;
     private final List<Session> subList = new ArrayList<>();
     @PropIgnore
     private final Session parent;
@@ -71,7 +75,7 @@ public class Session {
         String uuid = UUID.randomUUID().toString();
         Session session = new Session(folder, type,
             type == Type.NORMAL ? uuid : "sub-" + uuid.split("-")[0], parent);
-        session.getContentList().add(new SystemContent(0, promptKey));
+        session.getContentList().add(new SystemContent(0, promptKey, folder.getDir().getAbsolutePath()));
         return session;
     }
 
@@ -125,22 +129,27 @@ public class Session {
                 allContentList.add(toolCall);
                 toolCall.getTool().getCallableTool().beforeRequest(toolCall.getArgs(), runningTool);
 
-                boolean isAllow;
+                String allow;
                 if (!isAutoMode) {
                     UserChoice<Boolean> userChoice = new UserChoice<>(runningTool, List.of(true, false));
                     listener.onUserChoice(userChoice);
-                    isAllow = userChoice.getChoice();
+                    allow = userChoice.getChoice() ? "" : SimpleCode.PROMPT_JSON.getStr("userRejectedToolCall");
                 } else {
-                    isAllow = true;
+                    if (toolCall.getTool() == RunCommandTool.TOOL) {
+                        allow = assessmentShellCommand(text, toolCall.getArgs().getStr("command"),
+                            toolCall.getArgs().getStr("reason", "None"));
+                    } else {
+                        allow = "";
+                    }
                 }
 
-                if (isAllow) {
+                if (allow.isEmpty()) {
                     ToolCallReturn callResult = toolCall.call(runningTool);
                     contentList.add(new ToolContent(System.currentTimeMillis(), toolCall,
                         callResult.getStatus(), callResult.getContent()));
                 } else {
                     contentList.add(new ToolContent(System.currentTimeMillis(), toolCall,
-                        Status.fail("User rejected the tool call"), ""));
+                        Status.fail(allow), ""));
                 }
                 allContentList.remove(toolCall);
             });
@@ -161,6 +170,21 @@ public class Session {
         }
         listener.onFinish();
         asking = null;
+    }
+
+    private String assessmentShellCommand(String userMessage, String command, String reason) {
+        Session session = Session.create(Type.NORMAL, folder, null,
+            "shell-command-safety-assessment");
+        session.setAutoMode(true);
+        session.setAllowTool(false);
+        session.ask("Task: %s\nCommand: %s\nReason: %s".formatted(userMessage, command, reason),
+            Settings.INSTANCE.getLowestLevelModel());
+        Content last = session.getContentList().getLast();
+        if (last instanceof AssistantContent ac) {
+            return ac.getText().equals("true") ? "" : ac.getText();
+        } else {
+            return SimpleCode.PROMPT_JSON.getStr("shellCommandSafetyEvaluatorNotAvailable");
+        }
     }
 
     public void setAutoMode(boolean autoMode) {
