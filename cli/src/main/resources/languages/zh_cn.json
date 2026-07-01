@@ -25,6 +25,7 @@
     "session.foreverMode": "永恒模式",
     "session.apiError": "API 错误({0}): {1}",
     "session.plan": "计划",
+    "tools.unknownTool": "未知工具",
     "tools.read_file": "读取",
     "tools.write_file": "写入",
     "tools.list_files": "列出文件",

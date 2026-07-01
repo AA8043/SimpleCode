@@ -1,6 +1,7 @@
 package org.a8043.simpleCode.cli;
 
 import dev.tamboui.style.Overflow;
+import dev.tamboui.toolkit.element.Element;
 import dev.tamboui.toolkit.elements.Row;
 import org.a8043.simpleCode.session.ReasoningEffort;
 import org.a8043.simpleCode.session.Session;
@@ -31,7 +32,10 @@ public class Util {
         return row;
     }
 
-    public static Row getToolDescriptionElement(ToolCall toolCall) {
+    public static Element getToolDescriptionElement(ToolCall toolCall) {
+        if (toolCall.getTool() == null) {
+            return text(I18n.get("tools.unknownTool"));
+        }
         Row row = row(text(I18n.get("tools." + toolCall.getTool().getName())));
         String simpleInfo = toolCall.getTool().getCallableTool().getSimpleInfo(toolCall.getArgs());
         if (!simpleInfo.isEmpty()) {

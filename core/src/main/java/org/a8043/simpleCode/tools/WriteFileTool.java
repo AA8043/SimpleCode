@@ -33,7 +33,7 @@ public class WriteFileTool implements CallableTool {
             default -> throw new ToolException("Invalid write type: " + args.getStr("type"));
         };
 
-        if (!FileUtil.isSub(runningTool.getSession().getFolder().getDir(), file)) {
+        if (runningTool != null && !FileUtil.isSub(runningTool.getSession().getFolder().getDir(), file)) {
             throw new ToolException(TOOL.getPromptJson().getStr("notInWorkspace"));
         }
         Util.writeFile(newContent, file);
