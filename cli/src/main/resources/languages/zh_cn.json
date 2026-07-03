@@ -42,5 +42,6 @@
     "tools.search_file": "搜索文件",
     "tools.enter_plan_mode": "进入计划模式",
     "tools.update_plan": "更新计划",
-    "tools.exit_plan_mode": "退出计划模式"
+    "tools.exit_plan_mode": "退出计划模式",
+    "tools.compactingConversation": "压缩对话"
 }

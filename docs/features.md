@@ -16,12 +16,13 @@ SimpleCode 内置多种工具，AI 可根据任务自动调用：
 | `list_todo` / `add_todo` / `update_todo`                  | 任务管理             |
 | `create_sub_agent` / `wait_sub_agent` / `list_sub_agents` | 子代理管理           |
 | `enter_plan_mode` / `exit_plan_mode` / `update_plan`      | 计划模式             |
+| `compacting_conversation`                                 | 压缩对话             |
 
 ## 计划模式（Plan Mode）
 
 进入计划模式后，AI 会先制定详细的实施计划，适合复杂任务。
 
-在计划模式下，仅开放计划模式专用的工具，普通工具暂时隐藏。
+在计划模式下，仅普通模式的工具会被隐藏。
 
 ## 任务管理（TODO）
 

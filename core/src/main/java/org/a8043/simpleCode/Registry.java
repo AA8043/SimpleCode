@@ -38,6 +38,8 @@ public class Registry {
         registerSystemPrompt("explore_sub", ResourceUtil.readUtf8Str("systemPrompts/explore-sub.md"));
         registerSystemPrompt("shell-command-safety-assessment",
             ResourceUtil.readUtf8Str("systemPrompts/shell-command-safety-assessment.md"));
+        registerSystemPrompt("compacting-conversation",
+            ResourceUtil.readUtf8Str("systemPrompts/compacting-conversation.md"));
 
         SUB_AGENT_MAP.put("normal", "normal_sub");
         SUB_AGENT_MAP.put("explore", "explore_sub");
@@ -45,6 +47,7 @@ public class Registry {
         registerTool(AskUserTool.TOOL);
         registerTool(ReasoningEffortTool.TOOL);
         registerTool(RunCommandTool.TOOL);
+        registerTool(CompactingConversationTool.TOOL);
 
         registerTool(WriteFileTool.TOOL);
         registerTool(ReadFileTool.TOOL);

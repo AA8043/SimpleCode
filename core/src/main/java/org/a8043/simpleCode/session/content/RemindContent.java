@@ -10,13 +10,13 @@ public class RemindContent extends Content {
     @Getter
     private final String text;
 
-    public RemindContent(long time, String key, String... args) {
-        this(time, StrUtil.format(SimpleCode.PROMPT_JSON.getStr(key), (Object[]) args));
-    }
-
     public RemindContent(long time, String text) {
         super(time);
         this.text = text;
+    }
+
+    public static RemindContent ofPromptKey(long time, String key, String... args) {
+        return new RemindContent(time, StrUtil.format(SimpleCode.PROMPT_JSON.getStr(key), (Object[]) args));
     }
 
     @Override

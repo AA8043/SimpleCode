@@ -117,7 +117,7 @@ public class Session {
             asking.addPromptTokens(result.getPromptTokens());
             if (parent != null) {
                 result.getContentList().forEach(c -> parent.contentList.add(
-                    new RemindContent(c.getTime(), "subAgentMessage", id, c.getText())));
+                    RemindContent.ofPromptKey(c.getTime(), "subAgentMessage", id, c.getText())));
             }
             result.getContentList().forEach(listener::onComplete);
 
@@ -160,10 +160,10 @@ public class Session {
                     if (!isForeverMode) {
                         break;
                     } else {
-                        contentList.add(new RemindContent(System.currentTimeMillis(), "foreverModeReminder"));
+                        contentList.add(RemindContent.ofPromptKey(System.currentTimeMillis(), "foreverModeReminder"));
                     }
                 } else {
-                    contentList.add(new RemindContent(System.currentTimeMillis(), "hasTodoReminder"));
+                    contentList.add(RemindContent.ofPromptKey(System.currentTimeMillis(), "hasTodoReminder"));
                     remindedTodo = true;
                 }
             }
@@ -189,9 +189,9 @@ public class Session {
 
     public void setAutoMode(boolean autoMode) {
         if (isAutoMode = autoMode) {
-            contentList.add(new RemindContent(System.currentTimeMillis(), "autoModeOn"));
+            contentList.add(RemindContent.ofPromptKey(System.currentTimeMillis(), "autoModeOn"));
         } else {
-            contentList.add(new RemindContent(System.currentTimeMillis(), "autoModeOff"));
+            contentList.add(RemindContent.ofPromptKey(System.currentTimeMillis(), "autoModeOff"));
         }
     }
 
@@ -201,9 +201,9 @@ public class Session {
 
     public void setPlanMode(boolean planMode) {
         if (isPlanMode = planMode) {
-            contentList.add(new RemindContent(System.currentTimeMillis(), "planModeOn"));
+            contentList.add(RemindContent.ofPromptKey(System.currentTimeMillis(), "planModeOn"));
         } else {
-            contentList.add(new RemindContent(System.currentTimeMillis(), "planModeOff"));
+            contentList.add(RemindContent.ofPromptKey(System.currentTimeMillis(), "planModeOff"));
         }
     }
 
@@ -213,9 +213,9 @@ public class Session {
 
     public void setForeverMode(boolean foreverMode) {
         if (isForeverMode = foreverMode) {
-            contentList.add(new RemindContent(System.currentTimeMillis(), "foreverModeOn"));
+            contentList.add(RemindContent.ofPromptKey(System.currentTimeMillis(), "foreverModeOn"));
         } else {
-            contentList.add(new RemindContent(System.currentTimeMillis(), "foreverModeOff"));
+            contentList.add(RemindContent.ofPromptKey(System.currentTimeMillis(), "foreverModeOff"));
         }
     }
 
@@ -225,6 +225,22 @@ public class Session {
 
     public ToolCall getToolCall(String id) {
         return toolCallList.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    @Override
+    public Session clone() {
+        Session clone = new Session(folder, type, id, parent);
+        clone.name = name;
+        clone.contentList.addAll(contentList);
+        clone.toolCallList.addAll(toolCallList);
+        clone.todoList.addAll(todoList);
+        clone.reasoningEffort = reasoningEffort;
+        clone.isAutoMode = isAutoMode;
+        clone.isPlanMode = isPlanMode;
+        clone.isForeverMode = isForeverMode;
+        clone.allowTool = allowTool;
+        clone.subList.addAll(subList);
+        return clone;
     }
 
     public enum Type {
