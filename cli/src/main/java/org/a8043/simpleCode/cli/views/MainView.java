@@ -5,10 +5,12 @@ import dev.tamboui.toolkit.elements.ListElement;
 import dev.tamboui.tui.bindings.KeyTrigger;
 import dev.tamboui.tui.event.KeyCode;
 import dev.tamboui.widgets.input.TextInputState;
+import org.a8043.simpleCode.cli.I18n;
 import org.a8043.simpleCode.cli.Main;
 import org.a8043.simpleCode.cli.Util;
 import org.a8043.simpleCode.session.Session;
 
+import java.util.AbstractList;
 import java.util.List;
 
 import static dev.tamboui.toolkit.Toolkit.*;
@@ -23,7 +25,22 @@ public class MainView extends Main.View {
         List<Session> sessionList1 = Main.INSTANCE.getFolder().getSessionList();
         sessionList.on(KeyTrigger.key(KeyCode.ENTER), e ->
             Main.INSTANCE.setView(SessionView.open(sessionList1.get(sessionList.selected()))));
-        sessionList.data(sessionList1, Util::getSessionDisplayElement);
+        sessionList.data(new AbstractList<>() {
+            @Override
+            public Session get(int index) {
+                return find(sessionList1).get(index);
+            }
+
+            @Override
+            public int size() {
+                return find(sessionList1).size();
+            }
+
+            private List<Session> find(List<Session> sessionList1) {
+                return sessionList1.stream().filter(s -> (s.getName() != null ? s.getName() :
+                    I18n.get("session.new")).contains(searchInputState.text())).toList();
+            }
+        }, Util::getSessionDisplayElement);
     }
 
     @Override

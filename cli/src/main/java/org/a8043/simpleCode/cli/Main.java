@@ -49,7 +49,12 @@ public class Main extends ToolkitApp {
 
     @Override
     protected Element render() {
-        return view != null ? view.render() : null;
+        try {
+            return view != null ? view.render() : null;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
     }
 
     public void setView(View view) {
