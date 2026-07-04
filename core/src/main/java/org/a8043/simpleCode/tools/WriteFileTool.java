@@ -2,9 +2,12 @@ package org.a8043.simpleCode.tools;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONObject;
-import org.a8043.simpleCode.Util;
+import lombok.Value;
 import org.a8043.simpleCode.session.tool.*;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
+import org.a8043.simpleCode.util.DiffCalculator;
+import org.a8043.simpleCode.util.LineChange;
+import org.a8043.simpleCode.util.Util;
 
 import java.io.File;
 import java.util.List;
@@ -21,12 +24,21 @@ public class WriteFileTool implements CallableTool {
     @Override
     public String call(JSONObject args, RunningTool runningTool) throws Exception {
         File file = new File(args.getStr("file"));
+        String newContent = computeWrite(args, file);
+        if (runningTool != null && !FileUtil.isSub(runningTool.getSession().getFolder().getDir(), file)) {
+            throw new ToolException(TOOL.getPromptJson().getStr("notInWorkspace"));
+        }
+        Util.writeFile(newContent, file);
+        return "";
+    }
+
+    private static String computeWrite(JSONObject args, File file) throws Exception {
         String oldContent = "";
         if (file.exists()) {
-            oldContent = Util.readFile(new File(args.getStr("file")));
+            oldContent = Util.readFile(file);
         }
 
-        String newContent = switch (args.getStr("type")) {
+        return switch (args.getStr("type")) {
             case "overwrite" -> args.getStr("content");
             case "replace" -> {
                 if (args.getStr("target") == null) {
@@ -37,16 +49,31 @@ public class WriteFileTool implements CallableTool {
             case "append" -> oldContent + args.getStr("content");
             default -> throw new ToolException("Invalid write type: " + args.getStr("type"));
         };
+    }
 
-        if (runningTool != null && !FileUtil.isSub(runningTool.getSession().getFolder().getDir(), file)) {
-            throw new ToolException(TOOL.getPromptJson().getStr("notInWorkspace"));
+    @Override
+    public void beforeRequest(JSONObject args, RunningTool runningTool) {
+        File file = new File(args.getStr("file"));
+        String content = "";
+        if (file.exists()) {
+            content = Util.readFile(file);
         }
-        Util.writeFile(newContent, file);
-        return "";
+        try {
+            runningTool.getSession().getAllContentList().add(new WritedFile(DiffCalculator.computeDiff(
+                List.of(content.split("\n")),
+                List.of(computeWrite(args, file).split("\n"))
+            )));
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
     public String getSimpleInfo(JSONObject args) {
         return new File(args.getStr("file")).getAbsolutePath();
+    }
+
+    @Value
+    public static class WritedFile {
+        List<LineChange> diff;
     }
 }

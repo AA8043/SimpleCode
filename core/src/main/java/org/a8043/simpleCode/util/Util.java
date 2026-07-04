@@ -1,4 +1,4 @@
-package org.a8043.simpleCode;
+package org.a8043.simpleCode.util;
 
 import cn.hutool.core.io.FileUtil;
 

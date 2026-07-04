@@ -28,7 +28,9 @@ import org.a8043.simpleCode.session.content.ToolContent;
 import org.a8043.simpleCode.session.content.UserContent;
 import org.a8043.simpleCode.session.tool.RunningTool;
 import org.a8043.simpleCode.session.tool.ToolCall;
+import org.a8043.simpleCode.tools.WriteFileTool;
 import org.a8043.simpleCode.tools.planMode.Plan;
+import org.a8043.simpleCode.util.LineChange;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -139,6 +141,24 @@ public class SessionView extends Main.View {
                 case ToolCall tc -> row(spinner().state(spinnerState), Util.getToolDescriptionElement(tc));
                 case Plan plan -> column(text(I18n.get("session.plan") + "--------"),
                     richTextArea(plan.getPlan()), text("-------------"));
+                case WriteFileTool.WritedFile wf -> {
+                    Column column = column(text(I18n.get("tools.write_file") + "--------"));
+                    wf.getDiff().stream().filter(change -> change.getAction() != LineChange.Action.EQUAL)
+                        .forEach(change -> column.add(row(
+                            text(switch (change.getAction()) {
+                                case INSERT -> change.getNewLineNum();
+                                case DELETE -> change.getOldLineNum();
+                                default -> throw new RuntimeException();
+                            } + " ").gray(),
+                            switch (change.getAction()) {
+                                case INSERT -> text("+ ").green();
+                                case DELETE -> text("- ").red();
+                                default -> throw new RuntimeException();
+                            },
+                            text(change.getContent()).overflow(Overflow.WRAP_WORD)
+                        )));
+                    yield column;
+                }
                 case ApiException e -> row(text("⚠ ").yellow(), text(I18n.get("session.apiError",
                     String.valueOf(e.getStatus()), e.getContent())).red());
                 case CommandException e -> row(text("⚠ ").yellow(),
