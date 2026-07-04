@@ -59,7 +59,9 @@
         "run_command": {
             "description": "Execute a shell command.",
             "command": "The shell command to execute",
-            "reason": "Reason for executing this command (optional). The reason are as detailed as possible. If the conversation is in auto mode, it is strongly recommended to enter this parameter, as it can improve the pass rate."
+            "reason": "Reason for executing this command (optional). The reason are as detailed as possible. If the conversation is in auto mode, it is strongly recommended to enter this parameter, as it can improve the pass rate.",
+            "timeout": "Timeout in milliseconds for the command execution (optional). If not specified, the default timeout is 5 minutes.",
+            "timeout_message": "Timeout."
         },
         "search_file": {
             "description": "Search for files.",
