@@ -16,18 +16,19 @@
 
 ## 快速开始
 
-### 环境要求
+### 安装
 
-- JDK 21
-- Gradle 9.3.0（已包含 Wrapper）
+使用 [PackageIris](https://github.com/AA8043/PackageIris)
+
+```bash
+pi install AA8043/SimpleCode
+```
 
 ### 运行
 
 ```bash
-./gradlew :cli:run
+simplecode
 ```
-
-详细说明请参阅 [docs/getting-started.md](docs/getting-started.md)。
 
 ## 项目结构
 
