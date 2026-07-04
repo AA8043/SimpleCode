@@ -17,6 +17,9 @@ import org.a8043.simpleCode.api.ApiException;
 import org.a8043.simpleCode.cli.I18n;
 import org.a8043.simpleCode.cli.Main;
 import org.a8043.simpleCode.cli.Util;
+import org.a8043.simpleCode.cli.commands.Command;
+import org.a8043.simpleCode.cli.commands.CommandException;
+import org.a8043.simpleCode.cli.commands.CommandRegistry;
 import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.UserChoice;
 import org.a8043.simpleCode.session.content.AssistantContent;
@@ -28,6 +31,7 @@ import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.tools.planMode.Plan;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static dev.tamboui.toolkit.Toolkit.*;
@@ -137,6 +141,10 @@ public class SessionView extends Main.View {
                     richTextArea(plan.getPlan()), text("-------------"));
                 case ApiException e -> row(text("⚠ ").yellow(), text(I18n.get("session.apiError",
                     String.valueOf(e.getStatus()), e.getContent())).red());
+                case CommandException e -> row(text("⚠ ").yellow(),
+                    text(I18n.get("command.error", I18n.get(e.getKey(), e.getArgs().toArray(new String[0])))).red());
+                case Exception e -> row(text("⚠ ").yellow(), text(I18n.get("session.error",
+                    e.getMessage())).red());
                 default -> throw new RuntimeException();
             }, text()));
     }
@@ -172,13 +180,31 @@ public class SessionView extends Main.View {
             unhandledUserChoice == null ? textInput().state(questionInputState).id("questionInput")
                 .placeholder(I18n.get(session.getAsking() != null ? "session.insertUserMessagesTip" : "session.inputTip"))
                 .on(KeyTrigger.key(KeyCode.ENTER), e -> {
-                    if (!questionInputState.text().isBlank()) {
-                        String question = questionInputState.text();
-                        questionInputState.clear();
-                        if (session.getAsking() == null) {
-                            new Thread(() -> session.ask(question)).start();
+                    String text = questionInputState.text();
+                    questionInputState.clear();
+                    if (!text.isBlank()) {
+                        if (text.startsWith("/")) {
+                            String[] parts = text.split(" ");
+                            String command = parts[0].substring(1);
+                            List<String> argList = new ArrayList<>();
+                            argList.addAll(Arrays.asList(parts).subList(1, parts.length));
+                            Command command1 = CommandRegistry.MAP.get(command);
+                            if (command1 != null) {
+                                try {
+                                    command1.run(session, argList);
+                                } catch (CommandException ex) {
+                                    session.getAllContentList().add(ex);
+                                }
+                            } else {
+                                session.getAllContentList().add(
+                                    new CommandException("command.unknown", List.of(command)));
+                            }
                         } else {
-                            session.getContentList().add(new UserContent(System.currentTimeMillis(), question));
+                            if (session.getAsking() == null) {
+                                new Thread(() -> session.ask(text)).start();
+                            } else {
+                                session.getContentList().add(new UserContent(System.currentTimeMillis(), text));
+                            }
                         }
                     }
                 }).rounded() : unhandledUserChoice

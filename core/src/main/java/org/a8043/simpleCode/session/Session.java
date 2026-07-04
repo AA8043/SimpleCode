@@ -36,15 +36,13 @@ public class Session {
     private final List<Content> contentList = new ArrayList<>() {
         @Override
         public boolean add(Content content) {
-            if (content.getRole() != Role.SYSTEM) {
-                allContentList.add(content);
-            }
+            allContentList.add(content);
             return super.add(content);
         }
 
         @Override
         public boolean addAll(Collection<? extends Content> c) {
-            allContentList.addAll(c.stream().filter(c1 -> c1.getRole() != Role.SYSTEM).toList());
+            allContentList.addAll(c);
             return super.addAll(c);
         }
     };
@@ -62,7 +60,22 @@ public class Session {
     @PropIgnore
     private final Session parent;
     @PropIgnore
-    private final List<Object> allContentList = new CopyOnWriteArrayList<>();
+    private final List<Object> allContentList = new CopyOnWriteArrayList<>() {
+        @Override
+        public boolean add(Object o) {
+            if (!(o instanceof Content c) || c.getRole() != Role.SYSTEM) {
+                return super.add(o);
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public boolean addAll(Collection<?> c) {
+            return super.addAll(c.stream().filter(c1 -> !(c1 instanceof Content c2) ||
+                                                        c2.getRole() != Role.SYSTEM).toList());
+        }
+    };
 
     public Session(Folder folder, Type type, String id, Session parent) {
         this.folder = folder;
@@ -96,10 +109,26 @@ public class Session {
     }
 
     public void ask(String text, Model model) {
+        contentList.add(new UserContent(System.currentTimeMillis(), text));
+        startLoop(text, model);
+    }
+
+    public void startLoop() {
+        List<String> userContentList = contentList.stream().filter(c -> c instanceof UserContent)
+            .map(Content::getText).toList();
+        String last;
+        if (!userContentList.isEmpty()) {
+            last = userContentList.getLast();
+        } else {
+            last = "";
+        }
+        startLoop(last, Settings.INSTANCE.getMainModel());
+    }
+
+    public void startLoop(String question, Model model) {
         ListenerRegistry.Listener listener = ListenerRegistry.getListener(this);
 
         asking = new Asking();
-        contentList.add(new UserContent(System.currentTimeMillis(), text));
         boolean remindedTodo = false;
         while (true) {
             CompleteResult result;
@@ -136,7 +165,7 @@ public class Session {
                     allow = userChoice.getChoice() ? "" : SimpleCode.PROMPT_JSON.getStr("userRejectedToolCall");
                 } else {
                     if (toolCall.getTool() == RunCommandTool.TOOL) {
-                        allow = assessmentShellCommand(text, toolCall.getArgs().getStr("command"),
+                        allow = assessmentShellCommand(question, toolCall.getArgs().getStr("command"),
                             toolCall.getArgs().getStr("reason", "None"));
                     } else {
                         allow = "";
@@ -177,7 +206,7 @@ public class Session {
             "shell-command-safety-assessment");
         session.setAutoMode(true);
         session.setAllowTool(false);
-        session.ask("Task: %s\nCommand: %s\nReason: %s".formatted(userMessage, command, reason),
+        session.startLoop("Task: %s\nCommand: %s\nReason: %s".formatted(userMessage, command, reason),
             Settings.INSTANCE.getLowestLevelModel());
         Content last = session.getContentList().getLast();
         if (last instanceof AssistantContent ac) {

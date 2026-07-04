@@ -42,7 +42,7 @@ public class SubAgentTool implements CallableTool {
         Model finalModel = model;
 
         Session session = runningTool.getSession().getSub(args.getStr("id"));
-        new Thread(() -> session.ask(args.getStr("task"), finalModel)).start();
+        new Thread(() -> session.startLoop(args.getStr("task"), finalModel)).start();
         return "";
     }
 

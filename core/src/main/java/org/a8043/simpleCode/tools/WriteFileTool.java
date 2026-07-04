@@ -28,7 +28,12 @@ public class WriteFileTool implements CallableTool {
 
         String newContent = switch (args.getStr("type")) {
             case "overwrite" -> args.getStr("content");
-            case "replace" -> oldContent.replace(args.getStr("target"), args.getStr("content"));
+            case "replace" -> {
+                if (args.getStr("target") == null) {
+                    throw new ToolException("Target string is required for replace type");
+                }
+                yield oldContent.replace(args.getStr("target"), args.getStr("content"));
+            }
             case "append" -> oldContent + args.getStr("content");
             default -> throw new ToolException("Invalid write type: " + args.getStr("type"));
         };
