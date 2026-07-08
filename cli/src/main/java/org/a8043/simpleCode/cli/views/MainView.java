@@ -5,9 +5,9 @@ import dev.tamboui.toolkit.elements.ListElement;
 import dev.tamboui.tui.bindings.KeyTrigger;
 import dev.tamboui.tui.event.KeyCode;
 import dev.tamboui.widgets.input.TextInputState;
-import org.a8043.simpleCode.cli.I18n;
 import org.a8043.simpleCode.cli.Main;
 import org.a8043.simpleCode.cli.Util;
+import org.a8043.simpleCode.frontend.I18n;
 import org.a8043.simpleCode.session.Session;
 
 import java.util.AbstractList;

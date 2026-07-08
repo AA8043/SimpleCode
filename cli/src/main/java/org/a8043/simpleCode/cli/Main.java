@@ -10,6 +10,8 @@ import org.a8043.simpleCode.Folder;
 import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.cli.views.MainView;
 import org.a8043.simpleCode.cli.views.WelcomeView;
+import org.a8043.simpleCode.frontend.FrontendSettings;
+import org.a8043.simpleCode.frontend.I18n;
 
 import java.io.File;
 
@@ -33,7 +35,7 @@ public class Main extends ToolkitApp {
         styleEngine.loadStylesheet("/styles/main.tcss");
         runner().styleEngine(styleEngine);
 
-        boolean isNotFirst = SimpleCode.init() & CliSettings.load();
+        boolean isNotFirst = SimpleCode.init() & FrontendSettings.load() & CliSettings.load();
         I18n.load();
         if (isNotFirst) {
             showMain();
@@ -68,6 +70,7 @@ public class Main extends ToolkitApp {
     public void exit() {
         folder.close();
         SimpleCode.save();
+        FrontendSettings.save();
         CliSettings.save();
         quit();
     }

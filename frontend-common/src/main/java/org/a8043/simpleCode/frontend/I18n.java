@@ -1,4 +1,4 @@
-package org.a8043.simpleCode.cli;
+package org.a8043.simpleCode.frontend;
 
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.json.JSONObject;
@@ -10,7 +10,8 @@ public class I18n {
     private static final Map<String, String> map = new HashMap<>();
 
     public static void load() {
-        String content = ResourceUtil.readUtf8Str("languages/" + CliSettings.INSTANCE.getLanguage() + ".json");
+        String content = ResourceUtil.readUtf8Str("languages/" +
+                                                  FrontendSettings.INSTANCE.getLanguage() + ".json");
         new JSONObject(content).forEach((k, v) -> map.put(k, (String) v));
     }
 

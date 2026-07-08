@@ -7,5 +7,6 @@
 /build/
 /core/build/
 /cli/build/
+/frontend-common/build/
 
 /test/

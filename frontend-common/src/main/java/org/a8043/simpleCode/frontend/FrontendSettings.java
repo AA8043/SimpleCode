@@ -1,4 +1,4 @@
-package org.a8043.simpleCode.cli;
+package org.a8043.simpleCode.frontend;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
@@ -9,11 +9,12 @@ import org.a8043.simpleCode.SimpleCode;
 import java.io.File;
 
 @Data
-public class CliSettings {
-    public static final CliSettings INSTANCE = new CliSettings();
+public class FrontendSettings {
+    public static final FrontendSettings INSTANCE = new FrontendSettings();
+    private String language = "zh_cn";
 
     public static boolean load() {
-        File file = new File(SimpleCode.DATA_DIR, "cli.json");
+        File file = new File(SimpleCode.DATA_DIR, "frontend.json");
         if (!file.exists()) {
             return false;
         }
@@ -22,6 +23,7 @@ public class CliSettings {
     }
 
     public static void save() {
-        FileUtil.writeUtf8String(new JSONObject(INSTANCE).toString(), new File(SimpleCode.DATA_DIR, "cli.json"));
+        FileUtil.writeUtf8String(new JSONObject(INSTANCE).toString(), new File(SimpleCode.DATA_DIR,
+            "frontend.json"));
     }
 }

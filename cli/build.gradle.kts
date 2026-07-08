@@ -4,15 +4,13 @@ plugins {
     id("com.gradleup.shadow") version "9.4.2"
 }
 
-group = "org.a8043.simpleCode"
-version = "1.0"
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":frontend-common"))
 
     implementation("org.slf4j:slf4j-api:2.0.18")
     implementation("org.apache.logging.log4j:log4j-core:2.26.0")

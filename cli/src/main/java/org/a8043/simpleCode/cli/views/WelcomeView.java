@@ -12,9 +12,9 @@ import dev.tamboui.widgets.input.TextInputState;
 import lombok.extern.slf4j.Slf4j;
 import org.a8043.simpleCode.Registry;
 import org.a8043.simpleCode.Settings;
-import org.a8043.simpleCode.cli.CliSettings;
-import org.a8043.simpleCode.cli.I18n;
 import org.a8043.simpleCode.cli.Main;
+import org.a8043.simpleCode.frontend.FrontendSettings;
+import org.a8043.simpleCode.frontend.I18n;
 import org.a8043.simpleCode.model.Provider;
 import org.a8043.simpleCode.model.RemoteModel;
 
@@ -24,7 +24,7 @@ import static dev.tamboui.toolkit.Toolkit.*;
 
 @Slf4j
 public class WelcomeView extends Main.View {
-    private final TextInputState languageInputState = new TextInputState(CliSettings.INSTANCE.getLanguage());
+    private final TextInputState languageInputState = new TextInputState(FrontendSettings.INSTANCE.getLanguage());
     private Step current = Step.WELCOME;
 
     @Override
@@ -50,7 +50,7 @@ public class WelcomeView extends Main.View {
             case WELCOME -> dialog("",
                 text(I18n.get("welcome")).centered(),
                 textInput(languageInputState).title(I18n.get("language")).onSubmit(() -> {
-                    CliSettings.INSTANCE.setLanguage(languageInputState.text());
+                    FrontendSettings.INSTANCE.setLanguage(languageInputState.text());
                     I18n.load();
                 }).focusable().id("languageInput").rounded(),
                 text(I18n.get("next")).centered().focusable().id("nextButton")

@@ -3,6 +3,7 @@ package org.a8043.simpleCode.cli;
 import dev.tamboui.style.Overflow;
 import dev.tamboui.toolkit.element.Element;
 import dev.tamboui.toolkit.elements.Row;
+import org.a8043.simpleCode.frontend.I18n;
 import org.a8043.simpleCode.session.ReasoningEffort;
 import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.tool.ToolCall;
