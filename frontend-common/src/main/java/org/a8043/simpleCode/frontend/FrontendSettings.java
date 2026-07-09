@@ -12,6 +12,17 @@ import java.io.File;
 public class FrontendSettings {
     public static final FrontendSettings INSTANCE = new FrontendSettings();
     private String language = "zh_cn";
+    private MailSettings mail;
+
+    @Data
+    public static class MailSettings {
+        private String smtpHost;
+        private int smtpPort;
+        private String smtpUsername;
+        private String smtpPassword;
+        private String fromAddress;
+        private String to;
+    }
 
     public static boolean load() {
         File file = new File(SimpleCode.DATA_DIR, "frontend.json");

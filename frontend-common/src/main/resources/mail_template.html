@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SimpleCode</title>
+    <style>
+        /* 基础重置 - 使用表格布局代替flex */
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7fc;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+        }
+
+        /* 使用表格进行布局（邮件客户端最兼容） */
+        .email-table {
+            width: 100%;
+            max-width: 560px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-collapse: collapse;
+        }
+
+        .email-table td {
+            padding: 32px 28px 36px;
+            background-color: #ffffff;
+        }
+
+        /* 内联样式优先，这里只放后备样式 */
+        .card-header {
+            margin-bottom: 18px;
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0b1e3a;
+            text-decoration: none;
+        }
+
+        .divider {
+            border: 0;
+            height: 1px;
+            background-color: #dce3ed;
+            margin: 16px 0 18px 0;
+        }
+
+        .summary-line {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #2c3e5c;
+            padding: 10px 0;
+        }
+
+        .content-title {
+            font-size: 24px;
+            font-weight: 670;
+            color: #0b1e3a;
+            margin: 6px 0 8px 0;
+            line-height: 1.3;
+        }
+
+        .markdown-body {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1f2a44;
+            background-color: #fbfdff;
+            padding: 18px 20px;
+            border: 1px solid #eef3fa;
+        }
+
+        .markdown-body h1 {
+            font-size: 1.6em;
+            margin-top: 0.8em;
+            margin-bottom: 0.4em;
+            font-weight: 630;
+            color: #0b1e3a;
+        }
+
+        .markdown-body h2 {
+            font-size: 1.4em;
+            margin-top: 0.8em;
+            margin-bottom: 0.4em;
+            font-weight: 630;
+            color: #0b1e3a;
+        }
+
+        .markdown-body h3 {
+            font-size: 1.2em;
+            margin-top: 0.8em;
+            margin-bottom: 0.4em;
+            font-weight: 630;
+            color: #0b1e3a;
+        }
+
+        .markdown-body p {
+            margin: 0.8em 0;
+        }
+
+        .markdown-body a {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        .markdown-body ul,
+        .markdown-body ol {
+            margin: 0.6em 0 0.8em 1.2em;
+            padding-left: 0.8em;
+        }
+
+        .markdown-body li {
+            margin: 0.25em 0;
+        }
+
+        .markdown-body code {
+            background-color: #eef3fa;
+            padding: 0.2em 0.4em;
+            font-family: "Courier New", monospace;
+            font-size: 0.9em;
+            color: #1e3a6b;
+        }
+
+        .markdown-body pre {
+            background-color: #f0f4fc;
+            padding: 14px 16px;
+            border: 1px solid #e1e9f2;
+            margin: 0.8em 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .markdown-body pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 0.95em;
+            color: #1f2a44;
+        }
+
+        .markdown-body blockquote {
+            border-left: 4px solid #2563eb;
+            margin: 0.8em 0;
+            padding: 0.6em 1em 0.6em 1.2em;
+            background-color: #f5f9ff;
+            color: #1d3557;
+        }
+
+        .markdown-body img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .markdown-body hr {
+            border: 0;
+            height: 1px;
+            background-color: #dce3ed;
+            margin: 1.2em 0;
+        }
+
+        .markdown-body table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0.8em 0;
+            font-size: 0.95em;
+        }
+
+        .markdown-body th,
+        .markdown-body td {
+            border: 1px solid #d0dbe8;
+            padding: 8px 10px;
+            text-align: left;
+        }
+
+        .markdown-body th {
+            background-color: #eef3fa;
+            font-weight: 600;
+        }
+
+        .footer-note {
+            margin-top: 22px;
+            font-size: 12px;
+            color: #8a9bb5;
+            text-align: right;
+            border-top: 1px solid #eef3fa;
+            padding-top: 14px;
+        }
+
+        /* 移动端适配 */
+        @media only screen and (max-width: 480px) {
+            .email-table td {
+                padding: 24px 16px 28px;
+            }
+
+            .brand-name {
+                font-size: 20px;
+            }
+
+            .content-title {
+                font-size: 21px;
+            }
+
+            .markdown-body {
+                padding: 14px 14px;
+                font-size: 14px;
+            }
+
+            .summary-line {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="email-card">
+    <div class="card-header">
+        <img src="data:image/png;base64,{icon_base64}" alt="icon" style="width: 32px;height: 32px;"/>
+        <span class="brand-name">SimpleCode</span>
+    </div>
+
+    <hr class="divider" aria-hidden="true">
+
+    <div class="summary-line">
+        {summary}
+    </div>
+
+    <div class="content-title">
+        {content_title}
+    </div>
+
+    <hr class="divider-secondary" aria-hidden="true">
+
+    <div class="markdown-body">
+        {content}
+    </div>
+</div>
+</body>
+</html>

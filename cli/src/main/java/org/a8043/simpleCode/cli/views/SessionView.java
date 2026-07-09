@@ -17,7 +17,9 @@ import org.a8043.simpleCode.cli.Util;
 import org.a8043.simpleCode.cli.commands.Command;
 import org.a8043.simpleCode.cli.commands.CommandException;
 import org.a8043.simpleCode.cli.commands.CommandRegistry;
+import org.a8043.simpleCode.frontend.FrontendSettings;
 import org.a8043.simpleCode.frontend.I18n;
+import org.a8043.simpleCode.frontend.Mail;
 import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.UserChoice;
 import org.a8043.simpleCode.session.content.AssistantContent;
@@ -112,7 +114,9 @@ public class SessionView extends Main.View {
                     case String str -> {
                         switch (str) {
                             case "finish" -> {
-                                // TODO: 提示完成
+                                if (FrontendSettings.INSTANCE.getMail() != null) {
+                                    Mail.sendStopWorking(System.currentTimeMillis(), session);
+                                }
                             }
                             default -> throw new RuntimeException();
                         }

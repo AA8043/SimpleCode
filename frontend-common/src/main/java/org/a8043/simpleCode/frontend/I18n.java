@@ -3,6 +3,7 @@ package org.a8043.simpleCode.frontend;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.json.JSONObject;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +17,6 @@ public class I18n {
     }
 
     public static String get(String key, String... args) {
-        String text = map.getOrDefault(key, key);
-        for (int i = 0; i < args.length; i++) {
-            text = text.replace("{" + i + "}", args[i]);
-        }
-        return text;
+        return MessageFormat.format(map.getOrDefault(key, key), (Object[]) args);
     }
 }
