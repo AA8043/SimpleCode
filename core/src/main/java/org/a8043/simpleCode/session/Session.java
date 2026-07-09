@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.a8043.simpleCode.Folder;
-import org.a8043.simpleCode.ListenerRegistry;
 import org.a8043.simpleCode.Settings;
 import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.api.CompleteResult;
@@ -17,6 +16,7 @@ import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.session.tool.ToolCallReturn;
 import org.a8043.simpleCode.tools.RunCommandTool;
 import org.a8043.simpleCode.util.RpmLimiter;
+import org.a8043.simpleCode.util.event.EventQueue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,6 +77,8 @@ public class Session {
                                                         c2.getRole() != Role.SYSTEM).toList());
         }
     };
+    @PropIgnore
+    private final EventQueue<Object> eventQueue = new EventQueue<>();
 
     public Session(Folder folder, Type type, String id, Session parent) {
         this.folder = folder;
@@ -127,8 +129,6 @@ public class Session {
     }
 
     public void startLoop(String question, Model model) {
-        ListenerRegistry.Listener listener = ListenerRegistry.getListener(this);
-
         asking = new Asking();
         boolean remindedTodo = false;
         while (true) {
@@ -154,20 +154,18 @@ public class Session {
                 result.getContentList().forEach(c -> parent.contentList.add(
                     RemindContent.ofPromptKey(c.getTime(), "subAgentMessage", id, c.getText())));
             }
-            result.getContentList().forEach(listener::onComplete);
 
             List<ToolCall> toolCallList = result.getToolCallList();
             this.toolCallList.addAll(toolCallList);
             toolCallList.forEach(toolCall -> {
                 RunningTool runningTool = new RunningTool(toolCall, this);
-                listener.onToolCall(runningTool);
                 allContentList.add(toolCall);
                 toolCall.getTool().getCallableTool().beforeRequest(toolCall.getArgs(), runningTool);
 
                 String allow;
                 if (!isAutoMode) {
                     UserChoice<Boolean> userChoice = new UserChoice<>(runningTool, List.of(true, false));
-                    listener.onUserChoice(userChoice);
+                    eventQueue.waitComplete(eventQueue.add(userChoice));
                     allow = userChoice.getChoice() ? "" : SimpleCode.PROMPT_JSON.getStr("userRejectedToolCall");
                 } else {
                     if (toolCall.getTool() == RunCommandTool.TOOL) {
@@ -203,7 +201,7 @@ public class Session {
                 }
             }
         }
-        listener.onFinish();
+        eventQueue.waitComplete(eventQueue.add("finish"));
         asking = null;
     }
 

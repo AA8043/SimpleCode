@@ -1,12 +1,8 @@
 package org.a8043.simpleCode.session;
 
 import org.a8043.simpleCode.Folder;
-import org.a8043.simpleCode.ListenerRegistry;
 import org.a8043.simpleCode.SimpleCode;
-import org.a8043.simpleCode.session.content.AssistantContent;
-import org.a8043.simpleCode.session.content.Content;
-import org.a8043.simpleCode.session.content.ToolContent;
-import org.a8043.simpleCode.session.tool.RunningTool;
+import org.a8043.simpleCode.util.event.Event;
 import org.junit.Test;
 
 import java.io.File;
@@ -20,36 +16,19 @@ public class SessionTest {
     }
 
     public static void ask(Session session, String question) {
-        ListenerRegistry.register(session, new ListenerRegistry.Listener() {
-            @Override
-            public void onComplete(Content content) {
-                switch (content) {
-                    case AssistantContent ac -> System.out.println("Assistant: " + ac.getText());
-                    case ToolContent tc -> System.out.println("Tool: " + tc.getText());
-                    default -> {
-                    }
+        new Thread(() -> {
+            while (true) {
+                Event<Object> event = session.getEventQueue().get();
+                if (event == null) {
+                    break;
                 }
+                System.out.println("Event: " + event.getData());
+                if (event.getData() instanceof UserChoice<?> userChoice) {
+                    userChoice.setChoice(true);
+                }
+                session.getEventQueue().complete(event);
             }
-
-            @Override
-            public void onFinish() {
-                System.out.println("==完成==");
-            }
-
-            @Override
-            public void onUserChoice(UserChoice<?> userChoice) {
-                System.out.println("用户选择: " + userChoice.getContent());
-                userChoice.setChoice(true);
-            }
-
-            @Override
-            public void onToolCall(RunningTool runningTool) {
-                System.out.println("=====");
-                System.out.println("调用工具: " + runningTool.getToolCall().getTool().getName());
-                System.out.println("参数: " + runningTool.getToolCall().getArgs());
-                System.out.println("=====");
-            }
-        });
+        }).start();
         session.ask(question);
     }
 }

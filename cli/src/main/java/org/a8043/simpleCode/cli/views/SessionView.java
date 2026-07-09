@@ -10,9 +10,7 @@ import dev.tamboui.tui.bindings.KeyTrigger;
 import dev.tamboui.tui.event.KeyCode;
 import dev.tamboui.widgets.input.TextInputState;
 import dev.tamboui.widgets.spinner.SpinnerState;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.a8043.simpleCode.ListenerRegistry;
 import org.a8043.simpleCode.api.ApiException;
 import org.a8043.simpleCode.cli.Main;
 import org.a8043.simpleCode.cli.Util;
@@ -23,7 +21,6 @@ import org.a8043.simpleCode.frontend.I18n;
 import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.UserChoice;
 import org.a8043.simpleCode.session.content.AssistantContent;
-import org.a8043.simpleCode.session.content.Content;
 import org.a8043.simpleCode.session.content.ToolContent;
 import org.a8043.simpleCode.session.content.UserContent;
 import org.a8043.simpleCode.session.tool.RunningTool;
@@ -31,6 +28,8 @@ import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.tools.WriteFileTool;
 import org.a8043.simpleCode.tools.planMode.Plan;
 import org.a8043.simpleCode.util.LineChange;
+import org.a8043.simpleCode.util.event.Event;
+import org.a8043.simpleCode.util.event.EventQueue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,60 +62,66 @@ public class SessionView extends Main.View {
 
     @Override
     public void init() {
-        ListenerRegistry.register(session, new ListenerRegistry.Listener() {
-            @Override
-            public void onComplete(Content content) {
-            }
-
-            @Override
-            public void onFinish() {
-            }
-
-            @SneakyThrows
-            @Override
-            public void onUserChoice(UserChoice<?> userChoice) {
-                ListElement<?> listElement = list().focusable().id("optionList");
-                List<?> optionList = userChoice.getOptionList();
-                List<Object> objectList = new ArrayList<>(optionList);
-                if (userChoice.isHasCustomization()) {
-                    objectList.add(new TextInputState());
-                }
-
-                unhandledUserChoice = panel(
-                    switch (userChoice.getContent()) {
-                        case RunningTool rt -> row(text(I18n.get("session.toolCallRequest") + ": "),
-                            Util.getToolDescriptionElement(rt.getToolCall()));
-                        default -> text(userChoice.getContent()).overflow(Overflow.WRAP_WORD);
-                    },
-                    listElement.data(objectList, o -> {
-                        if (o instanceof TextInputState tis) {
-                            return textInput(tis).placeholder(I18n.get("input"))
-                                .id("customizationInput").focusable();
-                        } else {
-                            return text(o);
+        new Thread(() -> {
+            EventQueue<Object> eventQueue = session.getEventQueue();
+            Event<Object> event;
+            while ((event = eventQueue.get()) != null) {
+                switch (event.getData()) {
+                    case UserChoice<?> userChoice -> {
+                        ListElement<?> listElement = list().focusable().id("optionList");
+                        List<?> optionList = userChoice.getOptionList();
+                        List<Object> objectList = new ArrayList<>(optionList);
+                        if (userChoice.isHasCustomization()) {
+                            objectList.add(new TextInputState());
                         }
-                    }).on(KeyTrigger.key(KeyCode.ENTER), e -> {
-                        Object o = objectList.get(listElement.selected());
-                        if (o instanceof TextInputState tis) {
-                            o = tis.text();
-                        }
-                        userChoice.setChoice(o);
-                        unhandledUserChoice = null;
+
+                        unhandledUserChoice = panel(
+                            switch (userChoice.getContent()) {
+                                case RunningTool rt -> row(text(I18n.get("session.toolCallRequest") + ": "),
+                                    Util.getToolDescriptionElement(rt.getToolCall()));
+                                default -> text(userChoice.getContent()).overflow(Overflow.WRAP_WORD);
+                            },
+                            listElement.data(objectList, o -> {
+                                if (o instanceof TextInputState tis) {
+                                    return textInput(tis).placeholder(I18n.get("input"))
+                                        .id("customizationInput").focusable();
+                                } else {
+                                    return text(o);
+                                }
+                            }).on(KeyTrigger.key(KeyCode.ENTER), e -> {
+                                Object o = objectList.get(listElement.selected());
+                                if (o instanceof TextInputState tis) {
+                                    o = tis.text();
+                                }
+                                userChoice.setChoice(o);
+                                unhandledUserChoice = null;
+                                synchronized (userChoiceLock) {
+                                    userChoiceLock.notifyAll();
+                                }
+                            })
+                        ).addClass("ask-user-panel").rounded();
+
                         synchronized (userChoiceLock) {
-                            userChoiceLock.notifyAll();
+                            try {
+                                userChoiceLock.wait();
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
-                    })
-                ).addClass("ask-user-panel").rounded();
-
-                synchronized (userChoiceLock) {
-                    userChoiceLock.wait();
+                    }
+                    case String str -> {
+                        switch (str) {
+                            case "finish" -> {
+                                // TODO: 提示完成
+                            }
+                            default -> throw new RuntimeException();
+                        }
+                    }
+                    default -> throw new RuntimeException();
                 }
+                eventQueue.complete(event);
             }
-
-            @Override
-            public void onToolCall(RunningTool runningTool) {
-            }
-        });
+        }).start();
 
         contentListElement.data(session.getAllContentList(),
             content -> column(switch (content) {

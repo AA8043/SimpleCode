@@ -1,7 +1,6 @@
 package org.a8043.simpleCode.tools;
 
 import cn.hutool.json.JSONObject;
-import org.a8043.simpleCode.ListenerRegistry;
 import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.session.UserChoice;
 import org.a8043.simpleCode.session.tool.CallableTool;
@@ -11,6 +10,7 @@ import org.a8043.simpleCode.session.tool.ToolException;
 import org.a8043.simpleCode.session.tool.parameter.ArrayParameter;
 import org.a8043.simpleCode.session.tool.parameter.BooleanParameter;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
+import org.a8043.simpleCode.util.event.EventQueue;
 
 import java.util.List;
 
@@ -31,7 +31,8 @@ public class AskUserTool implements CallableTool {
         List<String> options = args.getJSONArray("options").toList(String.class);
         boolean hasCustomization = args.getBool("hasCustomization");
         UserChoice<String> userChoice = new UserChoice<>(question, options, hasCustomization);
-        ListenerRegistry.getListener(runningTool.getSession()).onUserChoice(userChoice);
+        EventQueue<Object> eventQueue = runningTool.getSession().getEventQueue();
+        eventQueue.waitComplete(eventQueue.add(userChoice));
         String choice = userChoice.getChoice();
         if (choice == null) {
             throw new ToolException("User did not make a choice");
