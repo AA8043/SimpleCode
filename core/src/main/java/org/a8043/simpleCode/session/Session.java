@@ -16,6 +16,7 @@ import org.a8043.simpleCode.session.tool.RunningTool;
 import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.session.tool.ToolCallReturn;
 import org.a8043.simpleCode.tools.RunCommandTool;
+import org.a8043.simpleCode.util.RpmLimiter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -131,6 +132,11 @@ public class Session {
         asking = new Asking();
         boolean remindedTodo = false;
         while (true) {
+            RpmLimiter rpmLimiter = model.getProvider().getRpmLimiter();
+            if (Thread.interrupted() || (rpmLimiter != null && !rpmLimiter.acquire())) {
+                break;
+            }
+
             CompleteResult result;
             try {
                 result = model.getProvider().getApi().complete(model, this);

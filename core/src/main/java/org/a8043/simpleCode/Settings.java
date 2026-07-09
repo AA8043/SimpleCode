@@ -5,6 +5,7 @@ import cn.hutool.json.JSONObject;
 import lombok.Data;
 import org.a8043.simpleCode.model.Model;
 import org.a8043.simpleCode.model.Provider;
+import org.a8043.simpleCode.util.RpmLimiter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,10 +48,12 @@ public class Settings {
 
         json.getJSONArray("providers").forEach(o -> {
             JSONObject json1 = (JSONObject) o;
+            int maxRpm = json1.getInt("maxRpm");
             INSTANCE.providerList.add(new Provider(json1.getStr("name"),
                 json1.getStr("baseUrl"),
                 json1.getStr("key"),
-                Registry.API_MAP.get(json1.getStr("api"))));
+                Registry.API_MAP.get(json1.getStr("api")),
+                maxRpm == 0 ? null : new RpmLimiter(maxRpm)));
         });
         json.getJSONArray("models").forEach(o -> {
             JSONObject json1 = (JSONObject) o;
@@ -68,7 +71,7 @@ public class Settings {
                     .filter(a -> a.getValue() == p.getApi())
                     .map(Map.Entry::getKey)
                     .findFirst()
-                    .orElse(null))));
+                    .orElse(null)).set("maxRpm", p.getRpmLimiter() == null ? 0 : p.getRpmLimiter().getRpm())));
         INSTANCE.getModelList().forEach(m -> json.append("models", new JSONObject()
             .set("provider", m.getProvider().getName()).set("name", m.getName()).set("level", m.getLevel())));
         FileUtil.writeUtf8String(json.toString(), new File(SimpleCode.DATA_DIR, "settings.json"));

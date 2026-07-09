@@ -17,6 +17,7 @@ import org.a8043.simpleCode.frontend.FrontendSettings;
 import org.a8043.simpleCode.frontend.I18n;
 import org.a8043.simpleCode.model.Provider;
 import org.a8043.simpleCode.model.RemoteModel;
+import org.a8043.simpleCode.util.RpmLimiter;
 
 import java.util.List;
 
@@ -108,6 +109,7 @@ public class WelcomeView extends Main.View {
         private final TextInputState baseUrlState = new TextInputState();
         private final TextInputState keyState = new TextInputState();
         private final TextInputState apiState = new TextInputState();
+        private final TextInputState maxRpmState = new TextInputState();
 
         @Override
         public void init() {
@@ -121,11 +123,14 @@ public class WelcomeView extends Main.View {
                 textInput(baseUrlState).title(I18n.get("provider.base_url")).focusable().id("baseUrlInput").rounded(),
                 textInput(keyState).title(I18n.get("provider.key")).focusable().id("keyInput").rounded(),
                 textInput(apiState).title(I18n.get("provider.api")).focusable().id("apiInput").rounded(),
+                textInput(maxRpmState).title(I18n.get("provider.maxRpm")).focusable().id("maxRpmInput").rounded(),
                 text(I18n.get("add")).centered().focusable().id("saveButton")
                     .onAction(new ActionHandler(BindingSets.standard())
                         .on(Actions.SELECT, event -> {
                             Settings.INSTANCE.getProviderList().add(new Provider(nameState.text(),
-                                baseUrlState.text(), keyState.text(), Registry.API_MAP.get(apiState.text())));
+                                baseUrlState.text(), keyState.text(), Registry.API_MAP.get(apiState.text()),
+                                maxRpmState.text().isEmpty() ? null :
+                                    new RpmLimiter(Integer.parseInt(maxRpmState.text()))));
                             Main.INSTANCE.setView(WelcomeView.this);
                         }))
             ).rounded();

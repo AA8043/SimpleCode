@@ -11,6 +11,7 @@
     "provider.base_url": "供应商基础 URL",
     "provider.key": "供应商 API Key",
     "provider.api": "供应商 API 格式",
+    "provider.maxRpm": "最大请求速率 (每分钟, 0 表示无限制)",
     "model.set": "设置模型",
     "model.added": "已添加的模型",
     "model.addedListTip": "[{0}] {1} (模型等级 {2})",
