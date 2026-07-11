@@ -1,9 +1,11 @@
 package org.a8043.simpleCode.session;
 
 import cn.hutool.core.annotation.PropIgnore;
+import cn.hutool.core.thread.ThreadUtil;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.a8043.simpleCode.Folder;
 import org.a8043.simpleCode.Settings;
@@ -131,6 +133,7 @@ public class Session {
     public void startLoop(String question, Model model) {
         asking = new Asking();
         boolean remindedTodo = false;
+        loop:
         while (true) {
             RpmLimiter rpmLimiter = model.getProvider().getRpmLimiter();
             if (Thread.interrupted() || (rpmLimiter != null && !rpmLimiter.acquire())) {
@@ -138,12 +141,22 @@ public class Session {
             }
 
             CompleteResult result;
-            try {
-                result = model.getProvider().getApi().complete(model, this);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                allContentList.add(e);
-                break;
+            int retryCount = 0;
+            while (true) {
+                try {
+                    result = model.getProvider().getApi().complete(model, this);
+                    break;
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    allContentList.add(e);
+                    if (retryCount++ < 10) {
+                        int waitTime = retryCount * 5;
+                        allContentList.add(new Retrying(retryCount, 10, waitTime));
+                        ThreadUtil.sleep(waitTime * 1000L);
+                    } else {
+                        break loop;
+                    }
+                }
             }
 
             contentList.addAll(result.getContentList());
@@ -260,23 +273,14 @@ public class Session {
         return toolCallList.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
     }
 
-    @Override
-    public Session clone() {
-        Session clone = new Session(folder, type, id, parent);
-        clone.name = name;
-        clone.contentList.addAll(contentList);
-        clone.toolCallList.addAll(toolCallList);
-        clone.todoList.addAll(todoList);
-        clone.reasoningEffort = reasoningEffort;
-        clone.isAutoMode = isAutoMode;
-        clone.isPlanMode = isPlanMode;
-        clone.isForeverMode = isForeverMode;
-        clone.allowTool = allowTool;
-        clone.subList.addAll(subList);
-        return clone;
-    }
-
     public enum Type {
         NORMAL, SUB
+    }
+
+    @Value
+    public static class Retrying {
+        int retryCount;
+        int maxRetryCount;
+        int waitTime;
     }
 }

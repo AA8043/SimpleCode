@@ -27,6 +27,7 @@
     "session.apiError": "API 错误({0}): {1}",
     "session.error": "错误: {0}",
     "session.plan": "计划",
+    "session.retrying": "请求失败, 将在 {2} 秒后重试 ({0}/{1})",
     "command.unknown": "未知命令: {0}",
     "command.error": "命令错误: {0}",
     "command.argsMissing": "命令参数缺失",

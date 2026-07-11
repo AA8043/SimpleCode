@@ -174,6 +174,9 @@ public class SessionView extends Main.View {
                     text(I18n.get("command.error", I18n.get(e.getKey(), e.getArgs().toArray(new String[0])))).red());
                 case Exception e -> row(text("⚠ ").yellow(), text(I18n.get("session.error",
                     e.getMessage())).red());
+                case Session.Retrying retrying -> row(text("🔄 ").yellow(), text(I18n.get("session.retrying",
+                    String.valueOf(retrying.getRetryCount()), String.valueOf(retrying.getMaxRetryCount()),
+                    String.valueOf(retrying.getWaitTime()))));
                 default -> throw new RuntimeException();
             }, text()));
     }
