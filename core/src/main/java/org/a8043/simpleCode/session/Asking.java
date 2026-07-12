@@ -1,9 +1,12 @@
 package org.a8043.simpleCode.session;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public class Asking {
+    private final long startTime;
     private int promptTokens;
     private int cachedTokens;
     private int completionTokens;
@@ -18,5 +21,9 @@ public class Asking {
 
     void addCompletionTokens(int i) {
         completionTokens += i;
+    }
+
+    public long getWorkedTime() {
+        return System.currentTimeMillis() - startTime;
     }
 }

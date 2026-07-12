@@ -25,15 +25,17 @@ public class Mail {
     private static final String iconBase64 = Base64.getEncoder().encodeToString(
         ResourceUtil.readBytes("icons/icon.png"));
 
-    public static void sendStopWorking(long time, Session session) {
+    public static void sendStopWorking(long time, Session session, Session.Finish finish) {
+        String timeString = DateUtil.format(new Date(time), "yyyy-MM-dd HH:mm:ss");
+        String workedTimeString = FrontendUtil.formatDuration(finish.getWorkedTime());
+
         String summary = "";
         String contentTitle = "";
         String content = "";
 
         Object last = session.getAllContentList().getLast();
         if (last instanceof AssistantContent ac) {
-            summary = I18n.get("mail.normal.summary", session.getName(),
-                DateUtil.format(new Date(time), "yyyy-MM-dd HH:mm:ss"));
+            summary = I18n.get("mail.normal.summary", session.getName(), timeString, workedTimeString);
             contentTitle = I18n.get("mail.normal.title");
             List<Parser.ParserExtension> extensionList = List.of(
                 TablesExtension.create(),
@@ -47,12 +49,11 @@ public class Mail {
                 .extensions(extensionList).build().parse(ac.getText()));
         } else if (last instanceof ApiException e) {
             summary = I18n.get("mail.apiErrorSummary", session.getName(),
-                DateUtil.format(new Date(time), "yyyy-MM-dd HH:mm:ss"), String.valueOf(e.getStatus()));
+                timeString, String.valueOf(e.getStatus()), workedTimeString);
             contentTitle = I18n.get("mail.error.title");
             content = e.getContent();
         } else if (last instanceof Exception e) {
-            summary = I18n.get("mail.error.summary", session.getName(),
-                DateUtil.format(new Date(time), "yyyy-MM-dd HH:mm:ss"));
+            summary = I18n.get("mail.error.summary", session.getName(), timeString, workedTimeString);
             contentTitle = I18n.get("mail.error.title");
             content = e.getMessage();
         }

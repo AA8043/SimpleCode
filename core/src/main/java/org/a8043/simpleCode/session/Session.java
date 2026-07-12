@@ -133,7 +133,7 @@ public class Session {
     }
 
     public void startLoop(String question, Model model) {
-        asking = new Asking();
+        asking = new Asking(System.currentTimeMillis());
         boolean remindedTodo = false;
         loop:
         while (true) {
@@ -216,7 +216,9 @@ public class Session {
                 }
             }
         }
-        eventQueue.waitComplete(eventQueue.add("finish"));
+        Finish finish = new Finish(asking.getWorkedTime());
+        eventQueue.waitComplete(eventQueue.add(finish));
+        allContentList.add(finish);
         asking = null;
     }
 
@@ -302,5 +304,10 @@ public class Session {
         int retryCount;
         int maxRetryCount;
         int waitTime;
+    }
+
+    @Value
+    public static class Finish {
+        long workedTime;
     }
 }

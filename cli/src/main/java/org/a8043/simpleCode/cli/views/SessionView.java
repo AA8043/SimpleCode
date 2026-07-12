@@ -18,6 +18,7 @@ import org.a8043.simpleCode.cli.commands.Command;
 import org.a8043.simpleCode.cli.commands.CommandException;
 import org.a8043.simpleCode.cli.commands.CommandRegistry;
 import org.a8043.simpleCode.frontend.FrontendSettings;
+import org.a8043.simpleCode.frontend.FrontendUtil;
 import org.a8043.simpleCode.frontend.I18n;
 import org.a8043.simpleCode.frontend.Mail;
 import org.a8043.simpleCode.session.Session;
@@ -111,14 +112,9 @@ public class SessionView extends Main.View {
                             }
                         }
                     }
-                    case String str -> {
-                        switch (str) {
-                            case "finish" -> {
-                                if (FrontendSettings.INSTANCE.getMail() != null) {
-                                    Mail.sendStopWorking(System.currentTimeMillis(), session);
-                                }
-                            }
-                            default -> throw new RuntimeException();
+                    case Session.Finish finish -> {
+                        if (FrontendSettings.INSTANCE.getMail() != null) {
+                            Mail.sendStopWorking(System.currentTimeMillis(), session, finish);
                         }
                     }
                     default -> throw new RuntimeException();
@@ -177,6 +173,8 @@ public class SessionView extends Main.View {
                 case Session.Retrying retrying -> row(text("🔄 ").yellow(), text(I18n.get("session.retrying",
                     String.valueOf(retrying.getRetryCount()), String.valueOf(retrying.getMaxRetryCount()),
                     String.valueOf(retrying.getWaitTime()))));
+                case Session.Finish finish -> text(I18n.get("session.finish",
+                    FrontendUtil.formatDuration(finish.getWorkedTime())) + "========");
                 default -> throw new RuntimeException();
             }, text()));
     }
@@ -197,6 +195,7 @@ public class SessionView extends Main.View {
         Panel statisticPanel = panel().max(20).fill(20).rounded();
         if (session.getAsking() != null) {
             statisticPanel.add(
+                text(FrontendUtil.formatDuration(session.getAsking().getWorkedTime())),
                 text("↑ " + session.getAsking().getPromptTokens()),
                 text("●↑ " + session.getAsking().getCachedTokens()),
                 text("↓ " + session.getAsking().getCompletionTokens())
