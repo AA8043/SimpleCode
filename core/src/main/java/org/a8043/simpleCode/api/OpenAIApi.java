@@ -126,7 +126,9 @@ public class OpenAIApi implements Api {
     }
 
     private void convertParameterToJson(Tool tool, ToolParameter parameter, JSONObject json) {
-        json.set("description", tool.getParameterDescription(parameter));
+        if (parameter.getName() != null) {
+            json.set("description", tool.getParameterDescription(parameter));
+        }
         json.set("type", switch (parameter) {
             case StringParameter ignored -> "string";
             case BooleanParameter ignored -> "boolean";

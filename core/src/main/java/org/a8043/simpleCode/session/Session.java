@@ -2,6 +2,7 @@ package org.a8043.simpleCode.session;
 
 import cn.hutool.core.annotation.PropIgnore;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.json.JSONObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,11 +14,12 @@ import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.api.CompleteResult;
 import org.a8043.simpleCode.model.Model;
 import org.a8043.simpleCode.session.content.*;
+import org.a8043.simpleCode.session.tool.NeedConsent;
 import org.a8043.simpleCode.session.tool.RunningTool;
 import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.session.tool.ToolCallReturn;
-import org.a8043.simpleCode.tools.RunCommandTool;
 import org.a8043.simpleCode.util.RpmLimiter;
+import org.a8043.simpleCode.util.event.Event;
 import org.a8043.simpleCode.util.event.EventQueue;
 
 import java.util.ArrayList;
@@ -176,17 +178,17 @@ public class Session {
                 toolCall.getTool().getCallableTool().beforeRequest(toolCall.getArgs(), runningTool);
 
                 String allow;
-                if (!isAutoMode) {
-                    UserChoice<Boolean> userChoice = new UserChoice<>(runningTool, List.of(true, false));
-                    eventQueue.waitComplete(eventQueue.add(userChoice));
-                    allow = userChoice.getChoice() ? "" : SimpleCode.PROMPT_JSON.getStr("userRejectedToolCall");
-                } else {
-                    if (toolCall.getTool() == RunCommandTool.TOOL) {
-                        allow = assessmentShellCommand(question, toolCall.getArgs().getStr("command"),
-                            toolCall.getArgs().getStr("reason", "None"));
+                NeedConsent needConsent = toolCall.getTool().getNeedConsent();
+                if (needConsent.isNeed()) {
+                    if (isAutoMode) {
+                        allow = assessmentToolCall(question, toolCall);
                     } else {
-                        allow = "";
+                        UserChoice<Boolean> userChoice = new UserChoice<>(runningTool, List.of(true, false));
+                        eventQueue.waitComplete(eventQueue.add(userChoice));
+                        allow = userChoice.getChoice() ? "" : SimpleCode.PROMPT_JSON.getStr("userRejectedToolCall");
                     }
+                } else {
+                    allow = "";
                 }
 
                 if (allow.isEmpty()) {
@@ -218,18 +220,36 @@ public class Session {
         asking = null;
     }
 
-    private String assessmentShellCommand(String userMessage, String command, String reason) {
+    private String assessmentToolCall(String userMessage, ToolCall toolCall) {
         Session session = Session.create(Type.NORMAL, folder, null,
-            "shell-command-safety-assessment");
-        session.setAutoMode(true);
+            "safety-assessment");
+        session.setAutoModeDirectly(true);
         session.setAllowTool(false);
-        session.startLoop("Task: %s\nCommand: %s\nReason: %s".formatted(userMessage, command, reason),
+
+        new Thread(() -> {
+            Event<Object> event;
+            while ((event = session.getEventQueue().get()) != null) {
+                session.getEventQueue().complete(event);
+            }
+        }).start();
+
+        JSONObject args = new JSONObject();
+        toolCall.getArgs().forEach((k, v) -> {
+            if (!k.equals("reason") && !toolCall.getTool().getNeedConsent().getExcludedParameterList().contains(k)) {
+                args.set(k, v);
+            }
+        });
+
+        session.ask("Task: %s\nTool: %s\nArgs: %s\nReason: %s".formatted(userMessage,
+                toolCall.getTool().getName(), args.toString(),
+                toolCall.getArgs().getStr("reason", SimpleCode.PROMPT_JSON.getStr("none"))),
             Settings.INSTANCE.getLowestLevelModel());
+
         Content last = session.getContentList().getLast();
         if (last instanceof AssistantContent ac) {
             return ac.getText().equals("true") ? "" : ac.getText();
         } else {
-            return SimpleCode.PROMPT_JSON.getStr("shellCommandSafetyEvaluatorNotAvailable");
+            return SimpleCode.PROMPT_JSON.getStr("safetyEvaluatorNotAvailable");
         }
     }
 

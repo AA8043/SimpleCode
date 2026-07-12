@@ -36,8 +36,8 @@ public class Registry {
         registerSystemPrompt("normal", ResourceUtil.readUtf8Str("systemPrompts/normal.md"));
         registerSystemPrompt("normal_sub", ResourceUtil.readUtf8Str("systemPrompts/normal-sub.md"));
         registerSystemPrompt("explore_sub", ResourceUtil.readUtf8Str("systemPrompts/explore-sub.md"));
-        registerSystemPrompt("shell-command-safety-assessment",
-            ResourceUtil.readUtf8Str("systemPrompts/shell-command-safety-assessment.md"));
+        registerSystemPrompt("safety-assessment",
+            ResourceUtil.readUtf8Str("systemPrompts/safety-assessment.md"));
         registerSystemPrompt("compacting-conversation",
             ResourceUtil.readUtf8Str("systemPrompts/compacting-conversation.md"));
 

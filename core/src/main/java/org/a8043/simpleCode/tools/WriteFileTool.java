@@ -14,7 +14,7 @@ import java.util.List;
 
 public class WriteFileTool implements CallableTool {
     public static final Tool TOOL = new Tool("write_file", ToolVisibility.NORMAL_MODE_ONLY,
-        new WriteFileTool(), List.of(
+        new WriteFileTool(), new NeedConsent(true, List.of("type", "content", "target")), List.of(
         new StringParameter("file", true),
         new StringParameter("type", true, List.of("overwrite", "replace", "append")),
         new StringParameter("content", true),

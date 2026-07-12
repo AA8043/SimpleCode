@@ -2,17 +2,14 @@ package org.a8043.simpleCode.tools.planMode;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONObject;
-import org.a8043.simpleCode.session.tool.CallableTool;
-import org.a8043.simpleCode.session.tool.RunningTool;
-import org.a8043.simpleCode.session.tool.Tool;
-import org.a8043.simpleCode.session.tool.ToolVisibility;
+import org.a8043.simpleCode.session.tool.*;
 
 import java.io.File;
 import java.util.List;
 
 public class ExitPlanModeTool implements CallableTool {
     public static final Tool TOOL = new Tool("exit_plan_mode",
-        ToolVisibility.PLAN_MODE_ONLY, new ExitPlanModeTool(), List.of());
+        ToolVisibility.PLAN_MODE_ONLY, new ExitPlanModeTool(), NeedConsent.unneed(), List.of());
 
     @Override
     public String call(JSONObject args, RunningTool runningTool) throws Exception {

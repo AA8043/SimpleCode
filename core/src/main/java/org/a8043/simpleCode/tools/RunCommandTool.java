@@ -4,7 +4,6 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.LineHandler;
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.session.tool.*;
-import org.a8043.simpleCode.session.tool.parameter.NumberParameter;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 
 import java.io.IOException;
@@ -14,10 +13,8 @@ import java.util.concurrent.TimeUnit;
 
 public class RunCommandTool implements CallableTool {
     public static final Tool TOOL = new Tool("run_command", ToolVisibility.NORMAL_MODE_ONLY,
-        new RunCommandTool(), List.of(
-        new StringParameter("command", true),
-        new NumberParameter("timeout", false),
-        new StringParameter("reason", false)
+        new RunCommandTool(), new NeedConsent(true, List.of()), List.of(
+        new StringParameter("command", true)
     ));
 
     @Override

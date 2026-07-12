@@ -1,10 +1,7 @@
 package org.a8043.simpleCode.tools.planMode;
 
 import cn.hutool.json.JSONObject;
-import org.a8043.simpleCode.session.tool.CallableTool;
-import org.a8043.simpleCode.session.tool.RunningTool;
-import org.a8043.simpleCode.session.tool.Tool;
-import org.a8043.simpleCode.session.tool.ToolVisibility;
+import org.a8043.simpleCode.session.tool.*;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 import org.a8043.simpleCode.tools.WriteFileTool;
 
@@ -12,7 +9,7 @@ import java.util.List;
 
 public class UpdatePlanTool implements CallableTool {
     public static final Tool TOOL = new Tool("update_plan",
-        ToolVisibility.PLAN_MODE_ONLY, new UpdatePlanTool(), List.of(
+        ToolVisibility.PLAN_MODE_ONLY, new UpdatePlanTool(), NeedConsent.unneed(), List.of(
         new StringParameter("type", true, List.of("overwrite", "replace", "append")),
         new StringParameter("content", true),
         new StringParameter("target", false)

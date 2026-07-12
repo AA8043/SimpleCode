@@ -1,10 +1,7 @@
 package org.a8043.simpleCode.tools;
 
 import cn.hutool.json.JSONObject;
-import org.a8043.simpleCode.session.tool.CallableTool;
-import org.a8043.simpleCode.session.tool.RunningTool;
-import org.a8043.simpleCode.session.tool.Tool;
-import org.a8043.simpleCode.session.tool.ToolException;
+import org.a8043.simpleCode.session.tool.*;
 import org.a8043.simpleCode.session.tool.parameter.BooleanParameter;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 
@@ -13,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListFilesTool implements CallableTool {
-    public static final Tool TOOL = new Tool("list_files", new ListFilesTool(), List.of(
+    public static final Tool TOOL = new Tool("list_files", new ListFilesTool(), NeedConsent.unneed(), List.of(
         new StringParameter("dir", true),
         new BooleanParameter("recursive", true)
     ));

@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 public class CompactingConversationTool implements CallableTool {
     public static final Tool TOOL = new Tool("compacting_conversation",
-        ToolVisibility.ALL, new CompactingConversationTool(), List.of());
+        ToolVisibility.ALL, new CompactingConversationTool(), NeedConsent.unneed(), List.of());
 
     @Override
     public String call(JSONObject args, RunningTool runningTool) throws Exception {

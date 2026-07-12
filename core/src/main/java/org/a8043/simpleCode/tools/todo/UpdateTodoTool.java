@@ -2,17 +2,14 @@ package org.a8043.simpleCode.tools.todo;
 
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.session.Todo;
-import org.a8043.simpleCode.session.tool.CallableTool;
-import org.a8043.simpleCode.session.tool.RunningTool;
-import org.a8043.simpleCode.session.tool.Tool;
-import org.a8043.simpleCode.session.tool.ToolException;
+import org.a8043.simpleCode.session.tool.*;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class UpdateTodoTool implements CallableTool {
-    public static final Tool TOOL = new Tool("update_todo", new UpdateTodoTool(), List.of(
+    public static final Tool TOOL = new Tool("update_todo", new UpdateTodoTool(), NeedConsent.unneed(), List.of(
         new StringParameter("id", true),
         new StringParameter("newStatus", true,
             Arrays.stream(Todo.Status.values()).map(Enum::name).toList())

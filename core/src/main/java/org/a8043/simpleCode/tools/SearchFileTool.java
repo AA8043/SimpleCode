@@ -5,10 +5,7 @@ import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.SimpleCode;
-import org.a8043.simpleCode.session.tool.CallableTool;
-import org.a8043.simpleCode.session.tool.RunningTool;
-import org.a8043.simpleCode.session.tool.Tool;
-import org.a8043.simpleCode.session.tool.ToolException;
+import org.a8043.simpleCode.session.tool.*;
 import org.a8043.simpleCode.session.tool.parameter.BooleanParameter;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 
@@ -21,7 +18,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class SearchFileTool implements CallableTool {
-    public static final Tool TOOL = new Tool("search_file", new SearchFileTool(), List.of(
+    public static final Tool TOOL = new Tool("search_file", new SearchFileTool(), NeedConsent.unneed(), List.of(
         new StringParameter("dir", true),
         new StringParameter("type", true, List.of("name", "content")),
         new BooleanParameter("keyword", true)

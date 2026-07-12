@@ -59,7 +59,6 @@
         "run_command": {
             "description": "Execute a shell command.",
             "command": "The shell command to execute",
-            "reason": "Reason for executing this command (optional). The reason are as detailed as possible. If the conversation is in auto mode, it is strongly recommended to enter this parameter, as it can improve the pass rate.",
             "timeout": "Timeout in milliseconds for the command execution (optional). If not specified, the default timeout is 5 minutes.",
             "timeout_message": "Timeout."
         },
@@ -86,6 +85,7 @@
             "description": "Compact the conversation to help you work more efficiently."
         }
     },
+    "reasonDescription": "Reason for executing this tool (optional). The reason are as detailed as possible. If the conversation is in auto mode, it is strongly recommended to enter this parameter, as it can improve the pass rate.",
     "hasTodoReminder": "<system-reminder>\nYou have unfinished TODOs, you can use the `list_todo` tool to view them\n</system-reminder>",
     "autoModeOn": "<system-reminder>\nThis session has now switched to automatic mode, so you shouldn't ask the user questions\n</system-reminder>",
     "autoModeOff": "<system-reminder>\nThis session has now switched off automatic mode, allowing you to ask users questions whenever needed\n</system-reminder>",
@@ -95,6 +95,7 @@
     "foreverModeOff": "<system-reminder>\nThis session has now switched off forever mode, you can stop working when you finish the task\n</system-reminder>",
     "foreverModeReminder": "<system-reminder>\nContinue working. This session is in forever mode.\n</system-reminder>",
     "subAgentMessage": "<system-reminder>\n[Sub agent {} message]\n{}\n</system-reminder>",
-    "shellCommandSafetyEvaluatorNotAvailable": "The safety evaluator is temporarily unavailable",
-    "userRejectedToolCall": "User rejected the tool call"
+    "safetyEvaluatorNotAvailable": "The safety evaluator is temporarily unavailable",
+    "userRejectedToolCall": "User rejected the tool call",
+    "none": "None"
 }

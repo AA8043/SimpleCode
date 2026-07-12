@@ -5,10 +5,7 @@ import org.a8043.simpleCode.Registry;
 import org.a8043.simpleCode.Settings;
 import org.a8043.simpleCode.model.Model;
 import org.a8043.simpleCode.session.Session;
-import org.a8043.simpleCode.session.tool.CallableTool;
-import org.a8043.simpleCode.session.tool.RunningTool;
-import org.a8043.simpleCode.session.tool.Tool;
-import org.a8043.simpleCode.session.tool.ToolException;
+import org.a8043.simpleCode.session.tool.*;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
 
 import java.util.ArrayList;
@@ -16,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SubAgentTool implements CallableTool {
-    public static final Tool TOOL = new Tool("sub_agent", new SubAgentTool(), List.of(
+    public static final Tool TOOL = new Tool("sub_agent", new SubAgentTool(), NeedConsent.unneed(), List.of(
         new StringParameter("id", true),
         new StringParameter("task", true),
         new StringParameter("level", true, new ArrayList<>())

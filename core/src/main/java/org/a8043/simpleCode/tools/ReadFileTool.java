@@ -2,6 +2,7 @@ package org.a8043.simpleCode.tools;
 
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.session.tool.CallableTool;
+import org.a8043.simpleCode.session.tool.NeedConsent;
 import org.a8043.simpleCode.session.tool.RunningTool;
 import org.a8043.simpleCode.session.tool.Tool;
 import org.a8043.simpleCode.session.tool.parameter.StringParameter;
@@ -11,7 +12,7 @@ import java.io.File;
 import java.util.List;
 
 public class ReadFileTool implements CallableTool {
-    public static final Tool TOOL = new Tool("read_file", new ReadFileTool(), List.of(
+    public static final Tool TOOL = new Tool("read_file", new ReadFileTool(), NeedConsent.unneed(), List.of(
         new StringParameter("file", true),
         new StringParameter("range", false)
     ));
