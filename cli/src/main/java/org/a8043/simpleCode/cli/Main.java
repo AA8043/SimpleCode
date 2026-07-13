@@ -12,7 +12,9 @@ import org.a8043.simpleCode.cli.views.MainView;
 import org.a8043.simpleCode.cli.views.WelcomeView;
 import org.a8043.simpleCode.frontend.FrontendSettings;
 import org.a8043.simpleCode.frontend.I18n;
+import org.a8043.simpleCode.tools.windows.WindowsTools;
 
+import java.awt.*;
 import java.io.File;
 
 @Slf4j
@@ -45,6 +47,10 @@ public class Main extends ToolkitApp {
     }
 
     public void showMain() {
+        if (System.getProperty("os.name").toLowerCase().contains("win") && !GraphicsEnvironment.isHeadless()) {
+            WindowsTools.install();
+        }
+
         folder = new Folder(new File(System.getProperty("user.dir")));
         setView(MainView.INSTANCE);
     }

@@ -8,5 +8,6 @@
 /core/build/
 /cli/build/
 /frontend-common/build/
+/windows-tools/build/
 
 /test/

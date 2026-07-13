@@ -65,5 +65,16 @@
     "tools.enter_plan_mode": "进入计划模式",
     "tools.update_plan": "更新计划",
     "tools.exit_plan_mode": "退出计划模式",
-    "tools.compacting_conversation": "压缩对话"
+    "tools.compacting_conversation": "压缩对话",
+    "tools.get_all_windows": "获取所有窗口",
+    "tools.get_window_tree": "获取窗口组件树",
+    "tools.click_button": "点击按钮",
+    "tools.input_text": "输入文本",
+    "tools.activate_window": "激活窗口",
+    "tools.close_window": "关闭窗口",
+    "tools.click_element": "点击组件",
+    "tools.set_checked": "设置勾选状态",
+    "tools.select_element": "选择组件",
+    "tools.scroll_element": "滚动组件",
+    "tools.press_key": "发送按键"
 }

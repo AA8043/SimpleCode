@@ -27,5 +27,5 @@ dependencies {
 
 tasks.test {
     useJUnit()
-    workingDir = project.rootProject.file("test")
+    workingDir = rootProject.file("test")
 }

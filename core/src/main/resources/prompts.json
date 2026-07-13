@@ -83,6 +83,53 @@
         },
         "compacting_conversation": {
             "description": "Compact the conversation to help you work more efficiently."
+        },
+        "get_all_windows": {
+            "description": "Get all windows in the desktop environment."
+        },
+        "get_window_tree": {
+            "description": "Get the component tree for a specific window. Each node exposes only its name and ID, in addition to its children.",
+            "window_id": "The ID of the window to get the component tree for"
+        },
+        "click_button": {
+            "description": "Click a button in a window.",
+            "buttonId": "The ID of the button to click"
+        },
+        "input_text": {
+            "description": "Input text into a text field in a window.",
+            "input_id": "The ID of the text field to input text into",
+            "text": "The text to input"
+        },
+        "activate_window": {
+            "description": "Restore and bring a window to the foreground.",
+            "window_id": "The ID of the window to activate"
+        },
+        "close_window": {
+            "description": "Request that a window close through its standard window control.",
+            "window_id": "The ID of the window to close"
+        },
+        "click_element": {
+            "description": "Activate a UI element, including buttons, links, selectable items, and toggles.",
+            "element_id": "The ID of the UI element to activate"
+        },
+        "set_checked": {
+            "description": "Set a checkbox or other toggle control to a specific checked state.",
+            "element_id": "The ID of the toggle control",
+            "checked": "Whether the control should be checked"
+        },
+        "select_element": {
+            "description": "Select an item in a list, tree, tab control, or other selection container.",
+            "element_id": "The ID of the selectable item"
+        },
+        "scroll_element": {
+            "description": "Scroll a scrollable UI element by one small step. Use -1 for backward/up or left, 0 for no movement, and 1 for forward/down or right. At least one amount must be non-zero.",
+            "element_id": "The ID of the scrollable UI element",
+            "horizontal_amount": "Horizontal scroll amount: -1, 0, or 1",
+            "vertical_amount": "Vertical scroll amount: -1, 0, or 1"
+        },
+        "press_key": {
+            "description": "Send a keyboard shortcut to the currently focused application. Supports A-Z, 0-9, ENTER, TAB, ESC, SPACE, BACKSPACE, DELETE, INSERT, HOME, END, PAGEUP, PAGEDOWN, arrow keys, F1-F12, and CTRL/ALT/SHIFT combinations.",
+            "key_combination": "A key or combination such as ENTER, CTRL+L, ALT+F4, or SHIFT+TAB"
         }
     },
     "reasonDescription": "Reason for executing this tool (optional). The reason are as detailed as possible. If the conversation is in auto mode, it is strongly recommended to enter this parameter, as it can improve the pass rate.",
