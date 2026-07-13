@@ -25,7 +25,6 @@ import org.a8043.simpleCode.session.content.AssistantContent;
 import org.a8043.simpleCode.session.content.ToolContent;
 import org.a8043.simpleCode.session.content.UserContent;
 import org.a8043.simpleCode.session.tool.RunningTool;
-import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.tools.WriteFileTool;
 import org.a8043.simpleCode.tools.planMode.Plan;
 import org.a8043.simpleCode.util.LineChange;
@@ -143,9 +142,23 @@ public class SessionView extends Main.View {
                     yield column;
                 }
 
-                case ToolCall tc -> row(spinner().state(spinnerState), Util.getToolDescriptionElement(tc));
+                case RunningTool rt -> column(row(spinner().state(spinnerState),
+                        Util.getToolDescriptionElement(rt.getToolCall())),
+                    text("⎿ ", I18n.get(switch (rt.getStatus()) {
+                        case WAITING -> {
+                            if (session.isAutoMode()) {
+                                yield "session.toolCall.securityAssessment";
+                            } else {
+                                yield "session.toolCall.waiting";
+                            }
+                        }
+                        case RUNNING -> "session.toolCall.running";
+                        case DONE -> "session.toolCall.done";
+                    })));
+
                 case Plan plan -> column(text(I18n.get("session.plan") + "--------"),
                     richTextArea(plan.getPlan()), text("-------------"));
+
                 case WriteFileTool.WritedFile wf -> {
                     Column column = column(text(I18n.get("tools.write_file") + "--------"));
                     wf.getDiff().stream().filter(change -> change.getAction() != LineChange.Action.EQUAL)
@@ -164,17 +177,21 @@ public class SessionView extends Main.View {
                         )));
                     yield column;
                 }
+
                 case ApiException e -> row(text("⚠ ").yellow(), text(I18n.get("session.apiError",
                     String.valueOf(e.getStatus()), e.getContent())).red());
                 case CommandException e -> row(text("⚠ ").yellow(),
                     text(I18n.get("command.error", I18n.get(e.getKey(), e.getArgs().toArray(new String[0])))).red());
                 case Exception e -> row(text("⚠ ").yellow(), text(I18n.get("session.error",
                     e.getMessage())).red());
+
                 case Session.Retrying retrying -> row(text("🔄 ").yellow(), text(I18n.get("session.retrying",
                     String.valueOf(retrying.getRetryCount()), String.valueOf(retrying.getMaxRetryCount()),
                     String.valueOf(retrying.getWaitTime()))));
+
                 case Session.Finish finish -> text(I18n.get("session.finish",
                     FrontendUtil.formatDuration(finish.getWorkedTime())) + "========");
+
                 default -> throw new RuntimeException();
             }, text()));
     }

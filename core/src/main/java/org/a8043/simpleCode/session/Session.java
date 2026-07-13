@@ -174,7 +174,7 @@ public class Session {
             this.toolCallList.addAll(toolCallList);
             toolCallList.forEach(toolCall -> {
                 RunningTool runningTool = new RunningTool(toolCall, this);
-                allContentList.add(toolCall);
+                allContentList.add(runningTool);
                 toolCall.getTool().getCallableTool().beforeRequest(toolCall.getArgs(), runningTool);
 
                 String allow;
@@ -192,6 +192,7 @@ public class Session {
                 }
 
                 if (allow.isEmpty()) {
+                    runningTool.setStatus(RunningTool.Status.RUNNING);
                     ToolCallReturn callResult = toolCall.call(runningTool);
                     contentList.add(new ToolContent(System.currentTimeMillis(), toolCall,
                         callResult.getStatus(), callResult.getContent()));
@@ -199,7 +200,8 @@ public class Session {
                     contentList.add(new ToolContent(System.currentTimeMillis(), toolCall,
                         Status.fail(allow), ""));
                 }
-                allContentList.remove(toolCall);
+                runningTool.setStatus(RunningTool.Status.DONE);
+                allContentList.remove(runningTool);
             });
 
             if (result.isEnd()) {
