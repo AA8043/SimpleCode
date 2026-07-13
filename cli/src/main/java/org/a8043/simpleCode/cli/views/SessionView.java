@@ -17,11 +17,9 @@ import org.a8043.simpleCode.cli.Util;
 import org.a8043.simpleCode.cli.commands.Command;
 import org.a8043.simpleCode.cli.commands.CommandException;
 import org.a8043.simpleCode.cli.commands.CommandRegistry;
-import org.a8043.simpleCode.frontend.FrontendSettings;
-import org.a8043.simpleCode.frontend.FrontendUtil;
-import org.a8043.simpleCode.frontend.I18n;
-import org.a8043.simpleCode.frontend.Mail;
+import org.a8043.simpleCode.frontend.*;
 import org.a8043.simpleCode.session.Session;
+import org.a8043.simpleCode.session.Todo;
 import org.a8043.simpleCode.session.UserChoice;
 import org.a8043.simpleCode.session.content.AssistantContent;
 import org.a8043.simpleCode.session.content.ToolContent;
@@ -43,9 +41,12 @@ import static dev.tamboui.toolkit.Toolkit.*;
 @Slf4j
 public class SessionView extends Main.View {
     private static final List<SessionView> openedList = new ArrayList<>();
+    private final Session session;
     private Panel unhandledUserChoice;
     private final Object userChoiceLock = new Object();
     private final SpinnerState spinnerState = new SpinnerState();
+    private final ListElement<Object> contentListElement = new ListElement<>()
+        .id("contentList").displayOnly().stickyScroll().rounded().fill();
 
     public static SessionView open(Session session) {
         return openedList.stream().filter(v -> v.session == session).findFirst().orElseGet(() -> {
@@ -54,10 +55,6 @@ public class SessionView extends Main.View {
             return view;
         });
     }
-
-    private final Session session;
-    private final ListElement<Object> contentListElement = new ListElement<>()
-        .id("contentList").displayOnly().stickyScroll().rounded().fill();
 
     private SessionView(Session session) {
         this.session = session;
@@ -112,11 +109,13 @@ public class SessionView extends Main.View {
                             }
                         }
                     }
+
                     case Session.Finish finish -> {
                         if (FrontendSettings.INSTANCE.getMail() != null) {
                             Mail.sendStopWorking(System.currentTimeMillis(), session, finish);
                         }
                     }
+
                     default -> throw new RuntimeException();
                 }
                 eventQueue.complete(event);
@@ -126,8 +125,8 @@ public class SessionView extends Main.View {
         contentListElement.data(session.getAllContentList(),
             content -> column(switch (content) {
                 case UserContent uc -> text("> " + uc.getText()).overflow(Overflow.WRAP_WORD);
-                case AssistantContent ac -> text("● " + ac.getText()
-                    .replace("\n", "    ")).overflow(Overflow.WRAP_WORD);
+                case AssistantContent ac -> row(text("● "),
+                    markupTextArea(new MarkdownToBBCodeRenderer().convert(ac.getText())).overflow(Overflow.WRAP_WORD));
                 case ToolContent tc -> {
                     TextElement symbol = text("■ ");
                     if (tc.getStatus().isSuccess()) {
@@ -143,6 +142,7 @@ public class SessionView extends Main.View {
                     }
                     yield column;
                 }
+
                 case ToolCall tc -> row(spinner().state(spinnerState), Util.getToolDescriptionElement(tc));
                 case Plan plan -> column(text(I18n.get("session.plan") + "--------"),
                     richTextArea(plan.getPlan()), text("-------------"));
@@ -185,14 +185,14 @@ public class SessionView extends Main.View {
     public Element render() {
         spinnerState.advance();
 
-        Panel todoPanel = panel().max(20).fill(20).rounded();
-        session.getTodoList().forEach(todo -> todoPanel.add(row(switch (todo.getStatus()) {
-            case WAITING -> text("● ").blue().overflow(Overflow.WRAP_WORD);
-            case DOING -> text("● ").green().overflow(Overflow.WRAP_WORD);
-            case FINISHED -> text("● ").gray().overflow(Overflow.WRAP_WORD);
-        }, text(todo.getTask()))));
+        ListElement<Todo> todoPanel = list().fill(5).displayOnly().rounded().data(session.getTodoList(),
+            todo -> row(switch (todo.getStatus()) {
+                case WAITING -> text("● ").blue().overflow(Overflow.WRAP_WORD);
+                case DOING -> text("● ").green().overflow(Overflow.WRAP_WORD);
+                case FINISHED -> text("● ").gray().overflow(Overflow.WRAP_WORD);
+            }, text(todo.getTask())));
 
-        Panel statisticPanel = panel().max(20).fill(20).rounded();
+        Panel statisticPanel = panel().fill(5).rounded();
         if (session.getAsking() != null) {
             statisticPanel.add(
                 text(FrontendUtil.formatDuration(session.getAsking().getWorkedTime())),
