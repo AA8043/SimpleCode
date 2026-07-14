@@ -5,6 +5,7 @@
     "ok": "确定",
     "add": "添加",
     "loading": "正在加载...",
+    "input": "输入",
     "provider.set": "设置供应商",
     "provider.add": "添加供应商",
     "provider.name": "供应商名称",
@@ -76,5 +77,6 @@
     "tools.set_checked": "设置勾选状态",
     "tools.select_element": "选择组件",
     "tools.scroll_element": "滚动组件",
-    "tools.press_key": "发送按键"
+    "tools.press_key": "发送按键",
+    "tools.record_user_preference": "记录用户偏好"
 }

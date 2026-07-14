@@ -130,6 +130,12 @@
         "press_key": {
             "description": "Send a keyboard shortcut to the currently focused application. Supports A-Z, 0-9, ENTER, TAB, ESC, SPACE, BACKSPACE, DELETE, INSERT, HOME, END, PAGEUP, PAGEDOWN, arrow keys, F1-F12, and CTRL/ALT/SHIFT combinations.",
             "key_combination": "A key or combination such as ENTER, CTRL+L, ALT+F4, or SHIFT+TAB"
+        },
+        "record_user_preference": {
+            "description": "Record user preference. Note: User preferences are global.",
+            "item": "Preference item",
+            "preference": "Preference",
+            "alreadyExists": "Preference already exists."
         }
     },
     "reasonDescription": "Reason for executing this tool (optional). The reason are as detailed as possible. If the conversation is in auto mode, it is strongly recommended to enter this parameter, as it can improve the pass rate.",

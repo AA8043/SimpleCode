@@ -45,9 +45,12 @@ public class Registry {
         SUB_AGENT_MAP.put("explore", "explore_sub");
 
         registerTool(AskUserTool.TOOL);
+        registerTool(RecordUserPreferenceTool.TOOL);
+
         registerTool(ReasoningEffortTool.TOOL);
-        registerTool(RunCommandTool.TOOL);
         registerTool(CompactingConversationTool.TOOL);
+
+        registerTool(RunCommandTool.TOOL);
 
         registerTool(WriteFileTool.TOOL);
         registerTool(ReadFileTool.TOOL);

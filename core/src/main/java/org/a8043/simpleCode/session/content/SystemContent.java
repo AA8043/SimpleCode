@@ -2,6 +2,7 @@ package org.a8043.simpleCode.session.content;
 
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.Registry;
+import org.a8043.simpleCode.SimpleCode;
 import org.a8043.simpleCode.session.Role;
 
 public class SystemContent extends Content {
@@ -16,10 +17,17 @@ public class SystemContent extends Content {
 
     @Override
     public String getText() {
+        StringBuilder userPreference = new StringBuilder();
+        userPreference.append("| Item | Preference |\n");
+        userPreference.append("| ---- | ---------- |\n");
+        SimpleCode.USER_PREFERENCE_JSON.forEach((k, v) ->
+            userPreference.append("| ").append(k).append(" | ").append(v).append(" |\n"));
+
         return Registry.SYSTEM_PROMPT_MAP.get(key)
             .replace("{system}", System.getProperty("os.name"))
             .replace("{user_name}", System.getProperty("user.name"))
-            .replace("{dir}", workingDir);
+            .replace("{dir}", workingDir)
+            .replace("{user_preferences}", userPreference.toString());
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.a8043.simpleCode;
 import cn.hutool.core.convert.AbstractConverter;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.convert.ConverterRegistry;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.model.Model;
@@ -17,16 +18,27 @@ public class SimpleCode {
     public static final File DATA_DIR = new File(System.getProperty("user.home") + "/.simpleCode");
     public static final JSONObject PROMPT_JSON = new JSONObject(ResourceUtil.readUtf8Str("prompts.json"));
     public static final File FOLDERS_DATA_DIR = new File(DATA_DIR, "folders");
+    public static JSONObject USER_PREFERENCE_JSON;
 
     public static boolean init() {
         registerConverters();
+
         boolean isNotFirst = Settings.read();
         Registry.AFTER_INIT_LIST.forEach(Runnable::run);
+
+        File userPreferenceFile = new File(DATA_DIR, "userPreference.json");
+        if (userPreferenceFile.exists()) {
+            USER_PREFERENCE_JSON = new JSONObject(FileUtil.readUtf8String(userPreferenceFile));
+        } else {
+            USER_PREFERENCE_JSON = new JSONObject();
+        }
+
         return isNotFirst;
     }
 
     public static void save() {
         Settings.save();
+        FileUtil.writeUtf8String(USER_PREFERENCE_JSON.toString(), new File(DATA_DIR, "userPreference.json"));
     }
 
     private static void registerConverters() {
