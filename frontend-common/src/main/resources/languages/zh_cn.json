@@ -34,6 +34,7 @@
     "session.toolCall.waiting": "等待...",
     "session.toolCall.running": "正在运行...",
     "session.toolCall.done": "完成",
+    "session.image": "图像",
     "command.unknown": "未知命令: {0}",
     "command.error": "命令错误: {0}",
     "command.argsMissing": "命令参数缺失",

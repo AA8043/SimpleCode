@@ -112,6 +112,14 @@ public class SimpleCode {
             }
         });
 
+        registry.putCustom(ImageContent.class, new AbstractConverter<ImageContent>() {
+            @Override
+            protected ImageContent convertInternal(Object value) {
+                JSONObject json = (JSONObject) value;
+                return new ImageContent(json.getLong("time"), json.getStr("base64"));
+            }
+        });
+
         registry.putCustom(Content.class, new AbstractConverter<Content>() {
             @Override
             protected Content convertInternal(Object value) {
@@ -122,6 +130,7 @@ public class SimpleCode {
                     case "system" -> Convert.convert(SystemContent.class, value);
                     case "remind" -> Convert.convert(RemindContent.class, value);
                     case "tool" -> Convert.convert(ToolContent.class, value);
+                    case "image" -> Convert.convert(ImageContent.class, value);
                     default -> throw new RuntimeException();
                 };
             }

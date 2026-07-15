@@ -22,6 +22,7 @@ import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.Todo;
 import org.a8043.simpleCode.session.UserChoice;
 import org.a8043.simpleCode.session.content.AssistantContent;
+import org.a8043.simpleCode.session.content.ImageContent;
 import org.a8043.simpleCode.session.content.ToolContent;
 import org.a8043.simpleCode.session.content.UserContent;
 import org.a8043.simpleCode.session.tool.RunningTool;
@@ -141,6 +142,7 @@ public class SessionView extends Main.View {
                     }
                     yield column;
                 }
+                case ImageContent ignored -> text("■ ", I18n.get("session.image"));
 
                 case RunningTool rt -> column(row(spinner().state(spinnerState),
                         Util.getToolDescriptionElement(rt.getToolCall())),

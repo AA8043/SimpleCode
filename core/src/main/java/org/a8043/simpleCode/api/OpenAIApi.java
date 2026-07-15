@@ -13,6 +13,7 @@ import org.a8043.simpleCode.model.Provider;
 import org.a8043.simpleCode.model.RemoteModel;
 import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.content.AssistantContent;
+import org.a8043.simpleCode.session.content.ImageContent;
 import org.a8043.simpleCode.session.content.ToolContent;
 import org.a8043.simpleCode.session.tool.Tool;
 import org.a8043.simpleCode.session.tool.ToolCall;
@@ -40,7 +41,13 @@ public class OpenAIApi implements Api {
 
         session.getContentList().forEach(content -> {
             JSONObject message = new JSONObject(JSONConfig.create().setIgnoreNullValue(false));
-            message.set("role", content.getRole().name().toLowerCase());
+            message.set("role", switch (content.getRole()) {
+                case SYSTEM -> "system";
+                case USER -> "user";
+                case ASSISTANT -> "assistant";
+                case TOOL -> "tool";
+                case IMAGE -> "image_url";
+            });
             switch (content) {
                 case AssistantContent ac -> {
                     message.set("content", ac.getText());
@@ -58,6 +65,8 @@ public class OpenAIApi implements Api {
                     message.set("tool_call_id", tc.getToolCallId());
                     message.set("content", tc.getText());
                 }
+                case ImageContent ic -> message.set("image_url", new JSONObject().set("url",
+                    "data:image/png;base64," + ic.getBase64()));
                 default -> message.set("content", content.getText());
             }
             requestBody.append("messages", message);
