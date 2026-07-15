@@ -1,5 +1,6 @@
 package org.a8043.simpleCode.tools.planMode;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONObject;
 import org.a8043.simpleCode.session.tool.*;
 
@@ -15,8 +16,10 @@ public class EnterPlanModeTool implements CallableTool {
 
     @Override
     public String call(JSONObject args, RunningTool runningTool) throws Exception {
-        PLAN_MAP.put(runningTool.getSession().getId(), new File(runningTool.getSession().getFolder().getDataDir(),
-            "plans/" + System.currentTimeMillis() + ".md"));
+        File file = new File(runningTool.getSession().getFolder().getDataDir(),
+            "plans/" + System.currentTimeMillis() + ".md");
+        FileUtil.writeUtf8String("", file);
+        PLAN_MAP.put(runningTool.getSession().getId(), file);
         runningTool.getSession().setPlanMode(true);
         return "";
     }
