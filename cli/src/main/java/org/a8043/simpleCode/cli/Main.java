@@ -57,6 +57,9 @@ public class Main extends ToolkitApp {
 
     @Override
     protected Element render() {
+        Util.SPINNER_STATE.advance();
+        Util.WAVE_TEXT_STATE.advance();
+
         try {
             return view != null ? view.render() : null;
         } catch (Exception e) {

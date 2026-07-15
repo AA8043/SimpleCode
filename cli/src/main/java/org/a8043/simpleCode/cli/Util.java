@@ -3,19 +3,23 @@ package org.a8043.simpleCode.cli;
 import dev.tamboui.style.Overflow;
 import dev.tamboui.toolkit.element.Element;
 import dev.tamboui.toolkit.elements.Row;
+import dev.tamboui.widgets.spinner.SpinnerState;
+import dev.tamboui.widgets.wavetext.WaveTextState;
 import org.a8043.simpleCode.frontend.I18n;
 import org.a8043.simpleCode.session.ReasoningEffort;
 import org.a8043.simpleCode.session.Session;
 import org.a8043.simpleCode.session.tool.ToolCall;
 
-import static dev.tamboui.toolkit.Toolkit.row;
-import static dev.tamboui.toolkit.Toolkit.text;
+import static dev.tamboui.toolkit.Toolkit.*;
 
 public class Util {
+    public static final SpinnerState SPINNER_STATE = new SpinnerState();
+    public static final WaveTextState WAVE_TEXT_STATE = new WaveTextState();
+
     public static Row getSessionDisplayElement(Session session) {
         Row row = row(text(session.getName() != null ? session.getName() : I18n.get("session.new")));
         if (session.getAsking() != null) {
-            row.add(text(" · "), text(I18n.get("session.working")));
+            row.add(text(" · "), waveText(I18n.get("session.working")).state(WAVE_TEXT_STATE));
         }
         if (session.getReasoningEffort() != ReasoningEffort.DEFAULT) {
             row.add(text(" · "), text(I18n.get("session.reasoningEffort",

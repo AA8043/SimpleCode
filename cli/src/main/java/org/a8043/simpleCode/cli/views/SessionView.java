@@ -1,15 +1,12 @@
 package org.a8043.simpleCode.cli.views;
 
+import dev.tamboui.style.Color;
 import dev.tamboui.style.Overflow;
 import dev.tamboui.toolkit.element.Element;
-import dev.tamboui.toolkit.elements.Column;
-import dev.tamboui.toolkit.elements.ListElement;
-import dev.tamboui.toolkit.elements.Panel;
-import dev.tamboui.toolkit.elements.TextElement;
+import dev.tamboui.toolkit.elements.*;
 import dev.tamboui.tui.bindings.KeyTrigger;
 import dev.tamboui.tui.event.KeyCode;
 import dev.tamboui.widgets.input.TextInputState;
-import dev.tamboui.widgets.spinner.SpinnerState;
 import lombok.extern.slf4j.Slf4j;
 import org.a8043.simpleCode.api.ApiException;
 import org.a8043.simpleCode.cli.Main;
@@ -44,7 +41,6 @@ public class SessionView extends Main.View {
     private final Session session;
     private Panel unhandledUserChoice;
     private final Object userChoiceLock = new Object();
-    private final SpinnerState spinnerState = new SpinnerState();
     private final ListElement<Object> contentListElement = new ListElement<>()
         .id("contentList").displayOnly().stickyScroll().rounded().fill();
 
@@ -144,7 +140,7 @@ public class SessionView extends Main.View {
                 }
                 case ImageContent ignored -> text("■ ", I18n.get("session.image"));
 
-                case RunningTool rt -> column(row(spinner().state(spinnerState),
+                case RunningTool rt -> column(row(spinner().state(Util.SPINNER_STATE),
                         Util.getToolDescriptionElement(rt.getToolCall())),
                     text("⎿ ", I18n.get(switch (rt.getStatus()) {
                         case WAITING -> {
@@ -202,14 +198,20 @@ public class SessionView extends Main.View {
 
     @Override
     public Element render() {
-        spinnerState.advance();
-
         ListElement<Todo> todoPanel = list().fill(5).displayOnly().rounded().data(session.getTodoList(),
-            todo -> row(switch (todo.getStatus()) {
-                case WAITING -> text("● ").blue().overflow(Overflow.WRAP_WORD);
-                case DOING -> text("● ").green().overflow(Overflow.WRAP_WORD);
-                case FINISHED -> text("● ").gray().overflow(Overflow.WRAP_WORD);
-            }, text(todo.getTask())));
+            todo -> {
+                Row row = row(switch (todo.getStatus()) {
+                    case WAITING -> text("● ").blue();
+                    case DOING -> text("● ").green();
+                    case FINISHED -> text("● ").gray();
+                });
+                if (todo.getStatus() == Todo.Status.DOING) {
+                    row.add(waveText(todo.getTask()).state(Util.WAVE_TEXT_STATE).color(Color.GREEN));
+                } else {
+                    row.add(text(todo.getTask()).overflow(Overflow.WRAP_WORD));
+                }
+                return row;
+            });
 
         Panel statisticPanel = panel().fill(5).rounded();
         if (session.getAsking() != null) {
