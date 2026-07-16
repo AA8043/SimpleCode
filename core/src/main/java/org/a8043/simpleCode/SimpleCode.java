@@ -11,6 +11,7 @@ import org.a8043.simpleCode.session.Status;
 import org.a8043.simpleCode.session.Todo;
 import org.a8043.simpleCode.session.content.*;
 import org.a8043.simpleCode.session.tool.ToolCall;
+import org.a8043.simpleCode.util.ModelInfo;
 
 import java.io.File;
 
@@ -56,8 +57,10 @@ public class SimpleCode {
             @Override
             protected Model convertInternal(Object value) {
                 JSONObject json = (JSONObject) value;
-                return new Model(Settings.INSTANCE.getProvider(json.getStr("provider")),
-                    json.getStr("name"), json.getInt("level"));
+                JSONObject modelInfoJson = json.getJSONObject("modelInfo");
+                return new Model(Settings.INSTANCE.getProvider(json.getStr("provider")), json.getStr("name"),
+                    modelInfoJson != null ? Convert.convert(ModelInfo.class, modelInfoJson) :
+                        new ModelInfo(false, 1000000), json.getInt("level"));
             }
         });
 
@@ -143,6 +146,14 @@ public class SimpleCode {
                 Todo todo = new Todo(json.getStr("task"), json.getStr("id"));
                 todo.setStatus(json.getEnum(Todo.Status.class, "status"));
                 return todo;
+            }
+        });
+
+        registry.putCustom(ModelInfo.class, new AbstractConverter<ModelInfo>() {
+            @Override
+            protected ModelInfo convertInternal(Object value) {
+                JSONObject json = (JSONObject) value;
+                return new ModelInfo(json.getBool("inputImage"), json.getLong("contextLimit"));
             }
         });
     }

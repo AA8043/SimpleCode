@@ -47,7 +47,9 @@ public class Main extends ToolkitApp {
     }
 
     public void showMain() {
-        if (System.getProperty("os.name").toLowerCase().contains("win") && !GraphicsEnvironment.isHeadless()) {
+        if (System.getProperty("os.name").toLowerCase().contains("win") &&
+            !GraphicsEnvironment.isHeadless() &&
+            CliSettings.INSTANCE.isAllowWindowsTools()) {
             WindowsTools.install();
         }
 

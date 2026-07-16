@@ -3,6 +3,7 @@ package org.a8043.simpleCode;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONObject;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.a8043.simpleCode.model.Model;
 import org.a8043.simpleCode.model.Provider;
 import org.a8043.simpleCode.util.RpmLimiter;
@@ -13,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Data
 public class Settings {
     public static final Settings INSTANCE = new Settings();
@@ -72,7 +74,7 @@ public class Settings {
                     .map(Map.Entry::getKey)
                     .findFirst()
                     .orElse(null)).set("maxRpm", p.getRpmLimiter() == null ? 0 : p.getRpmLimiter().getRpm())));
-        INSTANCE.getModelList().forEach(m -> json.append("models", new JSONObject()
+        INSTANCE.getModelList().forEach(m -> json.append("models", new JSONObject().set("modelInfo", m.getModelInfo())
             .set("provider", m.getProvider().getName()).set("name", m.getName()).set("level", m.getLevel())));
         FileUtil.writeUtf8String(json.toString(), new File(SimpleCode.DATA_DIR, "settings.json"));
     }

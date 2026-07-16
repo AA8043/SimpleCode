@@ -18,6 +18,7 @@ import org.a8043.simpleCode.session.content.ToolContent;
 import org.a8043.simpleCode.session.tool.Tool;
 import org.a8043.simpleCode.session.tool.ToolCall;
 import org.a8043.simpleCode.session.tool.parameter.*;
+import org.a8043.simpleCode.util.ModelInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -199,7 +200,7 @@ public class OpenAIApi implements Api {
         List<RemoteModel> modelList = new ArrayList<>();
         responseBody.getJSONArray("data").forEach(o -> {
             JSONObject json = (JSONObject) o;
-            modelList.add(new RemoteModel(provider, json.getStr("id")));
+            modelList.add(new RemoteModel(provider, json.getStr("id"), ModelInfo.get(json.getStr("id"))));
         });
         return modelList;
     }

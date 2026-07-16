@@ -11,6 +11,7 @@ import java.io.File;
 @Data
 public class CliSettings {
     public static final CliSettings INSTANCE = new CliSettings();
+    private boolean allowWindowsTools = false;
 
     public static boolean load() {
         File file = new File(SimpleCode.DATA_DIR, "cli.json");
