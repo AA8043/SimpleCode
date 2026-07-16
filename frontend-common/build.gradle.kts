@@ -1,6 +1,6 @@
 plugins {
     java
-    id("io.franzbecker.gradle-lombok") version "3.0.0"
+    id("io.freefair.lombok") version "8.6"
 }
 
 repositories {
@@ -17,12 +17,6 @@ dependencies {
     implementation("cn.hutool:hutool-all:5.8.38")
     implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
     implementation("javax.mail:mail:1.4.7")
-
-    compileOnly("org.projectlombok:lombok:1.18.30")
-    annotationProcessor("org.projectlombok:lombok:1.18.30")
-    testCompileOnly("org.projectlombok:lombok:1.18.30")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
-    testImplementation("junit:junit:4.13.1")
 }
 
 tasks.test {
