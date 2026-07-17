@@ -148,6 +148,7 @@
     "foreverModeOff": "<system-reminder>\nThis session has now switched off forever mode, you can stop working when you finish the task\n</system-reminder>",
     "foreverModeReminder": "<system-reminder>\nContinue working. This session is in forever mode.\n</system-reminder>",
     "subAgentMessage": "<system-reminder>\n[Sub agent {} message]\n{}\n</system-reminder>",
+    "contextUsageReminder": "<system-reminder>\nThe context usage is over 80%, it is recommended to use the `compacting_conversation` tool to compacting the conversation.\n</system-reminder>",
     "safetyEvaluatorNotAvailable": "The safety evaluator is temporarily unavailable",
     "userRejectedToolCall": "User rejected the tool call",
     "none": "None"

@@ -83,6 +83,8 @@ public class Session {
     };
     @PropIgnore
     private final EventQueue<Object> eventQueue = new EventQueue<>();
+    @Setter
+    private long contextUsage;
 
     public Session(Folder folder, Type type, String id, Session parent) {
         this.folder = folder;
@@ -135,6 +137,8 @@ public class Session {
     public void startLoop(String question, Model model) {
         asking = new Asking(System.currentTimeMillis());
         boolean remindedTodo = false;
+        boolean remindedContextUsage = false;
+
         loop:
         while (true) {
             RpmLimiter rpmLimiter = model.getProvider().getRpmLimiter();
@@ -162,9 +166,10 @@ public class Session {
             }
 
             contentList.addAll(result.getContentList());
-            asking.addCompletionTokens(result.getCompletionTokens());
+            asking.addCompletionTokens(result.getCompletionTokens() + result.getReasoningTokens());
             asking.addCachedTokens(result.getCachedTokens());
             asking.addPromptTokens(result.getPromptTokens());
+            contextUsage += result.getPromptTokens() + result.getCompletionTokens() + result.getReasoningTokens();
             if (parent != null) {
                 result.getContentList().forEach(c -> parent.contentList.add(
                     RemindContent.ofPromptKey(c.getTime(), "subAgentMessage", id, c.getText())));
@@ -204,6 +209,12 @@ public class Session {
                 allContentList.remove(runningTool);
             });
 
+            if ((contextUsage / model.getModelInfo().getContextLimit()) * 100 > 80 && !remindedContextUsage) {
+                contentList.add(RemindContent.ofPromptKey(System.currentTimeMillis(), "contextUsageReminder"));
+                remindedContextUsage = true;
+                continue;
+            }
+
             if (result.isEnd()) {
                 long todoCount = todoList.stream().filter(t -> t.getStatus() != Todo.Status.FINISHED).count();
                 if (todoCount == 0 || remindedTodo) {
@@ -218,6 +229,7 @@ public class Session {
                 }
             }
         }
+
         Finish finish = new Finish(asking.getWorkedTime());
         eventQueue.waitComplete(eventQueue.add(finish));
         allContentList.add(finish);

@@ -90,8 +90,8 @@ public class WelcomeView extends Main.View {
         if (modelListElement != null) {
             return modelListElement;
         }
-        ListElement<RemoteModel> list = new ListElement<>();
-        list.data(modelList, m -> new TextElement("[%s] %s".formatted(m.getProvider().getName(), m.getName())));
+        ListElement<RemoteModel> list = list().autoScroll().data(modelList,
+            m -> new TextElement("[%s] %s".formatted(m.getProvider().getName(), m.getName())));
         for (char c = '0'; c <= '9'; c++) {
             int finalC = Character.getNumericValue(c);
             list.on(KeyTrigger.ch(c), e -> Settings.INSTANCE.getModelList()

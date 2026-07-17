@@ -52,6 +52,7 @@ public class Folder {
                 session.setAllowTool(json.getBool("allowTool"));
                 session.getSubList().addAll(json.getJSONArray("subList")
                     .stream().map(j -> convert((JSONObject) j, session)).toList());
+                session.setContextUsage(json.getInt("contextUsage"));
                 return session;
             }
 

@@ -31,7 +31,6 @@ public class OpenAIApi implements Api {
     public CompleteResult complete(Model model, Session session) throws ApiException {
         JSONObject requestBody = new JSONObject();
         requestBody.set("model", model.getName());
-        requestBody.set("stream_options", new JSONObject().set("include_usage", true));
 
         requestBody.set("reasoning_effort", switch (session.getReasoningEffort()) {
             case LOW -> "low";
@@ -52,7 +51,7 @@ public class OpenAIApi implements Api {
             switch (content) {
                 case AssistantContent ac -> {
                     message.set("content", ac.getText());
-                    message.set("tool_calls", ac.getToolCallIdList().stream().map(callId -> {
+                    ac.getToolCallIdList().stream().map(callId -> {
                         JSONObject toolCallJson = new JSONObject();
                         ToolCall toolCall = session.getToolCall(callId);
                         toolCallJson.set("id", callId);
@@ -60,7 +59,7 @@ public class OpenAIApi implements Api {
                         toolCallJson.set("function", new JSONObject().set("name", toolCall.getTool().getName())
                             .set("arguments", toolCall.getArgs().toString()));
                         return toolCallJson;
-                    }).toList());
+                    }).forEach(toolCallJson -> message.append("tool_calls", toolCallJson));
                 }
                 case ToolContent tc -> {
                     message.set("tool_call_id", tc.getToolCallId());
@@ -131,7 +130,7 @@ public class OpenAIApi implements Api {
         return new CompleteResult(isEnd.get(), contentList, toolCallList,
             usage.getInt("prompt_tokens"),
             promptTokensDetails != null ? promptTokensDetails.getInt("cached_tokens") : 0,
-            usage.getInt("completion_tokens") +
+            usage.getInt("completion_tokens"),
             (completionTokensDetails != null ? completionTokensDetails.getInt("reasoning_tokens") : 0));
     }
 

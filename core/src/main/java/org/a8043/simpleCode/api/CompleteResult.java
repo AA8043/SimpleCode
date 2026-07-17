@@ -14,4 +14,5 @@ public class CompleteResult {
     int promptTokens;
     int cachedTokens;
     int completionTokens;
+    int reasoningTokens;
 }
