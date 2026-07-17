@@ -20,6 +20,7 @@ public class Settings {
     public static final Settings INSTANCE = new Settings();
     private final List<Provider> providerList = new ArrayList<>();
     private final List<Model> modelList = new ArrayList<>();
+    private int maxRetryCount = 10;
 
     public Provider getProvider(String name) {
         return providerList.stream().filter(p -> p.getName().equals(name)).findFirst().orElse(null);

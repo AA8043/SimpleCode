@@ -155,7 +155,7 @@ public class Session {
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                     allContentList.add(e);
-                    if (retryCount++ < 10) {
+                    if (retryCount++ < Settings.INSTANCE.getMaxRetryCount()) {
                         int waitTime = retryCount * 5;
                         allContentList.add(new Retrying(retryCount, 10, waitTime));
                         ThreadUtil.sleep(waitTime * 1000L);
