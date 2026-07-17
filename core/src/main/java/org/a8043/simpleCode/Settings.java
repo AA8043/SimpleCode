@@ -1,5 +1,6 @@
 package org.a8043.simpleCode;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONObject;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Data
@@ -26,17 +28,28 @@ public class Settings {
         return providerList.stream().filter(p -> p.getName().equals(name)).findFirst().orElse(null);
     }
 
-    public Model getModel(Provider provider, String name) {
-        return modelList.stream().filter(m -> m.getProvider().equals(provider) &&
-                                              m.getName().equals(name)).findFirst().orElse(null);
-    }
-
     public Model getMainModel() {
-        return modelList.stream().filter(m -> m.getLevel() == 0).findFirst().orElse(null);
+        List<Model> availableList = modelList.stream()
+            .filter(m -> !m.isUnavailable())
+            .toList();
+        return availableList.stream()
+            .filter(m -> m.getLevel() == 0)
+            .findFirst()
+            .orElseGet(() -> availableList.stream()
+                .filter(m -> m.getLevel() < 0)
+                .max(Comparator.comparingInt(Model::getLevel))
+                .orElseGet(() -> availableList.stream()
+                    .filter(m -> m.getLevel() > 0)
+                    .min(Comparator.comparingInt(Model::getLevel))
+                    .orElse(null)));
     }
 
     public Model getLowestLevelModel() {
         return modelList.stream().max(Comparator.comparingInt(Model::getLevel)).orElse(null);
+    }
+
+    public List<Model> getAvailableModels() {
+        return modelList.stream().filter(model -> !model.isUnavailable()).collect(Collectors.toList());
     }
 
     public static boolean read() {
@@ -60,23 +73,25 @@ public class Settings {
         });
         json.getJSONArray("models").forEach(o -> {
             JSONObject json1 = (JSONObject) o;
-            INSTANCE.modelList.add(json1.toBean(Model.class));
+            INSTANCE.modelList.add(Convert.convert(Model.class, json1));
         });
+        INSTANCE.maxRetryCount = json.getInt("maxRetryCount", 10);
 
         return true;
     }
 
     public static void save() {
         JSONObject json = new JSONObject();
-        INSTANCE.getProviderList().forEach(p -> json.append("providers", new JSONObject()
+        INSTANCE.providerList.forEach(p -> json.append("providers", new JSONObject()
             .set("name", p.getName()).set("baseUrl", p.getBaseUrl()).set("key", p.getKey()).set("api",
                 Registry.API_MAP.entrySet().stream()
                     .filter(a -> a.getValue() == p.getApi())
                     .map(Map.Entry::getKey)
                     .findFirst()
                     .orElse(null)).set("maxRpm", p.getRpmLimiter() == null ? 0 : p.getRpmLimiter().getRpm())));
-        INSTANCE.getModelList().forEach(m -> json.append("models", new JSONObject().set("modelInfo", m.getModelInfo())
+        INSTANCE.modelList.forEach(m -> json.append("models", new JSONObject().set("modelInfo", m.getModelInfo())
             .set("provider", m.getProvider().getName()).set("name", m.getName()).set("level", m.getLevel())));
+        json.set("maxRetryCount", INSTANCE.maxRetryCount);
         FileUtil.writeUtf8String(json.toString(), new File(SimpleCode.DATA_DIR, "settings.json"));
     }
 }

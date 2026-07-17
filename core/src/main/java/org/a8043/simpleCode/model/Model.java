@@ -1,12 +1,13 @@
 package org.a8043.simpleCode.model;
 
-import lombok.Value;
+import lombok.Data;
 import org.a8043.simpleCode.util.ModelInfo;
 
-@Value
+@Data
 public class Model {
-    Provider provider;
-    String name;
-    ModelInfo modelInfo;
-    int level;
+    private final Provider provider;
+    private final String name;
+    private final ModelInfo modelInfo;
+    private final int level;
+    private boolean unavailable;
 }

@@ -183,9 +183,12 @@ public class SessionView extends Main.View {
                 case Exception e -> row(text("⚠ ").yellow(), text(I18n.get("session.error",
                     e.getMessage())).red());
 
-                case Session.Retrying retrying -> row(text("🔄 ").yellow(), text(I18n.get("session.retrying",
+                case Session.Retrying retrying -> row(text("🔄 "), text(I18n.get("session.retrying",
                     String.valueOf(retrying.getRetryCount()), String.valueOf(retrying.getMaxRetryCount()),
                     String.valueOf(retrying.getWaitTime()))));
+
+                case Session.SwitchModel switchModel -> row(text("✔ "), text(I18n.get("session.switchModel",
+                    switchModel.getOldModel(), switchModel.getNewModel())));
 
                 case Session.Finish finish -> text(I18n.get("session.finish",
                     FrontendUtil.formatDuration(finish.getWorkedTime())) + "========");

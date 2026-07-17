@@ -30,6 +30,7 @@
     "session.plan": "计划",
     "session.retrying": "请求失败, 将在 {2} 秒后重试 ({0}/{1})",
     "session.finish": "工作完成 ({0})",
+    "session.switchModel": "切换模型: {0} → {1}",
     "session.toolCall.securityAssessment": "正在进行安全评估...",
     "session.toolCall.waiting": "等待...",
     "session.toolCall.running": "正在运行...",

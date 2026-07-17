@@ -157,10 +157,20 @@ public class Session {
                     allContentList.add(e);
                     if (retryCount++ < Settings.INSTANCE.getMaxRetryCount()) {
                         int waitTime = retryCount * 5;
-                        allContentList.add(new Retrying(retryCount, 10, waitTime));
+                        allContentList.add(new Retrying(retryCount, Settings.INSTANCE.getMaxRetryCount(), waitTime));
                         ThreadUtil.sleep(waitTime * 1000L);
                     } else {
-                        break loop;
+                        model.setUnavailable(true);
+                        if (!Settings.INSTANCE.getAvailableModels().isEmpty()) {
+                            Model newModel = Settings.INSTANCE.getMainModel();
+                            if (newModel != null) {
+                                allContentList.add(new SwitchModel(model.getName(), newModel.getName()));
+                                model = newModel;
+                                retryCount = 0;
+                            }
+                        } else {
+                            break loop;
+                        }
                     }
                 }
             }
@@ -323,5 +333,11 @@ public class Session {
     @Value
     public static class Finish {
         long workedTime;
+    }
+
+    @Value
+    public static class SwitchModel {
+        String oldModel;
+        String newModel;
     }
 }
